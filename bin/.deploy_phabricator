@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# TODO: THIS IS A WORK IN PROGRESS
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150605-051218
+
+pkg install -y phabricator
