@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# TODO: THIS IS A WORK IN PROGRESS
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150606-082412
+
+pkg install -y couchdb
+
+sysrc couchdb_enable="YES"
+sysrc nginx_enable="YES"
+
+nginx-config-sites-enabled
+cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/$FQDN/" >/usr/local/etc/nginx/sites-enabled/dtfc

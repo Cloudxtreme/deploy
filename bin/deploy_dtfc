@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# TODO: THIS IS A WORK IN PROGRESS
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150606-082412
+
+MYUSER="dtfc"
+
+pkg install -y lang/go nginx sudo
+
+echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
+
+cd /usr/home/dtfc
+sudo -u ${MYUSER} -i -- git clone https://github.com/johnko/dtfc src
+
+cd src
+sh scripts/install.sh
+
+sysrc nginx_enable="YES"
