@@ -5,6 +5,6 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150605-051218
+SCRIPTVERSION=150606-012018
 
-pkg install -y phabricator
+pkg install -y www/pydio

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# TODO: THIS IS A WORK IN PROGRESS
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150606-012018
+
+pkg install -y devel/hs-git-annex

@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # TODO: THIS IS A WORK IN PROGRESS
+# Probably will not use until there is PullRequest workflow
 
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
@@ -9,7 +10,7 @@ SCRIPTVERSION=150605-051218
 
 # Based on http://gogs.io/docs/installation/install_from_source.html
 
-pkg install -y sudo git lang/go
+pkg install -y sudo git lang/go postgresql94-server
 
 echo "git:1005:::::Gogs:/usr/home/git:/usr/sbin/nologin:" | adduser -w no -f -
 
