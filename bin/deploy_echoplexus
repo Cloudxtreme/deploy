@@ -7,6 +7,8 @@
 ######################################################################
 SCRIPTVERSION=150606-081556
 
+# Based on https://github.com/qq99/echoplexus/blob/master/INSTALL.md
+
 echo "git:1006:::::echoplexus:/usr/home/echoplexus:/usr/sbin/nologin:" | adduser -w no -f -
 pw user mod echoplexus -G redis
 
