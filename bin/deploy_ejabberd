@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# TODO: THIS IS A WORK IN PROGRESS
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150606-082252
+
+pkg install -y net-im/ejabberd
