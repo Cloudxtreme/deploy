@@ -43,7 +43,7 @@ Usage: deploy app_name
 Available apps
 EOF
     for i in `ls ${BINDIR}/deploy_*` ; do
-        echo "- ${i}" | sed "s/${BINDIR}deploy_//"
+        echo "- ${i}" | sed "s/\/.*\/deploy_//"
     done
     exit 1
 }
