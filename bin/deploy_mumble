@@ -5,6 +5,6 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150606-053940
+SCRIPTVERSION=150606-083608
 
 pkg install -y audio/mumble

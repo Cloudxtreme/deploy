@@ -5,7 +5,12 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150606-082412
+SCRIPTVERSION=150606-083608
+
+if [ "x" == "x$FQDN" ]; then
+    echo "Please set or export variable FQDN" 2>&1
+    exit 1
+fi
 
 pkg install -y couchdb
 
