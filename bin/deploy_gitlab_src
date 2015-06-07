@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150606-083608
+SCRIPTVERSION=150607-232142
 
 # Based on https://www.b1c1l1.com/blog/2011/05/09/using-utf-8-unicode-on-freebsd/
 # and https://github.com/gitlabhq/gitlab-recipes/blob/master/install/freebsd/freebsd-10.md
@@ -14,14 +14,13 @@ SCRIPTVERSION=150606-083608
 
 # 1 UTF-8
 
+pkg install -y sudo
+
 if ! locale | grep 'UTF-8' ; then
     patch -N /etc/login.conf <<EOF
 EOF
     sudo cap_mkdb /etc/login.conf
 fi
-
-pkg update -y
-pkg upgrade -y
 
 # 2 Dependencies
 
