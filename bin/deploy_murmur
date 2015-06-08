@@ -1,10 +1,10 @@
 #!/bin/sh
-
-# TODO: THIS IS A WORK IN PROGRESS
-
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150608-060504
+SCRIPTVERSION=150608-060700
 
 pkg install -y audio/murmur
+
+sysrc murmur_enable="YES"
+service murmur start
