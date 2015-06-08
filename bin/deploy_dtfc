@@ -25,8 +25,19 @@ cd /usr/home/dtfc/src
 sh scripts/install.sh
 
 nginx-config-sites-enabled
-cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/$FQDN/" >/usr/local/etc/nginx/sites-enabled/dtfc
+cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/dtfc
+
+if [ ! -d /usr/home/dtfc/config ]; then
+    install -d -o git /usr/home/dtfc/config
+fi
+
+for i in /usr/home/dtfc/melist.txt /usr/home/dtfc/peerlist.txt ; do
+    if [ ! -f ${i} ]; then
+        echo "https://${FQDN}/dtfc/" >${i}
+    fi
+done
 
 sysrc nginx_enable="YES"
 
+service dtfc start
 service nginx start
