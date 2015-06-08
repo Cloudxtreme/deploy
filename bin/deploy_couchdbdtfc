@@ -1,11 +1,8 @@
 #!/bin/sh
-
-# TODO: THIS IS A WORK IN PROGRESS
-
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150606-083608
+SCRIPTVERSION=150608-064419
 
 if [ "x" == "x$FQDN" ]; then
     echo "Please set or export variable FQDN" 2>&1
@@ -19,13 +16,16 @@ pkg install -y lang/go nginx sudo couchdb
 echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
 
 cd /usr/home/dtfc
-sudo -u ${MYUSER} -i -- git clone https://github.com/johnko/dtfc src
+sudo -u ${MYUSER} -i -- git clone https://github.com/johnko/dtfc /usr/home/dtfc/src
 
-cd src
+cd /usr/home/dtfc/src
 sh scripts/install.sh
+
+nginx-config-sites-enabled
+cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/$FQDN/" >/usr/local/etc/nginx/sites-enabled/dtfc
 
 sysrc couchdb_enable="YES"
 sysrc nginx_enable="YES"
 
-nginx-config-sites-enabled
-cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/$FQDN/" >/usr/local/etc/nginx/sites-enabled/dtfc
+service couchdb start
+service nginx start
