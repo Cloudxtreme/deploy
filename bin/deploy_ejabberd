@@ -37,6 +37,16 @@ sysrc ejabberd_enable="YES"
 
 service ejabberd start
 
+count=0
+while ! service ejabberd status ; do
+    count=$(( count + 1 ))
+    sleep 2
+    if [ ${count} -gt 10 ]; then
+        echo "ERROR: failed to start ejabberd."
+        exit 1
+    fi
+done
+
 EJABBERDCTL=/usr/local/sbin/ejabberdctl
 EJABBERDUSER=ejabberd
 
