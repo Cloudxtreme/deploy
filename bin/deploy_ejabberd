@@ -27,6 +27,8 @@ if [ ! -f /usr/local/etc/ejabberd/ejabberd.yml ]; then
         cat /usr/local/etc/ejabberd/ejabberd.yml.example \
             | sed 's/## certfile: "\/path\/to\/ssl.pem"/certfile: "\/usr\/local\/etc\/ejabberd\/ssl.pem"/' \
             | sed 's/## starttls_required: true/starttls_required: true/' \
+            | sed "s/## admin:/admin:<    user:<      - \"admin\": \"localhost\"/" \
+            | tr '<' '\n' \
             >${EJYML}
     fi
 fi
@@ -34,3 +36,10 @@ fi
 sysrc ejabberd_enable="YES"
 
 service ejabberd start
+
+ejabberd_node=${ejabberd_node-"ejabberd@localhost"}
+ejabberd_epmd_address=${ejabberd_epmd_address-"127.0.0.1"}
+EJABBERDCTL=/usr/local/sbin/ejabberdctl
+EJABBERDUSER=ejabberd
+
+su $EJABBERDUSER -c "env ERL_EPMD_ADDRESS=\"${ejabberd_epmd_address}\" $EJABBERDCTL --node $ejabberd_node register admin localhost password"
