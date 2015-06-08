@@ -7,4 +7,5 @@ SCRIPTVERSION=150608-060700
 pkg install -y audio/murmur
 
 sysrc murmur_enable="YES"
+
 service murmur start
