@@ -25,7 +25,7 @@ if [ ! -f /usr/local/etc/ejabberd/ejabberd.yml ]; then
         chmod 600 ${EJYML}
 
         cat /usr/local/etc/ejabberd/ejabberd.yml.example \
-            | sed 's/## certfile: "/path/to/ssl.pem"/certfile: "/usr/local/etc/ejabberd/ssl.pem"/' \
+            | sed 's/## certfile: "\/path\/to\/ssl.pem"/certfile: "\/usr\/local\/etc\/ejabberd\/ssl.pem"/' \
             | sed 's/## starttls_required: true/starttls_required: true/' \
             >${EJYML}
     fi
