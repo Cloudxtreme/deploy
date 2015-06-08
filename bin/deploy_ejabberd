@@ -37,9 +37,7 @@ sysrc ejabberd_enable="YES"
 
 service ejabberd start
 
-ejabberd_node=${ejabberd_node-"ejabberd@localhost"}
-ejabberd_epmd_address=${ejabberd_epmd_address-"127.0.0.1"}
 EJABBERDCTL=/usr/local/sbin/ejabberdctl
 EJABBERDUSER=ejabberd
 
-su $EJABBERDUSER -c "env ERL_EPMD_ADDRESS=\"${ejabberd_epmd_address}\" $EJABBERDCTL --node $ejabberd_node register admin localhost password"
+su $EJABBERDUSER -c "$EJABBERDCTL register admin localhost password"
