@@ -9,6 +9,12 @@ SCRIPTVERSION=150608-064805
 
 pkg install -y net-im/ejabberd
 
+if [ ! -f /usr/local/etc/ejabberd/ejabberd.yml ]; then
+    if [ -f /usr/local/etc/ejabberd/ejabberd.yml.example ]; then
+        install -m 644 -o root /usr/local/etc/ejabberd/ejabberd.yml.example /usr/local/etc/ejabberd/ejabberd.yml
+    fi
+fi
+
 sysrc ejabberd_enable="YES"
 
 service ejabberd start
