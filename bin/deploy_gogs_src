@@ -14,18 +14,29 @@ pkg install -y sudo git lang/go postgresql94-server
 
 echo "git:1005:::::Gogs:/usr/home/git:/usr/sbin/nologin:" | adduser -w no -f -
 
+sysrc postgresql_enable="YES"
+service postgresql start
+
 install -d -m 755 -o git /usr/home/git
 install -d -m 755 -o git /usr/home/git/local
 install -d -m 755 -o git /usr/home/git/local/go
 
-echo 'export GOROOT=$HOME/local/go' >> /usr/home/git/.profile
+echo >> /usr/home/git/.profile
+echo 'export GOROOT=/usr/local/go' >> /usr/home/git/.profile
 echo 'export GOPATH=$HOME/go' >> /usr/home/git/.profile
 echo 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin' >> /usr/home/git/.profile
+chown git /usr/home/git/.profile
 
 sudo -u git sh <<EOF
-source /usr/home/git/.profile
+. /usr/home/git/.profile
 go get -u github.com/gogits/gogs
-cd $GOPATH/src/github.com/gogits/gogs
+cd \$GOPATH/src/github.com/gogits/gogs
 go build
 ./gogs web
 EOF
+
+cat >/usr/local/etc/rc.d/gogs <<EOF
+#!/bin/sh
+sudo -u git /usr/home/git/go/src/github.com/gogits/gogs/gogs web --port 8080 &
+EOF
+chmod a+x /usr/local/etc/rc.d/gogs
