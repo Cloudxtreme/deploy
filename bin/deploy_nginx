@@ -4,18 +4,10 @@
 ######################################################################
 SCRIPTVERSION=150608-064125
 
-if [ "x" == "x$FQDN" ]; then
-    echo "Please set or export variable FQDN" 2>&1
-    exit 1
-fi
-
-pkg install -y couchdb nginx
+pkg install -y nginx
 
 nginx-config-sites-enabled
-cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/$FQDN/" >/usr/local/etc/nginx/sites-enabled/dtfc
 
-sysrc couchdb_enable="YES"
 sysrc nginx_enable="YES"
 
-service couchdb start
 service nginx start
