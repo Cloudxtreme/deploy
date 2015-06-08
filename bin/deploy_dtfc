@@ -31,7 +31,7 @@ if [ ! -d /usr/home/dtfc/config ]; then
     install -d -o ${MYUSER} /usr/home/dtfc/config
 fi
 
-for i in /usr/home/dtfc/melist.txt /usr/home/dtfc/peerlist.txt ; do
+for i in /usr/home/dtfc/config/melist.txt /usr/home/dtfc/config/peerlist.txt ; do
     if [ ! -f ${i} ]; then
         echo "https://${FQDN}/dtfc/" >${i}
     fi
