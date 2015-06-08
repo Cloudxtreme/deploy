@@ -11,7 +11,23 @@ pkg install -y net-im/ejabberd
 
 if [ ! -f /usr/local/etc/ejabberd/ejabberd.yml ]; then
     if [ -f /usr/local/etc/ejabberd/ejabberd.yml.example ]; then
-        install -m 644 -o root /usr/local/etc/ejabberd/ejabberd.yml.example /usr/local/etc/ejabberd/ejabberd.yml
+
+        nginx-config-sites-enabled
+        SSLPEM=/usr/local/etc/ejabberd/ssl.pem
+        touch ${SSLPEM}
+        chown ejabberd ${SSLPEM}
+        chmod 600 ${SSLPEM}
+        cat /usr/local/etc/nginx/ssl/ssl.crt /usr/local/etc/nginx/ssl/ssl.key >${SSLPEM}
+
+        EJYML=/usr/local/etc/ejabberd/ejabberd.yml
+        touch ${EJYML}
+        chown ejabberd ${EJYML}
+        chmod 600 ${EJYML}
+
+        cat /usr/local/etc/ejabberd/ejabberd.yml.example \
+            | sed 's/## certfile: "/path/to/ssl.pem"/certfile: "/usr/local/etc/ejabberd/ssl.pem"/' \
+            | sed 's/## starttls_required: true/starttls_required: true/' \
+            >${EJYML}
     fi
 fi
 
