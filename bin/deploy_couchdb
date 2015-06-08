@@ -14,8 +14,11 @@ fi
 
 pkg install -y couchdb
 
+nginx-config-sites-enabled
+cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/$FQDN/" >/usr/local/etc/nginx/sites-enabled/dtfc
+
 sysrc couchdb_enable="YES"
 sysrc nginx_enable="YES"
 
-nginx-config-sites-enabled
-cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/$FQDN/" >/usr/local/etc/nginx/sites-enabled/dtfc
+service couchdb start
+service nginx start
