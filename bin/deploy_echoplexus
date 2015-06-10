@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-052203
+SCRIPTVERSION=150610-062711
 
 # Based on https://github.com/qq99/echoplexus/blob/master/INSTALL.md
 
@@ -28,4 +28,4 @@ sysrc redis_enable="YES"
 
 echo
 JAILIP=``netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u``
-echo Visit http://${JAILIP}/
+echo "Visit http://${JAILIP}/"

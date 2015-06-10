@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-052203
+SCRIPTVERSION=150610-062711
 
 pkg install -y audio/murmur
 
@@ -15,4 +15,4 @@ service murmur start
 
 echo
 JAILIP=``netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u``
-echo Connect Mumble clients to ${JAILIP}:64738
+echo "Connect Mumble clients to ${JAILIP}:64738"

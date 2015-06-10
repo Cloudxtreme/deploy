@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-052203
+SCRIPTVERSION=150610-062711
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN" 2>&1
@@ -45,4 +45,4 @@ service couchdb start
 service nginx start
 
 echo
-echo Visit https://${FQDN}/couch/_util/
+echo "Visit https://${FQDN}/couch/_util/"
