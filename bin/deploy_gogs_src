@@ -6,7 +6,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-050413
+SCRIPTVERSION=150610-052203
 
 # Based on http://gogs.io/docs/installation/install_from_source.html
 
@@ -39,3 +39,7 @@ cat >/usr/local/etc/rc.d/gogs <<EOF
 sudo -u git /usr/home/git/go/src/github.com/gogits/gogs/gogs web --port 8080 &
 EOF
 chmod a+x /usr/local/etc/rc.d/gogs
+
+echo
+JAILIP=``netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u``
+echo Visit http://${JAILIP}:8080/

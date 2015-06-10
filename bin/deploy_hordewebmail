@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-050956
+SCRIPTVERSION=150610-052203
 
 if [ "x" == "x$FQDN" ]; then
     echo "Please set or export variable FQDN" 2>&1
@@ -22,3 +22,6 @@ sysrc php_fpm_enable="YES"
 
 service php-fpm start
 service nginx start
+
+echo
+echo Visit https://${FQDN}/horde/test.php
