@@ -12,7 +12,7 @@ if [ "x" == "x$FQDN" ]; then
     exit 1
 fi
 
-pkg install -y horde-webmail lang/php56
+pkg install -y horde-webmail lang/php56 nginx
 
 nginx-config-sites-enabled
 cat /usr/local/etc/nginx/sites-available/example-horde | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/horde
