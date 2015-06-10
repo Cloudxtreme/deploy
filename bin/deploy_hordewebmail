@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-055405
+SCRIPTVERSION=150610-062354
 
 if [ "x" == "x$FQDN" ]; then
     echo "Please set or export variable FQDN" 2>&1
@@ -22,6 +22,7 @@ php56-tidy \
 pecl-geoip \
 pecl-imagick \
 pecl-pam \
+postgresql93-server \
 nginx
 
 nginx-config-sites-enabled
@@ -31,9 +32,17 @@ cp -a /usr/local/www/horde/config/conf.php.dist /usr/local/www/horde/config/conf
 
 sysrc nginx_enable="YES"
 sysrc php_fpm_enable="YES"
+sysrc postgresql_enable="YES"
 
 service php-fpm start
 service nginx start
+
+service postgresql initdb
+service postgresql start
+
+/usr/local/bin/createuser -U pgsql horde
+/usr/local/bin/createdb -E utf8 -U pgsql -O horde horde
+/usr/local/bin/psql -U pgsql -d template1 -c "ALTER ROLE horde WITH password 'password';"
 
 echo
 echo Visit https://${FQDN}/horde/ or https://${FQDN}/horde/test.php
