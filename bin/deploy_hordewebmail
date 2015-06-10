@@ -18,5 +18,7 @@ nginx-config-sites-enabled
 cat /usr/local/etc/nginx/sites-available/example-horde | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/horde
 
 sysrc nginx_enable="YES"
+sysrc php_fpm_enable="YES"
 
+service php-fpm start
 service nginx start
