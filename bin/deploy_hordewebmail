@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-044358
+SCRIPTVERSION=150610-045849
 
 if [ "x" == "x$FQDN" ]; then
     echo "Please set or export variable FQDN" 2>&1
@@ -16,6 +16,8 @@ pkg install -y horde-webmail lang/php56 nginx
 
 nginx-config-sites-enabled
 cat /usr/local/etc/nginx/sites-available/example-horde | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/horde
+
+cat /usr/local/etc/php-fpm.conf.default | sed 's/listen = 127\.0\.0\.1\:9000/listen = \/var\/run\/php5-fpm.sock/' >/usr/local/etc/php-fpm.conf
 
 sysrc nginx_enable="YES"
 sysrc php_fpm_enable="YES"
