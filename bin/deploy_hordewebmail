@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-054823
+SCRIPTVERSION=150610-055405
 
 if [ "x" == "x$FQDN" ]; then
     echo "Please set or export variable FQDN" 2>&1
@@ -27,6 +27,8 @@ nginx
 nginx-config-sites-enabled
 cat /usr/local/etc/nginx/sites-available/example-horde | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/horde
 
+cp -a /usr/local/www/horde/config/conf.php.dist /usr/local/www/horde/config/conf.php
+
 sysrc nginx_enable="YES"
 sysrc php_fpm_enable="YES"
 
@@ -34,4 +36,4 @@ service php-fpm start
 service nginx start
 
 echo
-echo Visit https://${FQDN}/horde/test.php
+echo Visit https://${FQDN}/horde/ or https://${FQDN}/horde/test.php
