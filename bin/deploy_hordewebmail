@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150611-205807
+SCRIPTVERSION=150611-232119
 
 if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
@@ -32,10 +32,11 @@ pecl-geoip \
 pecl-imagick \
 pecl-pam \
 postgresql93-server \
-apache24 \
-www/mod_php56
+apache24
+
 
 apache-config-freebsd
+pkg install -fy www/mod_php56
 cat /usr/local/etc/apache24/extra/example-horde.conf | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/apache24/Includes/horde.conf
 
 if [ ! -e /usr/local/www/horde/config/conf.php ]; then
