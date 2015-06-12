@@ -95,3 +95,4 @@ echo "chmod 644 /usr/local/www/horde/config/conf.php"
 for i in ${HORDEAPPS} ; do
     echo "chmod 644 /usr/local/www/horde/${i}/config/conf.php"
 done
+#echo "- on iOS add CalDav Calendar with server https://${FQDN}/horde/rpc.php/principals/Administrator/"
