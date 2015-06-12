@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150612-052055
+SCRIPTVERSION=150612-053806
 
 if [ "x" == "x$FQDN" ]; then
     echo "Please set or export variable FQDN"
@@ -20,6 +20,7 @@ nginx-config-sites-enabled
 cat /usr/local/etc/nginx/sites-available/example-baikal | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/baikal
 
 touch /usr/local/www/baikal/Specific/ENABLE_INSTALL
+chown -R www /usr/local/www/baikal/Specific
 
 sysrc nginx_enable="YES"
 sysrc php_fpm_enable="YES"
