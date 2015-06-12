@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# TODO
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150612-054505
+
+if [ "x" == "x$FQDN" ]; then
+    echo "Please set or export variable FQDN"
+    exit 1
+fi
+
+pkg install -y owncloud \
+nginx
+
+nginx-config-sites-enabled
+cat /usr/local/etc/nginx/sites-available/example-owncloud | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/owncloud
+
+sysrc nginx_enable="YES"
+sysrc php_fpm_enable="YES"
+
+service php-fpm start
+service nginx start
+
+echo
+echo "Visit https://${FQDN}/"
+#echo "- on iOS add CalDav Calendar with server https://${FQDN}/principals/Administrator/"
