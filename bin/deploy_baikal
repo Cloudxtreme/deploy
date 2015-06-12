@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150612-052055
+
+if [ "x" == "x$FQDN" ]; then
+    echo "Please set or export variable FQDN"
+    exit 1
+fi
+
+pkg install -y baikal \
+lang/php56 \
+nginx
+
+nginx-config-sites-enabled
+cat /usr/local/etc/nginx/sites-available/example-baikal | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/baikal
+
+touch /usr/local/www/baikal/Specific/ENABLE_INSTALL
+
+sysrc nginx_enable="YES"
+sysrc php_fpm_enable="YES"
+
+service php-fpm start
+service nginx start
+
+echo
+echo "Visit https://${FQDN}/admin"
+echo "Then:"
+echo "rm /usr/local/www/baikal/Specific/ENABLE_INSTALL"
+#echo "- on iOS add CalDav Calendar with server https://${FQDN}/principals/Administrator/"
