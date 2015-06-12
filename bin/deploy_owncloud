@@ -5,7 +5,15 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150612-054505
+SCRIPTVERSION=150612-064517
+
+if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
+    if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
+        echo "This jail is not configured to allow sysvipc."
+        echo "you need to add jail_example_parameters=\"allow.sysvipc=1\""
+        exit 1
+    fi
+fi
 
 if [ "x" == "x$FQDN" ]; then
     echo "Please set or export variable FQDN"
@@ -13,6 +21,9 @@ if [ "x" == "x$FQDN" ]; then
 fi
 
 pkg install -y owncloud \
+lang/php56 \
+php56-pdo_pgsql \
+postgresql93-server \
 nginx
 
 nginx-config-sites-enabled
@@ -20,9 +31,30 @@ cat /usr/local/etc/nginx/sites-available/example-owncloud | sed "s/localhost.my.
 
 sysrc nginx_enable="YES"
 sysrc php_fpm_enable="YES"
+sysrc postgresql_enable="YES"
 
 service php-fpm start
 service nginx start
+
+service postgresql initdb
+service postgresql start
+
+/usr/local/bin/createuser -U pgsql owncloud
+/usr/local/bin/createdb -E utf8 -U pgsql -O owncloud owncloud
+/usr/local/bin/psql -U pgsql -d template1 -c "ALTER ROLE owncloud WITH password 'password';"
+
+if [ ! -e /usr/local/pgsql/data/pg_hba.conf.dist ]; then
+    cp -a /usr/local/pgsql/data/pg_hba.conf /usr/local/pgsql/data/pg_hba.conf.dist
+fi
+
+cat >/usr/local/pgsql/data/pg_hba.conf <<EOF
+local   all             all                                     trust
+host    all             all             127.0.0.1/32            trust
+host    all             all             ::1/128                 trust
+hostnossl  owncloud     owncloud        samehost                trust
+EOF
+
+service postgresql restart
 
 echo
 echo "Visit https://${FQDN}/"
