@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150612-064517
+SCRIPTVERSION=150612-065413
 
 if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
@@ -23,6 +23,7 @@ fi
 pkg install -y owncloud \
 lang/php56 \
 php56-pdo_pgsql \
+php56-pgsql \
 postgresql93-server \
 nginx
 
