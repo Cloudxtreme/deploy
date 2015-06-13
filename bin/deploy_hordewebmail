@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # READY
+# Probably will not use because web calendar timezone is stuck on UTC
 
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
