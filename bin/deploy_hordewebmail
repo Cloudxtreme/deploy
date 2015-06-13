@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150611-232119
+SCRIPTVERSION=150613-155119
 
 if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
@@ -54,10 +54,10 @@ for i in ${HORDEAPPS} ; do
 done
 
 sysrc apache24_enable="YES"
-sysrc php_fpm_enable="YES"
+#sysrc php_fpm_enable="YES"
 sysrc postgresql_enable="YES"
 
-service php-fpm start
+#service php-fpm start
 service apache24 start
 
 service postgresql initdb

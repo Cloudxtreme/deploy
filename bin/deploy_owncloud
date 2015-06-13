@@ -1,11 +1,11 @@
 #!/bin/sh
 
-# TODO
+# READY
 
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150612-065413
+SCRIPTVERSION=150613-155119
 
 if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
@@ -27,15 +27,16 @@ php56-pgsql \
 postgresql93-server \
 nginx
 
-nginx-config-sites-enabled
-cat /usr/local/etc/nginx/sites-available/example-owncloud | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/owncloud
+apache-config-freebsd
+pkg install -fy www/mod_php56
+cat /usr/local/etc/apache24/extra/example-owncloud.conf | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/apache24/Includes/owncloud.conf
 
-sysrc nginx_enable="YES"
-sysrc php_fpm_enable="YES"
+sysrc apache24_enable="YES"
+#sysrc php_fpm_enable="YES"
 sysrc postgresql_enable="YES"
 
-service php-fpm start
-service nginx start
+#service php-fpm start
+service apache24 start
 
 service postgresql initdb
 service postgresql start
@@ -58,5 +59,7 @@ EOF
 service postgresql restart
 
 echo
-echo "Visit https://${FQDN}/"
+echo "Visit https://${FQDN}/owncloud/"
+echo "- setup Database to PostgreSQL with sql://owncloud:password@localhost/owncloud"
+echo "- install apps: Documents, Calendar, Contacts, Mail, Bookmarks"
 #echo "- on iOS add CalDav Calendar with server https://${FQDN}/principals/Administrator/"
