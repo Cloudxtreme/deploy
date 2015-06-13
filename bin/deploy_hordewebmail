@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150613-183346
+SCRIPTVERSION=150613-190440
 
 if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
@@ -86,6 +86,7 @@ echo "- click Administration, Configuration, Horde (horde)"
 echo "- setup Preferences to PHP Sessions"
 echo "- setup Database to PostgreSQL with sql://horde:password@localhost/horde"
 echo "- click Generate Horde Configuration"
+echo "- click Update All DB Schemas"
 for i in ${HORDEAPPS} ; do
     echo "- beside ${i}, click Regenerate configuration"
 done
