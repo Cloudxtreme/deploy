@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150613-155119
+SCRIPTVERSION=150613-183346
 
 if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
@@ -90,6 +90,8 @@ for i in ${HORDEAPPS} ; do
     echo "- beside ${i}, click Regenerate configuration"
 done
 echo "- click Update All DB Schemas"
+echo "- setup Authentication \$conf[auth][driver] to SQL authentication"
+echo "- create Administrator user"
 echo "Then:"
 echo "chmod 644 /usr/local/www/horde/config/conf.php"
 for i in ${HORDEAPPS} ; do

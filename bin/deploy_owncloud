@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150613-155119
+SCRIPTVERSION=150613-183346
 
 if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
@@ -25,7 +25,7 @@ lang/php56 \
 php56-pdo_pgsql \
 php56-pgsql \
 postgresql93-server \
-nginx
+apache24
 
 apache-config-freebsd
 pkg install -fy www/mod_php56
