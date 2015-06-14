@@ -62,4 +62,4 @@ echo
 echo "Visit https://${FQDN}/owncloud/"
 echo "- setup Database to PostgreSQL with sql://owncloud:password@localhost/owncloud"
 echo "- install apps: Documents, Calendar, Contacts, Mail, Bookmarks"
-#echo "- on iOS add CalDav Calendar with server https://${FQDN}/principals/Administrator/"
+#echo "- see share options on bottom left in Calendar/Contacts for iOS CalDav/CardDav URL"
