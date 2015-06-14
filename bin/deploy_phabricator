@@ -6,10 +6,10 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-062711
+SCRIPTVERSION=150614-030456
 
 pkg install -y devel/phabricator
 
 echo
-JAILIP=``netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u``
+JAILIP=`netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u`
 echo "Visit http://${JAILIP}/"

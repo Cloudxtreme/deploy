@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-062711
+SCRIPTVERSION=150614-030456
 
 pkg install -y net-im/ejabberd
 
@@ -53,6 +53,6 @@ EJABBERDUSER=ejabberd
 su $EJABBERDUSER -c "$EJABBERDCTL register admin localhost password"
 
 echo
-JAILIP=``netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u``
+JAILIP=`netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u`
 echo "Visit http://${JAILIP}:5280/admin/"
 echo "Connect XMPP clients to ${JAILIP}:5222"

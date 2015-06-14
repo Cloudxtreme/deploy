@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150610-062711
+SCRIPTVERSION=150614-030456
 
 # Based on https://www.b1c1l1.com/blog/2011/05/09/using-utf-8-unicode-on-freebsd/
 # and https://github.com/gitlabhq/gitlab-recipes/blob/master/install/freebsd/freebsd-10.md
@@ -151,5 +151,5 @@ chmod g+rx /home/git/
 service nginx start
 
 echo
-JAILIP=``netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u``
+JAILIP=`netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u`
 echo "Visit http://${JAILIP}/"

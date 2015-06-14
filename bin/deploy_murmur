@@ -14,5 +14,5 @@ sysrc murmur_enable="YES"
 service murmur start
 
 echo
-JAILIP=``netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u``
+JAILIP=`netconn | grep -v ADDRESS | awk '{print $6}' | awk -F: '{print $1}' | sort -u`
 echo "Connect Mumble clients to ${JAILIP}:64738"
