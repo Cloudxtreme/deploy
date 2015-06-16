@@ -5,9 +5,10 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150616-043054
+SCRIPTVERSION=150616-045232
 
-pkg install -y x11/xorg x11-wm/openbox net/tightvnc
+pkg install -y x11/xorg x11-wm/openbox net/tightvnc www/epiphany
+#www/midori
 
 mkdir ~/.vnc
 
@@ -77,6 +78,10 @@ cat /tmp/vncserver.patch.b64 | openssl enc -d -base64 >/tmp/vncserver.patch
 
 cd /usr/local/bin
 patch </tmp/vncserver.patch
+
+sysrc dbus_enable="YES"
+
+service dbus start
 
 vncserver -depth 24 -geometry 1280x800 -nolisten tcp :1
 
