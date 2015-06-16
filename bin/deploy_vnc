@@ -5,9 +5,13 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150616-045232
+SCRIPTVERSION=150616-052915
 
-pkg install -y x11/xorg x11-wm/openbox net/tightvnc www/epiphany
+pkg install -y x11/xorg x11-wm/xfce4-wm \
+Thunar xfce4-tumbler \
+www/epiphany \
+net/tightvnc
+#x11-wm/openbox
 #www/midori
 
 mkdir ~/.vnc
@@ -16,7 +20,8 @@ if [ ! -f ~/.vnc/xstartup ]; then
     cat >~/.vnc/xstartup <<EOF
 #!/bin/sh
 xrdb \$HOME/.Xresources &
-openbox &
+xfwm4 &
+xfce4-panel &
 xterm -bg black -fg gray &
 EOF
     chmod +x ~/.vnc/xstartup
