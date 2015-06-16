@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150616-052915
+SCRIPTVERSION=150616-224131
 
 pkg install -y x11/xorg x11-wm/xfce4-wm \
 Thunar xfce4-tumbler \
@@ -39,7 +39,7 @@ start_cmd="my_start"
 stop_cmd="my_stop"
 my_start()
 {
-    vncserver -depth 24 -geometry 1280x800 -nolisten tcp :1
+    /usr/local/bin/vncserver -depth 24 -geometry 1280x800 -nolisten tcp :1 &
 }
 my_stop()
 {
