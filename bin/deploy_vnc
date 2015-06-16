@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150616-033943
+
+pkg install -y x11/xorg x11-wm/openbox net/tightvnc
+
+mkdir ~/.vnc
+
+if [ ! -f ~/.vnc/xstartup ]; then
+    cat >~/.vnc/xstartup <<EOF
+#!/bin/sh
+xrdb $HOME/.Xresources &
+openbox &
+xterm -bg black -fg gray &
+EOF
+    chmod +x ~/.vnc/xstartup
+fi
+
+cat >/usr/local/etc/rc.d/vnc <<EOF
+#!/bin/sh
+# Copyright (c) 2015, John Ko
+# PROVIDE: vnc
+# REQUIRE: FILESYSTEMS LOGIN NETWORKING
+. /etc/rc.subr
+
+start_cmd="my_start"
+stop_cmd="my_stop"
+my_start()
+{
+    vncserver -depth 24 -geometry 1280x800 -nolisten tcp :1
+}
+my_stop()
+{
+    # TODO need a more elegant solution than loop to kill
+    local LOOP=1
+    while [ $LOOP -eq 1 ]; do
+        if  /bin/pgrep -lf vncserver > /dev/null 2> /dev/null ; then
+            /bin/pkill -lf vncserver > /dev/null 2> /dev/null
+        else
+            local LOOP=0
+        fi
+        sleep 1
+    done
+}
+load_rc_config $name
+run_rc_command "$1"
+EOF
+
+echo
+JAILIP=`ifconfig | grep inet | awk '{print $2}'`
+echo "Connect with ssh -v -N -L 5901:${JAILIP}:5901 you@your-server-ip"
