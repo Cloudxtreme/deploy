@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150613-183346
+SCRIPTVERSION=150616-030316
 
 if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
@@ -15,7 +15,7 @@ if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     fi
 fi
 
-if [ "x" == "x$FQDN" ]; then
+if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
     exit 1
 fi

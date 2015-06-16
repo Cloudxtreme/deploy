@@ -6,9 +6,9 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150612-053806
+SCRIPTVERSION=150616-030316
 
-if [ "x" == "x$FQDN" ]; then
+if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
     exit 1
 fi
