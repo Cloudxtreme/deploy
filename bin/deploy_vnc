@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150616-042534
+SCRIPTVERSION=150616-043054
 
 pkg install -y x11/xorg x11-wm/openbox net/tightvnc
 
@@ -53,31 +53,30 @@ run_rc_command "\$1"
 EOF
 chmod +x /usr/local/etc/rc.d/vnc
 
-cat >/tmp/vncserver.patch <<EOF
---- vncserver   2013-10-09 16:10:25.000000000 +0000
-+++ vncserver.new       2013-10-09 16:12:45.000000000 +0000
-@@ -296,7 +296,7 @@ sub CheckDisplayNumber
-
-     socket(S, \$AF_INET, \$SOCK_STREAM, 0) || die "\$prog: socket failed: \$!\n";
-     eval 'setsockopt(S, &SOL_SOCKET, &SO_REUSEADDR, pack("l", 1))';
--    unless (bind(S, pack('S n x12', \$AF_INET, 6000 + \$n))) {
-+    unless (bind(S, sockaddr_in(6000 + \$n, &INADDR_ANY))) {
-        close(S);
-        return 0;
-     }
-@@ -304,7 +304,7 @@ sub CheckDisplayNumber
-
-     socket(S, \$AF_INET, \$SOCK_STREAM, 0) || die "\$prog: socket failed: \$!\n";
-     eval 'setsockopt(S, &SOL_SOCKET, &SO_REUSEADDR, pack("l", 1))';
--    unless (bind(S, pack('S n x12', \$AF_INET, 5900 + \$n))) {
-+    unless (bind(S, sockaddr_in(5900 + \$n, &INADDR_ANY))) {
-        close(S);
-        return 0;
-     }
+cat >/tmp/vncserver.patch.b64 <<EOF
+LS0tIHZuY3NlcnZlcgkyMDEzLTEwLTA5IDE2OjEwOjI1LjAwMDAwMDAwMCArMDAw
+MAorKysgdm5jc2VydmVyLm5ldwkyMDEzLTEwLTA5IDE2OjEyOjQ1LjAwMDAwMDAw
+MCArMDAwMApAQCAtMjk2LDcgKzI5Niw3IEBAIHN1YiBDaGVja0Rpc3BsYXlOdW1i
+ZXIKIAogICAgIHNvY2tldChTLCAkQUZfSU5FVCwgJFNPQ0tfU1RSRUFNLCAwKSB8
+fCBkaWUgIiRwcm9nOiBzb2NrZXQgZmFpbGVkOiAkIVxuIjsKICAgICBldmFsICdz
+ZXRzb2Nrb3B0KFMsICZTT0xfU09DS0VULCAmU09fUkVVU0VBRERSLCBwYWNrKCJs
+IiwgMSkpJzsKLSAgICB1bmxlc3MgKGJpbmQoUywgcGFjaygnUyBuIHgxMicsICRB
+Rl9JTkVULCA2MDAwICsgJG4pKSkgeworICAgIHVubGVzcyAoYmluZChTLCBzb2Nr
+YWRkcl9pbig2MDAwICsgJG4sICZJTkFERFJfQU5ZKSkpIHsKIAljbG9zZShTKTsK
+IAlyZXR1cm4gMDsKICAgICB9CkBAIC0zMDQsNyArMzA0LDcgQEAgc3ViIENoZWNr
+RGlzcGxheU51bWJlcgogCiAgICAgc29ja2V0KFMsICRBRl9JTkVULCAkU09DS19T
+VFJFQU0sIDApIHx8IGRpZSAiJHByb2c6IHNvY2tldCBmYWlsZWQ6ICQhXG4iOwog
+ICAgIGV2YWwgJ3NldHNvY2tvcHQoUywgJlNPTF9TT0NLRVQsICZTT19SRVVTRUFE
+RFIsIHBhY2soImwiLCAxKSknOwotICAgIHVubGVzcyAoYmluZChTLCBwYWNrKCdT
+IG4geDEyJywgJEFGX0lORVQsIDU5MDAgKyAkbikpKSB7CisgICAgdW5sZXNzIChi
+aW5kKFMsIHNvY2thZGRyX2luKDU5MDAgKyAkbiwgJklOQUREUl9BTlkpKSkgewog
+CWNsb3NlKFMpOwogCXJldHVybiAwOwogICAgIH0K
 EOF
 
+cat /tmp/vncserver.patch.b64 | openssl enc -d -base64 >/tmp/vncserver.patch
+
 cd /usr/local/bin
-patch < /tmp/vncserver.patch
+patch </tmp/vncserver.patch
 
 vncserver -depth 24 -geometry 1280x800 -nolisten tcp :1
 
