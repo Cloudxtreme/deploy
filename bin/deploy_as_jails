@@ -5,9 +5,11 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150617-080604
+SCRIPTVERSION=150617-125022
 
-NIC=`netstat -nr | grep default | awk '{print $NF}'`
+NIC="lo1"
+REALNIC=`netstat -nr | grep default | awk '{print $NF}'`
+IPNET="10.7.7."
 count=0
 JAILNAMES="
 proxy
@@ -22,7 +24,7 @@ gitlab
 
 for i in ${JAILNAMES} ; do
     count=$((count+1))
-    eza create ${i}        "${NIC}|10.7.7.${count}"
+    eza create ${i}        "${NIC}|${IPNET}${count}"
     eza-unlink-basejail ${i}
     zfs snap tank/ezjail/${i}@10.1-RELEASE-p12
 done
