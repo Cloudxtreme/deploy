@@ -5,7 +5,11 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150616-030316
+SCRIPTVERSION=150617-071308
+
+DB="owncloud"
+DBUSER="owncloud"
+DBPASS="password"
 
 if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
@@ -41,9 +45,9 @@ service apache24 start
 service postgresql initdb
 service postgresql start
 
-/usr/local/bin/createuser -U pgsql owncloud
-/usr/local/bin/createdb -E utf8 -U pgsql -O owncloud owncloud
-/usr/local/bin/psql -U pgsql -d template1 -c "ALTER ROLE owncloud WITH password 'password';"
+/usr/local/bin/createuser -U pgsql ${DBUSER}
+/usr/local/bin/createdb -E utf8 -U pgsql -O ${DBUSER} ${DB}
+/usr/local/bin/psql -U pgsql -d template1 -c "ALTER ROLE ${DBUSER} WITH password '${DBPASS}';"
 
 if [ ! -e /usr/local/pgsql/data/pg_hba.conf.dist ]; then
     cp -a /usr/local/pgsql/data/pg_hba.conf /usr/local/pgsql/data/pg_hba.conf.dist
@@ -53,13 +57,13 @@ cat >/usr/local/pgsql/data/pg_hba.conf <<EOF
 local   all             all                                     trust
 host    all             all             127.0.0.1/32            trust
 host    all             all             ::1/128                 trust
-hostnossl  owncloud     owncloud        samehost                trust
+hostnossl  ${DB}   ${DBUSER}    samehost                trust
 EOF
 
 service postgresql restart
 
 echo
 echo "Visit https://${FQDN}/owncloud/"
-echo "- setup Database to PostgreSQL with sql://owncloud:password@localhost/owncloud"
+echo "- setup Database to PostgreSQL with sql://${DBUSER}:${DBPASS}@localhost/${DB}"
 echo "- install apps: Documents, Calendar, Contacts, Mail, Bookmarks"
 #echo "- see share options on bottom left in Calendar/Contacts for iOS CalDav/CardDav URL"

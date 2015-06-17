@@ -5,7 +5,12 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150617-065905
+SCRIPTVERSION=150617-071308
+
+DB="gitlabhq_production"
+DBUSER="git"
+DBPASS="password"
+ROOTPASS="password"
 
 # Based on https://www.b1c1l1.com/blog/2011/05/09/using-utf-8-unicode-on-freebsd/
 # and https://github.com/gitlabhq/gitlab-recipes/blob/master/install/freebsd/freebsd-10.md
@@ -66,9 +71,9 @@ pw user mod git -G redis
 # 4 postgresql
 service postgresql initdb
 service postgresql start
-/usr/local/bin/createuser -U pgsql git
-/usr/local/bin/createdb -E utf8 -U pgsql -O git gitlabhq_production
-/usr/local/bin/psql -U pgsql -d template1 -c "ALTER ROLE git WITH password 'password';"
+/usr/local/bin/createuser -U pgsql ${DBUSER}
+/usr/local/bin/createdb -E utf8 -U pgsql -O ${DBUSER} ${DB}
+/usr/local/bin/psql -U pgsql -d template1 -c "ALTER ROLE ${DBUSER} WITH password '${DBPASS}';"
 if [ ! -e /usr/local/pgsql/data/pg_hba.conf.dist ]; then
     cp -a /usr/local/pgsql/data/pg_hba.conf /usr/local/pgsql/data/pg_hba.conf.dist
 fi
@@ -76,7 +81,7 @@ cat >/usr/local/pgsql/data/pg_hba.conf <<EOF
 local   all             all                                     trust
 host    all             all             127.0.0.1/32            trust
 host    all             all             ::1/128                 trust
-hostnossl  gitlabhq_production   git    samehost                trust
+hostnossl  ${DB}   ${DBUSER}    samehost                trust
 EOF
 service postgresql restart
 
@@ -168,7 +173,7 @@ sudo -u git -H bundle exec rake gitlab:shell:install[v2.4.1] REDIS_URL=unix:/usr
 
 # 8 Initialise Database
 # TODO change password
-sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=password
+sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=${ROOTPASS}
 
 
 # 9 Init script
@@ -220,3 +225,4 @@ service sshd start
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
 echo "Visit http://${JAILIP}/"
+echo "Login as root:${ROOTPASS}"
