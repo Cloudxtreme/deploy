@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150617-075338
+
+NIC=`netstat -nr | grep default | awk '{print $NF}'`
+count=0
+JAILNAMES="
+proxy
+couch
+owncloud
+dtfc
+ejabberd
+murmur
+vnc
+gitlab
+"
+
+for i in ${JAILNAMES} ; do
+    count=$((count+1))
+    eza create ${i}        "${NIC}|10.7.7.${count}"
+    eza-unlink-basejail ${i}
+done
