@@ -5,8 +5,9 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-014436
+SCRIPTVERSION=150618-015348
 
+FQDN="johnko.ca"
 NIC="lo1"
 REALNIC=`netstat -nr | grep default | awk '{print $NF}'`
 IPNET="10.7.7."
@@ -21,6 +22,10 @@ murmur
 vnc
 gitlab
 "
+
+allowsysvipc() {
+    echo "export jail_${1}_parameters=\"allow.sysvipc=1\"" >>/usr/local/etc/ezjail/${1}
+}
 
 for i in ${JAILNAMES} ; do
     count=$((count+1))
@@ -37,13 +42,14 @@ for i in ${JAILNAMES} ; do
             eza console -f -e "deploy nginx" ${i}
             ;;
         couch)
-            eza console -f -e "env FQDN=johnko.ca deploy ${i}db" ${i}
+            eza console -f -e "env FQDN=${FQDN} deploy ${i}db" ${i}
             ;;
         owncloud)
-            eza console -f -e "env FQDN=johnko.ca deploy ${i}" ${i}
+            allowsysvipc ${i}
+            eza console -f -e "env FQDN=${FQDN} deploy ${i}" ${i}
             ;;
         dtfc)
-            eza console -f -e "env FQDN=johnko.ca deploy ${i}" ${i}
+            eza console -f -e "env FQDN=${FQDN} deploy ${i}" ${i}
             ;;
         ejabberd)
             eza console -f -e "deploy ${i}" ${i}
@@ -55,7 +61,8 @@ for i in ${JAILNAMES} ; do
             eza console -f -e "deploy ${i}" ${i}
             ;;
         gitlab)
-            eza console -f -e "env FQDN=johnko.ca deploy ${i}_src" ${i}
+            allowsysvipc ${i}
+            eza console -f -e "env FQDN=${FQDN} deploy ${i}_src" ${i}
             ;;
     esac
     eza stop ${i}
