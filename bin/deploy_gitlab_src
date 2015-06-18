@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-015753
+SCRIPTVERSION=150618-015855
 
 DB="gitlabhq_production"
 DBUSER="git"
@@ -179,7 +179,6 @@ sudo -u git -H bundle exec rake gitlab:shell:install[v2.4.1] REDIS_URL=unix:/usr
 
 
 # 8 Initialise Database
-# TODO change password
 sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=${ROOTPASS}
 
 
