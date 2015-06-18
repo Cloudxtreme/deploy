@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-192004
+SCRIPTVERSION=150618-192113
 
 GOOD="
 proxy
@@ -37,7 +37,7 @@ JAILNAMES="${GOOD} ${BAD} ${DEV}"
 eza stop
 
 for i in ${JAILNAMES} ; do
-    if zfs list tank/ezjail/${i}@10.1-RELEASE-p12 2>/dev/null ; then
+    if zfs list -H tank/ezjail/${i}@10.1-RELEASE-p12 2>/dev/null ; then
         zfs rollback tank/ezjail/${i}@10.1-RELEASE-p12
     fi
 done
