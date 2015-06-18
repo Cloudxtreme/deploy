@@ -5,10 +5,15 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-013505
+SCRIPTVERSION=150618-191538
 
 ROOTUSER="root"
 ROOTPASS="password"
+
+if [ "x" == "x${FQDN}" ]; then
+    echo "Please set or export variable FQDN"
+    exit 1
+fi
 
 pkg install -y net-im/ejabberd
 
@@ -36,7 +41,8 @@ if [ ! -f /usr/local/etc/ejabberd/ejabberd.yml ]; then
         cat /usr/local/etc/ejabberd/ejabberd.yml.example \
             | sed 's/## certfile: "\/path\/to\/ssl.pem"/certfile: "\/usr\/local\/etc\/ejabberd\/ssl.pem"/' \
             | sed 's/## starttls_required: true/starttls_required: true/' \
-            | sed "s/## admin:/admin:<    user:<      - \"admin\": \"localhost\"/" \
+            | sed "s/## admin:/admin:<    user:<      - \"${ROOTUSER}\": \"localhost\"/" \
+            | sed "s/^hosts:/hosts:<  - \"${FQDN}\"/" \
             | tr '<' '\n' \
             >${EJYML}
     fi
@@ -49,10 +55,9 @@ service ejabberd start
 count=0
 while ! service ejabberd status ; do
     count=$(( count + 1 ))
-    sleep 2
+    sleep 5
     if [ ${count} -gt 10 ]; then
         echo "ERROR: failed to start ejabberd."
-        exit 1
     fi
 done
 
