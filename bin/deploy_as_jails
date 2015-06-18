@@ -5,14 +5,23 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-015952
+SCRIPTVERSION=150618-093153
 
-FQDN="johnko.ca"
-NIC="lo1"
-REALNIC=`netstat -nr | grep default | awk '{print $NF}'`
-IPNET="10.7.7."
-count=0
-JAILNAMES="
+if [ "x" == "x${FQDN}" ]; then
+    echo "Please set or export variable FQDN"
+    exit 1
+fi
+
+if [ "x" == "x${NIC}" ]; then
+    NIC="lo1"
+    REALNIC=`netstat -nr | grep default | awk '{print $NF}'`
+fi
+
+if [ "x" == "x${IPNET}" ]; then
+    IPNET="10.7.7."
+fi
+
+GOOD="
 proxy
 couch
 owncloud
@@ -23,10 +32,41 @@ vnc
 gitlab
 "
 
+BAD="
+baikal
+couchdtfc
+horde
+"
+
+DEV="
+echoplexus
+gitannex
+gogs
+phabricator
+pydio
+"
+
+case ${1} in
+    good)
+        JAILNAMES="${GOOD}"
+        ;;
+    bad)
+        JAILNAMES="${BAD}"
+        ;;
+    dev)
+        JAILNAMES="${DEV}"
+        ;;
+    *)
+        echo "ERROR: $0 [good|bad|dev]"
+        exit 1
+        ;;
+esac
+
 allowsysvipc() {
     echo "export jail_${1}_parameters=\"allow.sysvipc=1\"" >>/usr/local/etc/ezjail/${1}
 }
 
+count=0
 for i in ${JAILNAMES} ; do
     count=$((count+1))
     if [ ! -e /usr/jails/${i} ]; then
@@ -37,7 +77,9 @@ for i in ${JAILNAMES} ; do
     else
         eza console -f -e "fres" ${i}
     fi
+    # The following case can be in any order
     case ${i} in
+        # GOOD JAILNAMES
         proxy)
             eza console -f -e "deploy nginx" ${i}
             ;;
@@ -63,6 +105,32 @@ for i in ${JAILNAMES} ; do
         gitlab)
             allowsysvipc ${i}
             eza console -f -e "env FQDN=${FQDN} deploy ${i}_src" ${i}
+            ;;
+        # BAD JAILNAMES
+        baikal)
+            eza console -f -e "env FQDN=${FQDN} deploy ${i}" ${i}
+            ;;
+        couchdtfc)
+            eza console -f -e "env FQDN=${FQDN} deploy couchdbdtfc" ${i}
+            ;;
+        horde)
+            eza console -f -e "env FQDN=${FQDN} deploy ${i}webmail" ${i}
+            ;;
+        # DEV JAILNAMES
+        echoplexus)
+            eza console -f -e "deploy ${i}" ${i}
+            ;;
+        gitannex)
+            eza console -f -e "deploy ${i}" ${i}
+            ;;
+        gogs)
+            eza console -f -e "deploy ${i}_src" ${i}
+            ;;
+        phabricator)
+            eza console -f -e "deploy ${i}" ${i}
+            ;;
+        pydio)
+            eza console -f -e "deploy ${i}" ${i}
             ;;
     esac
     eza stop ${i}
