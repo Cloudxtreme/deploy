@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150618-014436
+
+NIC="lo1"
+REALNIC=`netstat -nr | grep default | awk '{print $NF}'`
+IPNET="10.7.7."
+count=0
+JAILNAMES="
+proxy
+couch
+owncloud
+dtfc
+ejabberd
+murmur
+vnc
+gitlab
+"
+
+eza stop
+
+for i in ${JAILNAMES} ; do
+    zfs rollback tank/ezjail/${i}@10.1-RELEASE-p12
+done

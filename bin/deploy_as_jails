@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-013505
+SCRIPTVERSION=150618-014436
 
 NIC="lo1"
 REALNIC=`netstat -nr | grep default | awk '{print $NF}'`
@@ -24,11 +24,39 @@ gitlab
 
 for i in ${JAILNAMES} ; do
     count=$((count+1))
-    eza create ${i}        "${NIC}|${IPNET}${count}"
-    eza-unlink-basejail ${i}
-    zfs snap tank/ezjail/${i}@10.1-RELEASE-p12
+    if [ ! -e /usr/jails/${i} ]; then
+        eza create ${i}        "${NIC}|${IPNET}${count}"
+        eza-unlink-basejail ${i}
+        eza stop ${i}
+        zfs snap tank/ezjail/${i}@10.1-RELEASE-p12
+    else
+        eza console -f -e "fres" ${i}
+    fi
+    case in ${i}
+        proxy)
+            eza console -f -e "deploy nginx" ${i}
+            ;;
+        couch)
+            eza console -f -e "env FQDN=johnko.ca deploy ${i}db" ${i}
+            ;;
+        owncloud)
+            eza console -f -e "env FQDN=johnko.ca deploy ${i}" ${i}
+            ;;
+        dtfc)
+            eza console -f -e "env FQDN=johnko.ca deploy ${i}" ${i}
+            ;;
+        ejabberd)
+            eza console -f -e "deploy ${i}" ${i}
+            ;;
+        murmur)
+            eza console -f -e "deploy ${i}" ${i}
+            ;;
+        vnc)
+            eza console -f -e "deploy ${i}" ${i}
+            ;;
+        gitlab)
+            eza console -f -e "env FQDN=johnko.ca deploy ${i}_src" ${i}
+            ;;
+    esac
+    eza stop ${i}
 done
-
-eza stop
-
-eza console -f -e "deploy vnc" vnc
