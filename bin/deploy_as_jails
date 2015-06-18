@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-224622
+SCRIPTVERSION=150618-234557
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -102,10 +102,17 @@ upstream gitlabsources {
     server 10.7.7.8:8080;
 }
 map \$uri \$redirect_uri {
+    ~^/help\$     https://${FQDN}/help/;
     ~^/explore\$  https://${FQDN}/explore/;
+    ~^/snippets\$ https://${FQDN}/snippets/;
+    ~^/s\$        https://${FQDN}/s/;
+    ~^/admin\$    https://${FQDN}/admin/;
+    ~^/projects\$ https://${FQDN}/projects/;
+    ~^/profile\$  https://${FQDN}/profile/;
     ~^/users\$    https://${FQDN}/users/;
+    ~^/u\$        https://${FQDN}/u/;
     ~^/groups\$   https://${FQDN}/groups/;
-    ~^/owncloud\$   https://${FQDN}/owncloud/;
+    ~^/owncloud\$ https://${FQDN}/owncloud/;
     ~^/couch\$    https://${FQDN}/couch/;
     ~^/music\$    https://${FQDN}/music/;
     ~^/wiki\$     https://${FQDN}/wiki/;
@@ -163,13 +170,49 @@ server {
         proxy_pass http://owncloudsources;
     }
 
+
+    location  ~^/help/ {
+        rewrite /help/(.*) /help/\$1 break;
+        include ${proxypass};
+        proxy_pass http://gitlabsources;
+    }
     location  ~^/explore/ {
         rewrite /explore/(.*) /explore/\$1 break;
         include ${proxypass};
         proxy_pass http://gitlabsources;
     }
+    location  ~^/snippets/ {
+        rewrite /snippets/(.*) /snippets/\$1 break;
+        include ${proxypass};
+        proxy_pass http://gitlabsources;
+    }
+    location  ~^/s/ {
+        rewrite /s/(.*) /s/\$1 break;
+        include ${proxypass};
+        proxy_pass http://gitlabsources;
+    }
+    location  ~^/admin/ {
+        rewrite /admin/(.*) /admin/\$1 break;
+        include ${proxypass};
+        proxy_pass http://gitlabsources;
+    }
+    location  ~^/projects/ {
+        rewrite /projects/(.*) /projects/\$1 break;
+        include ${proxypass};
+        proxy_pass http://gitlabsources;
+    }
+    location  ~^/profile/ {
+        rewrite /profile/(.*) /profile/\$1 break;
+        include ${proxypass};
+        proxy_pass http://gitlabsources;
+    }
     location  ~^/users/ {
         rewrite /users/(.*) /users/\$1 break;
+        include ${proxypass};
+        proxy_pass http://gitlabsources;
+    }
+    location  ~^/u/ {
+        rewrite /u/(.*) /u/\$1 break;
         include ${proxypass};
         proxy_pass http://gitlabsources;
     }
