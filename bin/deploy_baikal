@@ -6,7 +6,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150616-030316
+SCRIPTVERSION=150618-013505
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -16,6 +16,11 @@ fi
 pkg install -y baikal \
 lang/php56 \
 nginx
+
+if [ ! -e /usr/local/www/baikal/Specific ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
 
 nginx-config-sites-enabled
 cat /usr/local/etc/nginx/sites-available/example-baikal | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/baikal

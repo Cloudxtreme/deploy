@@ -6,7 +6,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150617-071308
+SCRIPTVERSION=150618-013505
 
 DB="horde"
 DBUSER="horde"
@@ -39,6 +39,10 @@ pecl-pam \
 postgresql93-server \
 apache24
 
+if [ ! -e /usr/local/www/horde/config/conf.php.dist ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
 
 apache-config-freebsd
 pkg install -fy www/mod_php56

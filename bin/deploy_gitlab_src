@@ -5,12 +5,13 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150617-071308
+SCRIPTVERSION=150618-013505
 
 DB="gitlabhq_production"
 DBUSER="git"
 DBPASS="password"
 ROOTPASS="password"
+BRANCH="7-7-stable"
 
 # Based on https://www.b1c1l1.com/blog/2011/05/09/using-utf-8-unicode-on-freebsd/
 # and https://github.com/gitlabhq/gitlab-recipes/blob/master/install/freebsd/freebsd-10.md
@@ -41,6 +42,12 @@ fi
 
 # 2 Dependencies
 pkg install -y sudo bash icu cmake pkgconf git nginx ruby ruby21-gems logrotate redis postgresql94-server postfix krb5
+
+if [ ! -e /usr/local/pgsql/data/pg_hba.conf ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
+
 gem install bundler --no-ri --no-rdoc
 
 if sysctl security.jail.jailed | grep 0 >/dev/null ; then
@@ -101,7 +108,7 @@ service redis start
 
 # 6 gitlab
 cd /usr/home/git
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-7-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b ${BRANCH} gitlab
 cd /usr/home/git/gitlab
 sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
 #The option host: should be set to your domain, e.g. "gitlab.mysite.com".

@@ -5,9 +5,14 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150608-064125
+SCRIPTVERSION=150618-013505
 
 pkg install -y nginx
+
+if [ ! -e /usr/local/etc/nginx/nginx.conf-dist ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
 
 nginx-config-sites-enabled
 

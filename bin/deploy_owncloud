@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150617-071308
+SCRIPTVERSION=150618-013505
 
 DB="owncloud"
 DBUSER="owncloud"
@@ -30,6 +30,11 @@ php56-pdo_pgsql \
 php56-pgsql \
 postgresql93-server \
 apache24
+
+if [ ! -e /usr/local/pgsql/data/pg_hba.conf ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
 
 apache-config-freebsd
 pkg install -fy www/mod_php56

@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150616-030130
+SCRIPTVERSION=150618-013505
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN" 2>&1
@@ -13,6 +13,11 @@ if [ "x" == "x${FQDN}" ]; then
 fi
 
 pkg install -y couchdb nginx
+
+if [ ! -e /usr/local/etc/rc.d/couchdb ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
 
 nginx-config-sites-enabled
 cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/dtfc

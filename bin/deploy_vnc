@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150616-224131
+SCRIPTVERSION=150618-013505
 
 pkg install -y x11/xorg x11-wm/xfce4-wm \
 Thunar xfce4-tumbler \
@@ -13,6 +13,11 @@ www/epiphany \
 net/tightvnc
 #x11-wm/openbox
 #www/midori
+
+if [ ! -e /usr/local/bin/vncserver ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
 
 mkdir ~/.vnc
 

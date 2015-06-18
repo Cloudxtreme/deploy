@@ -5,12 +5,18 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150617-071308
+SCRIPTVERSION=150618-013505
 
 ROOTUSER="root"
 ROOTPASS="password"
 
 pkg install -y net-im/ejabberd
+
+if [ ! -e /usr/local/etc/ejabberd/ejabberd.yml.example ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
+
 
 if [ ! -f /usr/local/etc/ejabberd/ejabberd.yml ]; then
     if [ -f /usr/local/etc/ejabberd/ejabberd.yml.example ]; then
