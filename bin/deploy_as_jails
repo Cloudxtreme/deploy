@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-191720
+SCRIPTVERSION=150618-192302
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -63,7 +63,9 @@ case ${1} in
 esac
 
 allowsysvipc() {
-    echo "export jail_${1}_parameters=\"allow.sysvipc=1\"" >>/usr/local/etc/ezjail/${1}
+    if ! grep 'allow.sysvipc=1' /usr/local/etc/ezjail/${1} >/dev/null ; then
+        echo "export jail_${1}_parameters=\"allow.sysvipc=1\"" >>/usr/local/etc/ezjail/${1}
+    fi
 }
 
 count=0
