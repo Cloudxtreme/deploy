@@ -5,13 +5,9 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-014436
+SCRIPTVERSION=150618-192004
 
-NIC="lo1"
-REALNIC=`netstat -nr | grep default | awk '{print $NF}'`
-IPNET="10.7.7."
-count=0
-JAILNAMES="
+GOOD="
 proxy
 couch
 owncloud
@@ -22,8 +18,26 @@ vnc
 gitlab
 "
 
+BAD="
+baikal
+couchdtfc
+horde
+"
+
+DEV="
+echoplexus
+gitannex
+gogs
+phabricator
+pydio
+"
+
+JAILNAMES="${GOOD} ${BAD} ${DEV}"
+
 eza stop
 
 for i in ${JAILNAMES} ; do
-    zfs rollback tank/ezjail/${i}@10.1-RELEASE-p12
+    if zfs list tank/ezjail/${i}@10.1-RELEASE-p12 2>/dev/null ; then
+        zfs rollback tank/ezjail/${i}@10.1-RELEASE-p12
+    fi
 done
