@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-191538
+SCRIPTVERSION=150618-211349
 
 ROOTUSER="root"
 ROOTPASS="password"
@@ -52,12 +52,11 @@ sysrc ejabberd_enable="YES"
 
 service ejabberd start
 
-count=0
-while ! service ejabberd status ; do
-    count=$(( count + 1 ))
-    sleep 5
-    if [ ${count} -gt 10 ]; then
+for i in `seq 1 10` ; do
+    if ! service ejabberd status ; then
         echo "ERROR: failed to start ejabberd."
+        sleep 5
+        service ejabberd start
     fi
 done
 
