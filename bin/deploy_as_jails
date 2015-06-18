@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-093153
+SCRIPTVERSION=150618-190818
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -76,6 +76,8 @@ for i in ${JAILNAMES} ; do
         zfs snap tank/ezjail/${i}@10.1-RELEASE-p12
     else
         eza console -f -e "fres" ${i}
+        eza console -f -e "pkg update" ${i}
+        eza console -f -e "pkg upgrade -y" ${i}
     fi
     # The following case can be in any order
     case ${i} in
