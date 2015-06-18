@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-190818
+SCRIPTVERSION=150618-191607
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -96,7 +96,7 @@ for i in ${JAILNAMES} ; do
             eza console -f -e "env FQDN=${FQDN} deploy ${i}" ${i}
             ;;
         ejabberd)
-            eza console -f -e "deploy ${i}" ${i}
+            eza console -f -e "env FQDN=${FQDN} deploy ${i}" ${i}
             ;;
         murmur)
             eza console -f -e "deploy ${i}" ${i}
