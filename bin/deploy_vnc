@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-013505
+SCRIPTVERSION=150618-090257
 
 pkg install -y x11/xorg x11-wm/xfce4-wm \
 Thunar xfce4-tumbler \
@@ -93,8 +93,16 @@ sysrc dbus_enable="YES"
 
 service dbus start
 
+cat >~/.vnc/passwd.b64 <<EOF
+29g8/XJ6FFg=
+EOF
+chmod 400 ~/.vnc/passwd.b64
+cat ~/.vnc/passwd.b64 | openssl enc -d -base64 >~/.vnc/passwd
+chmod 400 ~/.vnc/passwd
+
 vncserver -depth 24 -geometry 1280x800 -nolisten tcp :1
 
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
 echo "Connect with ssh -L 5901:${JAILIP}:5901 you@your-server-ip"
+echo "Then connect with password to vnc://localhost:5901"
