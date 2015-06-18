@@ -29,7 +29,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150606-083608
+SCRIPTVERSION=150618-093416
 
 
 BINDIR=${HOME}/bin
@@ -53,7 +53,7 @@ if [ "x" == "x${1}" ]; then
     usage
 else
     if [ -e ${BINDIR}/deploy_${1} ]; then
-        sh ${BINDIR}/deploy_${1}
+        sh ${BINDIR}/deploy_${1} ${2}
         exit $?
     else
         usage
