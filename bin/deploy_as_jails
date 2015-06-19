@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-020607
+SCRIPTVERSION=150619-020655
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -14,7 +14,7 @@ fi
 
 if [ "x" == "x${NIC}" ]; then
     NIC="lo1"
-    if ! ifconfig ${NIC} ; then
+    if ! ifconfig ${NIC} >/dev/null ; then
         ifconfig ${NIC} create
     fi
 fi
