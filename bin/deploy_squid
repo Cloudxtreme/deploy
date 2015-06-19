@@ -5,9 +5,28 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-125259
+SCRIPTVERSION=150619-131504
 
+# install squid and dependencies
 pkg install -y www/squid
+# remove squid because we want custom options
+pkg remove -y www/squid
+# use portsnap
+psnap
+
+# we want LAX_HTTP=on
+if [ ! -e /usr/ports/www/squid/Makefile.orig ]; then
+    cp /usr/ports/www/squid/Makefile /usr/ports/www/squid/Makefile.orig
+fi
+cat /usr/ports/www/squid/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP ;' >/usr/ports/www/squid/Makefile
+
+cd /usr/ports/www/squid
+make && make install
+
+if ! which squid ; then
+    echo "Failed to build squid."
+    exit 1
+fi 
 
 # Thanks to @tomster via https://github.com/freebsd/pkg/issues/1181
 cat >/usr/local/etc/squid/squid.conf <<EOF
