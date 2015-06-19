@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-124029
+SCRIPTVERSION=150619-125259
 
 pkg install -y www/squid
 
@@ -60,6 +60,8 @@ refresh_pattern .       0   20% 4320
 
 maximum_object_size_in_memory 32 KB
 maximum_object_size 2000 MB
+
+visible_hostname squid
 EOF
 
 sysrc squid_enable="YES"
