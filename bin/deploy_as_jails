@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-004424
+SCRIPTVERSION=150619-004925
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -163,7 +163,7 @@ case ${1} in
         exit
         ;;
     *)
-        echo "ERROR: $0 [good|bad|dev]"
+        echo "ERROR: $0 [good|bad|dev|proxy]"
         exit 1
         ;;
 esac
