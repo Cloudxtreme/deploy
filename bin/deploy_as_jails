@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-065816
+SCRIPTVERSION=150619-082830
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -214,6 +214,8 @@ for i in ${JAILNAMES} ; do
         # GOOD JAILNAMES
         squid)
             eza console -f -e "deploy ${i}" ${i}
+            # easydns-client here to reduce risk of lost/rollbacked config
+            eza console -f -e "deploy easydnsclient" ${i}
         nginx)
             setupnginxconfig ${i} ${FQDN}
             eza console -f -e "deploy ${i}" ${i}
