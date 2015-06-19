@@ -44,8 +44,8 @@ http_access deny all
 
 http_port 3128
 
-coredump_dir /var/squid/logs
 cache_dir ufs /var/squid/cache 100000 16 256
+coredump_dir /var/squid/logs
 
 # match against download urls for specific packages - their content never changes for the same url, so we cache aggressively
 refresh_pattern -i (quarterly|latest)\/All\/.*(\.txz) 1440 100% 1051200 ignore-private ignore-must-revalidate override-expire ignore-no-cache
