@@ -5,24 +5,28 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-132654
+SCRIPTVERSION=150619-132958
 
-# install squid and dependencies
-pkg install -y www/squid
-# remove squid because we want custom options
-pkg remove -y www/squid
-# use portsnap
-psnap
+if [ -e /var/ports/packages/All/squid-3.5.5.txz ]; then
+    pkg add /var/ports/packages/All/squid-3.5.5.txz
+else
+    # install squid and dependencies
+    pkg install -y www/squid
+    # remove squid because we want custom options
+    pkg remove -y www/squid
+    # use portsnap
+    psnap
 
-# we want LAX_HTTP=on
-if [ ! -e /usr/ports/www/squid/Makefile.orig ]; then
-    cp /usr/ports/www/squid/Makefile /usr/ports/www/squid/Makefile.orig
+    # we want LAX_HTTP=on
+    if [ ! -e /usr/ports/www/squid/Makefile.orig ]; then
+        cp /usr/ports/www/squid/Makefile /usr/ports/www/squid/Makefile.orig
+    fi
+    cat /usr/ports/www/squid/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP ;' >/usr/ports/www/squid/Makefile
+
+    cd /usr/ports/www/squid
+    make && make install && make package
+    # /var/ports/packages/All/squid-3.5.5.txz
 fi
-cat /usr/ports/www/squid/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP ;' >/usr/ports/www/squid/Makefile
-
-cd /usr/ports/www/squid
-make && make install && make package
-# /var/ports/packages/All/squid-3.5.5.txz
 
 if ! which squid ; then
     echo "Failed to build squid."
