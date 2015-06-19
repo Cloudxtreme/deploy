@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-105434
+SCRIPTVERSION=150619-134046
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -213,6 +213,9 @@ for i in ${JAILNAMES} ; do
     case ${i} in
         # GOOD JAILNAMES
         squid)
+            if [ -e /var/ports/packages/All/squid-3.5.5.txz ]; then
+                rsync -viaP /var/ports/ /usr/jails/${i}/var/ports/
+            fi
             eza console -f -e "deploy ${i}" ${i}
             # easydns-client here to reduce risk of lost/rollbacked config
             eza console -f -e "deploy easydnsclient" ${i}
