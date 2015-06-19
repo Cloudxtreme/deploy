@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-004925
+SCRIPTVERSION=150619-005122
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -125,13 +125,13 @@ EOF
             done
             for g in ${gitlabpaths} ; do
                 cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
-            location  ~^/${c}/ {
-                rewrite /${c}/(.*) /${c}/\$1 break;
+            location  ~^/${g}/ {
+                rewrite /${g}/(.*) /${g}/\$1 break;
                 include ${proxypass};
                 proxy_pass http://gitlabsources;
             }
-            location  ~^/${c}\$ {
-                rewrite /${c} /${c} break;
+            location  ~^/${g}\$ {
+                rewrite /${g} /${g} break;
                 include ${proxypass};
                 proxy_pass http://gitlabsources;
             }
