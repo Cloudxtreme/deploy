@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150619-080837
+
+pkg install -y p5-Crypt-SSLeay p5-DNS-EasyDNS
+
+cat >~/bin/easydns-client <<EOF
+#!/bin/sh
+perl /usr/local/share/examples/DNS-EasyDNS/easydns-simple \$*
+EOF
+chmod 755 ~/bin/easydns-client
+
+echo
+echo "Usage: easydns-client username password hostname"
+echo "crontabbed: 0 * * * * easydns-client username password hostname"
