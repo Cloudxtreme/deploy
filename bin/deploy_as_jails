@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-005726
+SCRIPTVERSION=150619-005957
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -103,7 +103,7 @@ EOF
             location  ~^/owncloud/ {
                 rewrite /owncloud/(.*) /owncloud/\$1 break;
                 include ${proxypass};
-                proxy_pass http://owncloudsources;
+                proxy_pass https://owncloudsources;
             }
             location / {
                 try_files \$uri \$uri/ @redirect-map;
