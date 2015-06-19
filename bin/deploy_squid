@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-131504
+SCRIPTVERSION=150619-132654
 
 # install squid and dependencies
 pkg install -y www/squid
@@ -21,7 +21,8 @@ fi
 cat /usr/ports/www/squid/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP ;' >/usr/ports/www/squid/Makefile
 
 cd /usr/ports/www/squid
-make && make install
+make && make install && make package
+# /var/ports/packages/All/squid-3.5.5.txz
 
 if ! which squid ; then
     echo "Failed to build squid."
