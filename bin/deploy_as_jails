@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-005122
+SCRIPTVERSION=150619-005726
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -50,7 +50,7 @@ setupnginxconfig() {
     local i=${1}
     local FQDN=${2}
     couchdatabases="movies music wiki"
-    gitlabpaths="admin assets explore groups help profile projects s snippets u users"
+    gitlabpaths="admin assets dashboard explore groups help profile projects s snippets u users"
     tlsconf="/usr/local/etc/nginx/tls.conf"
     proxypass="/usr/local/etc/nginx/proxypass.conf"
     cat >/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
@@ -138,12 +138,12 @@ EOF
 EOF
             done
             cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
-            #letfover double slashes or more to gitlab
-            #location  ~^/(.*)/(.*) {
-            #    rewrite /(.*)/(.*) /\$1/\$2 break;
-            #    include ${proxypass};
-            #    proxy_pass http://gitlabsources;
-            #}
+            #letfover slashes or more to gitlab
+            location  ~^/(.*)/(.*) {
+                rewrite /(.*)/(.*) /\$1/\$2 break;
+                include ${proxypass};
+                proxy_pass http://gitlabsources;
+            }
         }
 EOF
 }
