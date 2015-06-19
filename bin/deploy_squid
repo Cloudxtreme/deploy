@@ -1,0 +1,72 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150619-065816
+
+pkg install -y www/squid
+
+# Thanks to @tomster via https://github.com/freebsd/pkg/issues/1181
+cat >/usr/local/etc/squid/squid.conf <<EOF
+acl localnet src 10.0.0.0/8	# RFC1918 possible internal network
+acl localnet src 172.16.0.0/12	# RFC1918 possible internal network
+acl localnet src 192.168.0.0/16	# RFC1918 possible internal network
+acl localnet src fc00::/7       # RFC 4193 local private network range
+acl localnet src fe80::/10      # RFC 4291 link-local (directly plugged) machines
+
+acl SSL_ports port 443
+acl Safe_ports port 80		# http
+acl Safe_ports port 21		# ftp
+acl Safe_ports port 443		# https
+acl Safe_ports port 70		# gopher
+acl Safe_ports port 210		# wais
+acl Safe_ports port 1025-65535	# unregistered ports
+acl Safe_ports port 280		# http-mgmt
+acl Safe_ports port 488		# gss-http
+acl Safe_ports port 591		# filemaker
+acl Safe_ports port 777		# multiling http
+acl CONNECT method CONNECT
+
+http_access deny !Safe_ports
+
+http_access deny CONNECT !SSL_ports
+
+http_access allow localhost manager
+http_access deny manager
+
+http_access allow localnet
+http_access allow localhost
+
+http_access deny all
+
+http_port 3128
+
+coredump_dir /var/squid/cache
+
+# match against download urls for specific packages - their content never changes for the same url, so we cache aggressively
+refresh_pattern -i (quarterly|latest)\/All\/.*(\.txz) 1440 100% 1051200 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+
+# match against meta-information - this shouldn't be cached quite so aggressively
+refresh_pattern -i (quarterly|latest)\/.*(\.txz) 1440 100% 40080 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+
+refresh_pattern ^ftp:       1440    20% 1051200
+refresh_pattern ^gopher:    1440    0%  1440
+refresh_pattern -i (/cgi-bin/|\?) 0 0%  0
+refresh_pattern .       0   20% 4320
+
+maximum_object_size_in_memory 32 KB
+maximum_object_size 2000 MB
+EOF
+
+sysrc squid_enable="YES"
+
+squid -z
+
+service squid start
+
+echo
+JAILIP=`ifconfig | grep inet | awk '{print $2}'`
+echo "Squid is setup, eza-unlink-basejail will setup PKG_ENV to 10.7.7.1:3128"

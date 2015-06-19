@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-020655
+SCRIPTVERSION=150619-065816
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -32,10 +32,11 @@ if [ "x" == "x${REALNIC}" ]; then
 fi
 
 GOOD="
-proxy
+squid
+nginx
 couch
-owncloud
 dtfc
+owncloud
 ejabberd
 murmur
 vnc
@@ -58,11 +59,11 @@ pydio
 
 cat >/etc/pf/jails.anchor <<EOF
 nat pass on ${REALNIC} inet from 10.7.7.0/24 to any -> ${IP}
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 80 -> 10.7.7.1
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 443 -> 10.7.7.1
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 5222 -> 10.7.7.5
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 64738 -> 10.7.7.6
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 23 -> 10.7.7.8
+rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 80 -> 10.7.7.2
+rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 443 -> 10.7.7.2
+rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 5222 -> 10.7.7.6
+rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 64738 -> 10.7.7.7
+rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 23 -> 10.7.7.9
 EOF
 pf-anchor clear jails
 pf-anchor load jails
@@ -77,16 +78,16 @@ setupnginxconfig() {
     cat >/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
         client_max_body_size 0;
         upstream couchsources {
-            server 10.7.7.2:5984;
+            server 10.7.7.3:5984;
         }
         upstream dtfcsources {
             server 10.7.7.4:8080;
         }
         upstream owncloudsources {
-            server 10.7.7.3:443;
+            server 10.7.7.5:443;
         }
         upstream gitlabsources {
-            server 10.7.7.8:8080;
+            server 10.7.7.9:8080;
         }
         map \$uri \$redirect_uri {
             ~^/owncloud\$ https://${FQDN}/owncloud/;
@@ -179,12 +180,12 @@ case ${1} in
     dev)
         JAILNAMES="${DEV}"
         ;;
-    proxy)
-        setupnginxconfig proxy ${FQDN}
+    nginx)
+        setupnginxconfig nginx ${FQDN}
         exit
         ;;
     *)
-        echo "ERROR: $0 [good|bad|dev|proxy]"
+        echo "ERROR: $0 [good|bad|dev|nginx]"
         exit 1
         ;;
 esac
@@ -211,9 +212,11 @@ for i in ${JAILNAMES} ; do
     # The following case can be in any order
     case ${i} in
         # GOOD JAILNAMES
-        proxy)
+        squid)
+            eza console -f -e "deploy ${i}" ${i}
+        nginx)
             setupnginxconfig ${i} ${FQDN}
-            eza console -f -e "deploy nginx" ${i}
+            eza console -f -e "deploy ${i}" ${i}
             ;;
         couch)
             eza console -f -e "env FQDN=${FQDN} deploy ${i}db" ${i}
@@ -266,5 +269,7 @@ for i in ${JAILNAMES} ; do
             eza console -f -e "deploy ${i}" ${i}
             ;;
     esac
-    eza stop ${i}
+    if [ "xsquid" != "x${i}" ]; then
+        eza stop ${i}
+    fi
 done
