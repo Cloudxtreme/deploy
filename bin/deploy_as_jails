@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-234557
+SCRIPTVERSION=150619-004424
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -46,6 +46,108 @@ phabricator
 pydio
 "
 
+setupnginxconfig() {
+    local i=${1}
+    local FQDN=${2}
+    couchdatabases="movies music wiki"
+    gitlabpaths="admin assets explore groups help profile projects s snippets u users"
+    tlsconf="/usr/local/etc/nginx/tls.conf"
+    proxypass="/usr/local/etc/nginx/proxypass.conf"
+    cat >/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+        client_max_body_size 0;
+        upstream couchsources {
+            server 10.7.7.2:5984;
+        }
+        upstream dtfcsources {
+            server 10.7.7.4:8080;
+        }
+        upstream owncloudsources {
+            server 10.7.7.3:443;
+        }
+        upstream gitlabsources {
+            server 10.7.7.8:8080;
+        }
+        map \$uri \$redirect_uri {
+            ~^/owncloud\$ https://${FQDN}/owncloud/;
+            ~^/couch\$    https://${FQDN}/couch/;
+EOF
+        for c in ${couchdatabases} ; do
+            cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+            ~^/${c}\$   https://${FQDN}/${c}/;
+EOF
+        done
+        cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+            ~^/\$         https://${FQDN}/wiki/;
+        }
+        server {
+            listen 443 ssl;
+            server_name ${FQDN};
+            ssl_certificate ssl/ssl.crt;
+            ssl_certificate_key ssl/ssl.key;
+            include ${tlsconf};
+            location ~^/(_session|_replicate|_users) {
+                rewrite  /(.*) /\$1 break;
+                include ${proxypass};
+                proxy_pass http://couchsources;
+            }
+            location ~^/couch/ {
+                rewrite  /couch/(.*) /\$1 break;
+                include ${proxypass};
+                proxy_pass http://couchsources;
+            }
+            location  ~^/dtfc/ {
+                rewrite /dtfc/(.*) /\$1 break;
+                include ${proxypass};
+                proxy_pass http://dtfcsources;
+            }
+            location  ~^/owncloud/ {
+                rewrite /owncloud/(.*) /owncloud/\$1 break;
+                include ${proxypass};
+                proxy_pass http://owncloudsources;
+            }
+            location / {
+                try_files \$uri \$uri/ @redirect-map;
+            }
+            location @redirect-map {
+                if (\$redirect_uri) {
+                    return 302 \$redirect_uri;
+                }
+            }
+EOF
+            for c in ${couchdatabases} ; do
+                cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+            location  ~^/${c}/ {
+                rewrite /${c}/(.*) /${c}/_design/${c}/_rewrite/\$1 break;
+                include ${proxypass};
+                proxy_pass http://couchsources;
+            }
+EOF
+            done
+            for g in ${gitlabpaths} ; do
+                cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+            location  ~^/${c}/ {
+                rewrite /${c}/(.*) /${c}/\$1 break;
+                include ${proxypass};
+                proxy_pass http://gitlabsources;
+            }
+            location  ~^/${c}\$ {
+                rewrite /${c} /${c} break;
+                include ${proxypass};
+                proxy_pass http://gitlabsources;
+            }
+EOF
+            done
+            cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+            #letfover double slashes or more to gitlab
+            #location  ~^/(.*)/(.*) {
+            #    rewrite /(.*)/(.*) /\$1/\$2 break;
+            #    include ${proxypass};
+            #    proxy_pass http://gitlabsources;
+            #}
+        }
+EOF
+}
+
 case ${1} in
     good)
         JAILNAMES="${GOOD}"
@@ -55,6 +157,10 @@ case ${1} in
         ;;
     dev)
         JAILNAMES="${DEV}"
+        ;;
+    proxy)
+        setupnginxconfig proxy ${FQDN}
+        exit
         ;;
     *)
         echo "ERROR: $0 [good|bad|dev]"
@@ -85,149 +191,7 @@ for i in ${JAILNAMES} ; do
     case ${i} in
         # GOOD JAILNAMES
         proxy)
-            tlsconf="/usr/local/etc/nginx/tls.conf"
-            proxypass="/usr/local/etc/nginx/proxypass.conf"
-            cat >/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
-client_max_body_size 0;
-upstream couchsources {
-    server 10.7.7.2:5984;
-}
-upstream dtfcsources {
-    server 10.7.7.4:8080;
-}
-upstream owncloudsources {
-    server 10.7.7.3:443;
-}
-upstream gitlabsources {
-    server 10.7.7.8:8080;
-}
-map \$uri \$redirect_uri {
-    ~^/help\$     https://${FQDN}/help/;
-    ~^/explore\$  https://${FQDN}/explore/;
-    ~^/snippets\$ https://${FQDN}/snippets/;
-    ~^/s\$        https://${FQDN}/s/;
-    ~^/admin\$    https://${FQDN}/admin/;
-    ~^/projects\$ https://${FQDN}/projects/;
-    ~^/profile\$  https://${FQDN}/profile/;
-    ~^/users\$    https://${FQDN}/users/;
-    ~^/u\$        https://${FQDN}/u/;
-    ~^/groups\$   https://${FQDN}/groups/;
-    ~^/owncloud\$ https://${FQDN}/owncloud/;
-    ~^/couch\$    https://${FQDN}/couch/;
-    ~^/music\$    https://${FQDN}/music/;
-    ~^/wiki\$     https://${FQDN}/wiki/;
-    ~^/\$         https://${FQDN}/wiki/;
-}
-server {
-    listen 443 ssl;
-    server_name ${FQDN};
-    ssl_certificate ssl/ssl.crt;
-    ssl_certificate_key ssl/ssl.key;
-    include ${tlsconf};
-    location ~^/(_session|_replicate|_users) {
-        rewrite  /(.*) /\$1 break;
-        include ${proxypass};
-        proxy_pass http://couchsources;
-    }
-    location ~^/couch/ {
-        rewrite  /couch/(.*) /\$1 break;
-        include ${proxypass};
-        proxy_pass http://couchsources;
-    }
-    location / {
-        try_files \$uri \$uri/ @redirect-map;
-    }
-    location @redirect-map {
-        if (\$redirect_uri) {
-            return 302 \$redirect_uri;
-        }
-    }
-    location  ~^/movies/ {
-        rewrite /movies/(.*) /movies/_design/movies/_rewrite/\$1 break;
-        include ${proxypass};
-        proxy_pass http://couchsources;
-    }
-    location  ~^/music/ {
-        rewrite /music/(.*) /music/_design/music/_rewrite/\$1 break;
-        include ${proxypass};
-        proxy_pass http://couchsources;
-    }
-    location  ~^/wiki/ {
-        rewrite /wiki/(.*) /wiki/_design/wiki/_rewrite/\$1 break;
-        include ${proxypass};
-        proxy_pass http://couchsources;
-    }
-
-    location  ~^/dtfc/ {
-        rewrite /dtfc/(.*) /\$1 break;
-        include ${proxypass};
-        proxy_pass http://dtfcsources;
-    }
-
-    location  ~^/owncloud/ {
-        rewrite /owncloud/(.*) /owncloud/\$1 break;
-        include ${proxypass};
-        proxy_pass http://owncloudsources;
-    }
-
-
-    location  ~^/help/ {
-        rewrite /help/(.*) /help/\$1 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-    location  ~^/explore/ {
-        rewrite /explore/(.*) /explore/\$1 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-    location  ~^/snippets/ {
-        rewrite /snippets/(.*) /snippets/\$1 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-    location  ~^/s/ {
-        rewrite /s/(.*) /s/\$1 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-    location  ~^/admin/ {
-        rewrite /admin/(.*) /admin/\$1 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-    location  ~^/projects/ {
-        rewrite /projects/(.*) /projects/\$1 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-    location  ~^/profile/ {
-        rewrite /profile/(.*) /profile/\$1 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-    location  ~^/users/ {
-        rewrite /users/(.*) /users/\$1 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-    location  ~^/u/ {
-        rewrite /u/(.*) /u/\$1 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-    location  ~^/groups/ {
-        rewrite /groups/(.*) /groups/\$1 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-    location  ~^/(.*)/(.*) {
-        rewrite /(.*)/(.*) /\$1/\$2 break;
-        include ${proxypass};
-        proxy_pass http://gitlabsources;
-    }
-}
-EOF
+            setupnginxconfig ${i} ${FQDN}
             eza console -f -e "deploy nginx" ${i}
             ;;
         couch)
