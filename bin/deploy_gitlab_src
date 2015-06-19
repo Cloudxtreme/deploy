@@ -1,11 +1,11 @@
 #!/bin/sh
 
-# TODO: THIS IS A WORK IN PROGRESS
+# READY, kinda
 
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-190537
+SCRIPTVERSION=150619-162110
 
 DB="gitlabhq_production"
 DBUSER="git"
@@ -227,6 +227,26 @@ service sshd start
 # Other services: MAIL
 #service postfix start
 
+cat >/usr/local/etc/rc.d/gitlabwrapper <<EOF
+#!/bin/sh
+# PROVIDE: gitlab
+# REQUIRE: postgres
+. /etc/rc.subr
+name="gitlab"
+start_cmd="local_start"
+stop_cmd="local_stop"
+local_start()
+{
+    /usr/local/etc/rc.d/gitlab start
+}
+local_stop()
+{
+    /usr/local/etc/rc.d/gitlab stop
+}
+load_rc_config \$name
+run_rc_command "\$1"
+EOF
+chmod +x /usr/local/etc/rc.d/gitlabwrapper
 
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
