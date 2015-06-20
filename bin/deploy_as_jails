@@ -13,7 +13,7 @@ if [ "x" == "x${FQDN}" ]; then
 fi
 
 if [ "x" == "x${SQUID}" ]; then
-    echo "Please set or export variable SQUID to a LAN IP. Default is 10.7.7.1"
+    echo "Please set or export variable SQUID to a LAN IP. Default is 10.7.7.1:3128"
     exit 1
 fi
 
@@ -213,7 +213,7 @@ for i in ${JAILNAMES} ; do
     count=$((count+1))
     if [ ! -e /usr/jails/${i} ]; then
         eza create ${i}        "${NIC}|${IPNET}${count}"
-        env SQUID=${SQUID} eza-unlink-basejail ${i}
+        env SQUID="${SQUID}" eza-unlink-basejail ${i}
         eza stop ${i}
         zfs snap tank/ezjail/${i}@10.1-RELEASE-p12
     else
