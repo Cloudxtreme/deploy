@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150620-055345
+SCRIPTVERSION=150620-060000
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -34,6 +34,15 @@ fi
 
 if [ "x" == "x${REALNIC}" ]; then
     REALNIC=`netstat -nr | grep default | awk '{print $NF}'`
+fi
+
+if ! zfs list tank >/dev/null ; then
+    fzg -i
+fi
+
+if ! zfs list tank/ezjail >/dev/null ; then
+    eza install -h file:///boot/../10.1-RELEASE
+    eza-update
 fi
 
 GOOD="
@@ -225,6 +234,9 @@ for i in ${JAILNAMES} ; do
     case ${i} in
         # GOOD JAILNAMES
         squid)
+            if [ -e /var/ports/packages/All/squid-3.5.5.txz ]; then
+                rsync -viaP /var/ports/ /usr/jails/${i}/var/ports/
+            fi
             eza console -f -e "deploy ${i}" ${i}
             # easydns-client here to reduce risk of lost/rollbacked config
             eza console -f -e "deploy easydnsclient" ${i}

@@ -5,9 +5,33 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-065816
+SCRIPTVERSION=150619-134746
 
-pkg install -y www/squid
+if [ -e /var/ports/packages/All/squid-3.5.5.txz ]; then
+    pkg add /var/ports/packages/All/squid-3.5.5.txz
+else
+    # install squid and dependencies
+    pkg install -y www/squid
+    # remove squid because we want custom options
+    pkg remove -y www/squid
+    # use portsnap
+    psnap
+
+    # we want LAX_HTTP=on
+    if [ ! -e /usr/ports/www/squid/Makefile.orig ]; then
+        cp /usr/ports/www/squid/Makefile /usr/ports/www/squid/Makefile.orig
+    fi
+    cat /usr/ports/www/squid/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP ;' >/usr/ports/www/squid/Makefile
+
+    cd /usr/ports/www/squid
+    make && make install && make package && make clean
+    # /var/ports/packages/All/squid-3.5.5.txz
+fi
+
+if ! which squid ; then
+    echo "Failed to build squid."
+    exit 1
+fi 
 
 # Thanks to @tomster via https://github.com/freebsd/pkg/issues/1181
 cat >/usr/local/etc/squid/squid.conf <<EOF
@@ -44,7 +68,8 @@ http_access deny all
 
 http_port 3128
 
-coredump_dir /var/squid/cache
+cache_dir ufs /var/squid/cache 100000 16 256
+coredump_dir /var/squid/logs
 
 # match against download urls for specific packages - their content never changes for the same url, so we cache aggressively
 refresh_pattern -i (quarterly|latest)\/All\/.*(\.txz) 1440 100% 1051200 ignore-private ignore-must-revalidate override-expire ignore-no-cache
@@ -59,6 +84,8 @@ refresh_pattern .       0   20% 4320
 
 maximum_object_size_in_memory 32 KB
 maximum_object_size 2000 MB
+
+visible_hostname squid
 EOF
 
 sysrc squid_enable="YES"
