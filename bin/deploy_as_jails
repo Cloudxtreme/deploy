@@ -5,10 +5,15 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-105434
+SCRIPTVERSION=150620-055345
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
+    exit 1
+fi
+
+if [ "x" == "x${SQUID}" ]; then
+    echo "Please set or export variable SQUID to a LAN IP. Default is 10.7.7.1"
     exit 1
 fi
 
@@ -59,6 +64,7 @@ pydio
 
 cat >/etc/pf/jails.anchor <<EOF
 nat pass on ${REALNIC} inet from 10.7.7.0/24 to any -> ${IP}
+rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 3128 -> 10.7.7.1
 rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 80 -> 10.7.7.2
 rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 443 -> 10.7.7.2
 rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 5222 -> 10.7.7.6
@@ -100,6 +106,12 @@ EOF
         done
         cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
             ~^/\$         https://${FQDN}/wiki/;
+        }
+        server {
+            listen   10.7.7.2:80 default_server;
+            server_name ${FQDN};
+            server_name 10.7.7.2;
+            return 301 https://$host$request_uri;
         }
         server {
             listen 443 ssl;
@@ -201,7 +213,7 @@ for i in ${JAILNAMES} ; do
     count=$((count+1))
     if [ ! -e /usr/jails/${i} ]; then
         eza create ${i}        "${NIC}|${IPNET}${count}"
-        eza-unlink-basejail ${i}
+        env SQUID=${SQUID} eza-unlink-basejail ${i}
         eza stop ${i}
         zfs snap tank/ezjail/${i}@10.1-RELEASE-p12
     else
