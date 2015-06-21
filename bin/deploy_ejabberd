@@ -5,10 +5,13 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-211349
+SCRIPTVERSION=150621-140921
 
 ROOTUSER="root"
 ROOTPASS="password"
+if [ "x" != "x${EJABBERDROOTPASS}" ]; then
+    ROOTPASS=${EJABBERDROOTPASS}
+fi
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"

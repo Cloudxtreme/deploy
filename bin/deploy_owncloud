@@ -5,11 +5,15 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-084740
+SCRIPTVERSION=150621-140921
 
 DB="owncloud"
 DBUSER="owncloud"
 DBPASS="password"
+
+if [ "x" != "x${OWNCLOUDDBPASS}" ]; then
+    DBPASS=${OWNCLOUDDBPASS}
+fi
 
 if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
     if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then

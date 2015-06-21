@@ -5,13 +5,23 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-162110
+SCRIPTVERSION=150621-140921
 
 DB="gitlabhq_production"
 DBUSER="git"
 DBPASS="password"
 ROOTPASS="password"
 BRANCH="7-8-stable"
+
+if [ "x" != "x${GITLABROOTPASS}" ]; then
+    ROOTPASS=${GITLABROOTPASS}
+fi
+if [ "x" != "x${GITLABDBPASS}" ]; then
+    DBPASS=${GITLABDBPASS}
+fi
+if [ "x" != "x${GITLABBRANCH}" ]; then
+    BRANCH=${GITLABBRANCH}
+fi
 
 # Based on https://www.b1c1l1.com/blog/2011/05/09/using-utf-8-unicode-on-freebsd/
 # and https://github.com/gitlabhq/gitlab-recipes/blob/master/install/freebsd/freebsd-10.md

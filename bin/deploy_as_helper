@@ -63,9 +63,48 @@ while [ "x" == "x${HOSTNIC}" ]; do
 done
 
 
+while [ "x" == "x${OWNCLOUDDBPASS}" ]; do
+    echo -n "OWNCLOUDDBPASS [password]:"
+    read OWNCLOUDDBPASS
+    if [ "x" == "x${OWNCLOUDDBPASS}" ]; then
+        OWNCLOUDDBPASS="password"
+    fi
+done
+
+
+while [ "x" == "x${GITLABROOTPASS}" ]; do
+    echo -n "GITLABROOTPASS [password]:"
+    read GITLABROOTPASS
+    if [ "x" == "x${GITLABROOTPASS}" ]; then
+        GITLABROOTPASS="password"
+    fi
+done
+
+
+while [ "x" == "x${GITLABDBPASS}" ]; do
+    echo -n "GITLABDBPASS [password]:"
+    read GITLABDBPASS
+    if [ "x" == "x${GITLABDBPASS}" ]; then
+        GITLABDBPASS="password"
+    fi
+done
+
+
+while [ "x" == "x${EJABBERDROOTPASS}" ]; do
+    echo -n "EJABBERDROOTPASS [password]:"
+    read EJABBERDROOTPASS
+    if [ "x" == "x${EJABBERDROOTPASS}" ]; then
+        EJABBERDROOTPASS="password"
+    fi
+done
+
+
 cat <<EOF
 You can run:
 env FQDN=${FQDN} SQUID=${SQUID} NIC=${NIC} IPNET=${IPNET} \\
 HOSTIP=${HOSTIP} HOSTNIC=${HOSTNIC} \\
+OWNCLOUDDBPASS=${OWNCLOUDDBPASS} \\
+GITLABROOTPASS=${GITLABROOTPASS} GITLABDBPASS=${GITLABDBPASS} \\
+EJABBERDROOTPASS=${EJABBERDROOTPASS} \\
 deploy as_jails good
 EOF
