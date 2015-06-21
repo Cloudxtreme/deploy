@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150621-141120
+SCRIPTVERSION=150621-142025
 
 while [ "x" == "x${FQDN}" ]; do
     echo -n "FQDN:"
@@ -18,6 +18,15 @@ while [ "x" == "x${SQUID}" ]; do
     read SQUID
     if [ "x" == "x${SQUID}" ]; then
         SQUID="10.7.7.1:3128"
+    fi
+done
+
+
+while [ "x" == "x${REPOSRC}" ]; do
+    echo -n "REPOSRC [https://github.com/]:"
+    read REPOSRC
+    if [ "x" == "x${REPOSRC}" ]; then
+        REPOSRC=https://github.com/
     fi
 done
 
@@ -101,8 +110,8 @@ done
 
 cat <<EOF
 You can run:
-env FQDN=${FQDN} SQUID=${SQUID} NIC=${NIC} IPNET=${IPNET} \\
-HOSTIP=${HOSTIP} HOSTNIC=${HOSTNIC} \\
+env FQDN=${FQDN} SQUID=${SQUID} REPOSRC=${REPOSRC} \\
+NIC=${NIC} IPNET=${IPNET} HOSTIP=${HOSTIP} HOSTNIC=${HOSTNIC} \\
 OWNCLOUDDBPASS=${OWNCLOUDDBPASS} \\
 GITLABROOTPASS=${GITLABROOTPASS} GITLABDBPASS=${GITLABDBPASS} \\
 EJABBERDROOTPASS=${EJABBERDROOTPASS} \\
