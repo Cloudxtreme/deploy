@@ -1,0 +1,71 @@
+#!/bin/sh
+
+# READY, helper to generate a deploy as_jails line
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150621-114830
+
+while [ "x" == "x${FQDN}" ]; do
+    echo "FQDN:"
+    read FQDN
+done
+
+
+while [ "x" == "x${SQUID}" ]; do
+    echo "SQUID [10.7.7.1:3128]:"
+    read SQUID
+    if [ "x" == "x${SQUID}" ]; then
+        SQUID="10.7.7.1:3128"
+    fi
+done
+
+
+while [ "x" == "x${NIC}" ]; do
+    echo "NIC [lo1]:"
+    read NIC
+    if [ "x" == "x${NIC}" ]; then
+        NIC="lo1"
+    fi
+done
+if ! ifconfig ${NIC} >/dev/null ; then
+    ifconfig ${NIC} create
+fi
+
+
+while [ "x" == "x${IPNET}" ]; do
+    echo "IPNET [10.7.7.]:"
+    read IPNET
+    if [ "x" == "x${IPNET}" ]; then
+        IPNET="10.7.7."
+    fi
+done
+
+
+while [ "x" == "x${HOSTIP}" ]; do
+    IP=`ifconfig | grep -v 0xffffffff | grep -v 127.0.0.1 | egrep -o 'inet *([0-9]{1,3}\.){1,3}[0-9]{1,3}' | awk '{print $2}'`
+    echo "HOSTIP [${IP}]:"
+    read HOSTIP
+    if [ "x" == "x${HOSTIP}" ]; then
+        HOSTIP="${IP}"
+    fi
+done
+
+
+while [ "x" == "x${HOSTNIC}" ]; do
+    REALNIC=`netstat -nr | grep default | awk '{print $NF}'`
+    echo "REALNIC [${REALNIC}]:"
+    read HOSTNIC
+    if [ "x" == "x${HOSTNIC}" ]; then
+        HOSTNIC="${REALNIC}"
+    fi
+done
+
+
+cat <<EOF
+You can run:
+env FQDN=${FQDN} SQUID=${SQUID} NIC=${NIC} IPNET=${IPNET} \\
+HOSTIP=${HOSTIP} HOSTNIC=${HOSTNIC} \\
+deploy as_jails good
+EOF

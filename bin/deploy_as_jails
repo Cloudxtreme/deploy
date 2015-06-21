@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150620-060000
+SCRIPTVERSION=150621-114830
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -28,12 +28,12 @@ if [ "x" == "x${IPNET}" ]; then
     IPNET="10.7.7."
 fi
 
-if [ "x" == "x${IP}" ]; then
-    IP=`ifconfig | grep -v 0xffffffff | grep -v 127.0.0.1 | egrep -o 'inet *([0-9]{1,3}\.){1,3}[0-9]{1,3}' | awk '{print $2}'`
+if [ "x" == "x${HOSTIP}" ]; then
+    HOSTIP=`ifconfig | grep -v 0xffffffff | grep -v 127.0.0.1 | egrep -o 'inet *([0-9]{1,3}\.){1,3}[0-9]{1,3}' | awk '{print $2}'`
 fi
 
-if [ "x" == "x${REALNIC}" ]; then
-    REALNIC=`netstat -nr | grep default | awk '{print $NF}'`
+if [ "x" == "x${HOSTNIC}" ]; then
+    HOSTNIC=`netstat -nr | grep default | awk '{print $NF}'`
 fi
 
 if ! zfs list tank >/dev/null ; then
@@ -72,13 +72,13 @@ pydio
 "
 
 cat >/etc/pf/jails.anchor <<EOF
-nat pass on ${REALNIC} inet from 10.7.7.0/24 to any -> ${IP}
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 3128 -> 10.7.7.1
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 80 -> 10.7.7.2
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 443 -> 10.7.7.2
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 5222 -> 10.7.7.6
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 64738 -> 10.7.7.7
-rdr pass on ${REALNIC} inet proto tcp from any to ${IP} port = 23 -> 10.7.7.9
+nat pass on ${HOSTNIC} inet from 10.7.7.0/24 to any -> ${HOSTIP}
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3128 -> 10.7.7.1
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 80 -> 10.7.7.2
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 443 -> 10.7.7.2
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 5222 -> 10.7.7.6
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 64738 -> 10.7.7.7
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 23 -> 10.7.7.9
 EOF
 pf-anchor clear jails
 pf-anchor load jails
