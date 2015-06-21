@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150621-140238
+SCRIPTVERSION=150621-141120
 
 while [ "x" == "x${FQDN}" ]; do
     echo -n "FQDN:"
