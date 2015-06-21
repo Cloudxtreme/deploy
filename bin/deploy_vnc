@@ -5,13 +5,14 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150621-120235
+SCRIPTVERSION=150621-233207
 
 ROOTPASS="password"
 
 pkg install -y x11/xorg x11-wm/xfce4-wm \
 Thunar xfce4-tumbler \
 www/epiphany \
+thunderbird \
 net/tightvnc
 #x11-wm/openbox
 #www/midori
