@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150622-002040
+SCRIPTVERSION=150622-002742
 
 while [ "x" == "x${FQDN}" ]; do
     echo -n "FQDN:"
@@ -119,7 +119,8 @@ done
 
 cat <<EOF
 You can run:
-env FQDN=${FQDN} SQUID=${SQUID} REPOSRC=${REPOSRC} \\
+env FQDN=${FQDN} SQUID=${SQUID} \\
+REPOSRC=${REPOSRC} GITLABSRC=${GITLABSRC} \\
 NIC=${NIC} IPNET=${IPNET} HOSTIP=${HOSTIP} HOSTNIC=${HOSTNIC} \\
 OWNCLOUDDBPASS=${OWNCLOUDDBPASS} \\
 GITLABROOTPASS=${GITLABROOTPASS} GITLABDBPASS=${GITLABDBPASS} \\
