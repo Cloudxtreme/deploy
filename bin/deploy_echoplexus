@@ -5,7 +5,11 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150615-212959
+SCRIPTVERSION=150621-235310
+
+if [ "x" == "x${REPOSRC}" ]; then
+    REPOSRC=https://github.com/
+fi
 
 # Based on https://github.com/qq99/echoplexus/blob/master/INSTALL.md
 
@@ -15,7 +19,7 @@ pw user mod echoplexus -G redis
 pkg install -y www/node www/npm sudo git nginx ruby ruby21-gems redis
 
 cd /home/echoplexus
-sudo -u echoplexus -H git clone https://github.com/qq99/echoplexus.git
+sudo -u echoplexus -H git clone ${REPOSRC}qq99/echoplexus.git
 
 sudo -u echoplexus -H npm install
 npm install -g coffee-script grunt grunt-cli supervisor bower browserify testem
