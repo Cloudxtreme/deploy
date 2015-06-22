@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150622-030114
+SCRIPTVERSION=150622-043251
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -275,7 +275,7 @@ Visit http://${JAILIP}/
 Login as root:${ROOTPASS}
 Repos to clone:
     https://github.com/johnko/*
-    https://github.com/johnko/dtfc
+    https://github.com/johnko/dtfc.git
     https://github.com/qq99/echoplexus.git
     https://gitlab.com/gitlab-org/gitlab-ce.git
 EOF
