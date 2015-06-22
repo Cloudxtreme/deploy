@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150621-235310
+SCRIPTVERSION=150622-024136
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -134,19 +134,19 @@ if sysctl security.jail.jailed | grep 1 >/dev/null ; then
     | sed "s/host: localhost/host: ${FQDN}/" \
     | sed 's/port: 80/port: 443/' \
     | sed 's/https: false/https: true/' \
-    | sed 's/# email_enabled: true/email_enabled: false/' \
     | sed 's;bin_path: /usr/bin/git;bin_path: /usr/local/bin/git;' \
     | sed 's; /home/git/; /usr/home/git/;g' \
     >config/gitlab.yml
+#    | sed 's/# email_enabled: true/email_enabled: false/' \
 else
     cat config/gitlab.yml.example \
     | sed "s/host: localhost/host: ${FQDN}/" \
     | sed 's/port: 80/port: 443/' \
     | sed 's/https: false/https: true/' \
-    | sed 's/# email_enabled: true/email_enabled: false/' \
     | sed 's;bin_path: /usr/bin/git;bin_path: /usr/local/bin/git;' \
     | sed 's; /home/git/; /usr/home/git/;g' \
     >config/gitlab.yml
+#    | sed 's/# email_enabled: true/email_enabled: false/' \
 fi
 cd /usr/home/git/gitlab
 chown -R git log/
@@ -239,7 +239,7 @@ service sshd start
 
 
 # Other services: MAIL
-#service postfix start
+service postfix start
 
 cat >/usr/local/etc/rc.d/gitlabwrapper <<EOF
 #!/bin/sh
