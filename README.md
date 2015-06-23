@@ -5,9 +5,9 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 
 ### Planning
 
-#### FQDN that would be reachable if this service is to be public
+#### FQDN and WEBIPALIAS that would be reachable if this service is to be public
 - virtual.local
-- (mapped to 192.168.255.200)
+- 192.168.255.200
 
 #### SQUIDIPALIAS, IP to use as alias for transparent ssl proxy
 - 192.168.255.201
@@ -24,10 +24,11 @@ vi /mnt/etc/rc.conf.d/{network,routing} /mnt/boot/loader.conf.local
 reboot
 
 pg pkg || fres
-env FQDN=virtual.local SQUIDIPALIAS=192.168.255.201 deploy as_jails good
+env FQDN=virtual.local WEBIPALIAS=192.168.255.200 SQUIDIPALIAS=192.168.255.201 deploy as_jails good
 rsync -viaP --exclude work /usr/jails/squid/var/ports /var/ports/
-vi /etc/rc.conf.d/ucarp
+vi /etc/rc.conf.d/ucar{p,w}
 service ucarp start
+service ucarw start
 ```
 
 Setup a valid FQDN SSL certficate and key (in this example: `virtual.local`) in `/usr/jails/nginx/usr/local/etc/nginx/ssl/ssl{.crt,.key}`
@@ -89,10 +90,11 @@ reboot
 env SQUID=192.168.255.201:3128 setproxy
 pg pkg || env REPOSRC=https://virtual.local/alpha. fres
 env REPOSRC=https://virtual.local/alpha. fres -b
-env FQDN=sega.local SQUID=192.168.255.201:3128 SQUIDIPALIAS=192.168.255.201 REPOSRC=https://virtual.local/alpha. GITLABSRC=https://virtual.local/alpha. deploy as_jails good
+env FQDN=sega.local SQUID=192.168.255.201:3128 WEBIPALIAS=192.168.255.200 SQUIDIPALIAS=192.168.255.201 REPOSRC=https://virtual.local/alpha. GITLABSRC=https://virtual.local/alpha. deploy as_jails good
 rsync -viaP --exclude work alpha:/var/ports /var/ports/
 
 ## Optional
-# vi /etc/rc.conf.d/ucarp
+# vi /etc/rc.conf.d/ucar{p,w}
 # service ucarp start
+# service ucarw start
 ```

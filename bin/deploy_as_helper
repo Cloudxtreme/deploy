@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150623-113222
+SCRIPTVERSION=150623-122428
 
 OUTPUT="env"
 
@@ -96,6 +96,15 @@ if [ "x" == "x${SQUIDIPALIAS}" ]; then
     read SQUIDIPALIAS
     if [ "x" != "x${SQUIDIPALIAS}" ]; then
         OUTPUT="${OUTPUT} SQUIDIPALIAS=${SQUIDIPALIAS}"
+    fi
+fi
+
+
+if [ "x" == "x${WEBIPALIAS}" ]; then
+    echo -n "WEBIPALIAS:"
+    read WEBIPALIAS
+    if [ "x" != "x${WEBIPALIAS}" ]; then
+        OUTPUT="${OUTPUT} WEBIPALIAS=${WEBIPALIAS}"
     fi
 fi
 

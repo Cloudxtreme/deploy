@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150623-120944
+SCRIPTVERSION=150623-122428
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -114,6 +114,34 @@ cat <<EOF
 You may want to:
     vi /etc/rc.conf.d/ucarp
     service ucarp start
+EOF
+fi
+if [ "x" != "x${WEBIPALIAS}" ]; then
+    # if we have a web IP alias from HOSTNIC
+    cat >>/etc/pf/jails.anchor <<EOF
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 80 -> 10.7.7.2
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 443 -> 10.7.7.2
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 23 -> 10.7.7.9
+EOF
+    cat /usr/local/etc/rc.d/ucarp | sed 's;ucarp;ucarw;' | sed 's;/usr/local/sbin/ucarw;/usr/local/sbin/ucarp;' >/usr/local/etc/rc.d/ucarw
+    chmod 755 /usr/local/etc/rc.d/ucarw
+    if [ ! -e /etc/rc.conf.d/ucarw ]; then
+        cat >>/etc/rc.conf.d/ucarw <<EOF
+# primary   ucarw_preempt="YES"
+# primary   ucarw_advskew="100"
+# secondary ucarw_advskew="200"
+# ucarw_enable="YES"
+# ucarw_pass=""
+# ucarw_passfile="/usr/local/etc/ucarwpass"
+ucarw_addr="${WEBIPALIAS}"
+ucarw_if="${HOSTNIC}"
+ucarw_src="${HOSTIP}"
+EOF
+    fi
+cat <<EOF
+You may want to:
+    vi /etc/rc.conf.d/ucarw
+    service ucarw start
 EOF
 fi
 pf-anchor clear jails
