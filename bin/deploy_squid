@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150620-221403
+SCRIPTVERSION=150623-080345
 
 if ! sysrc squid_enable | grep YES >/dev/null ; then
     NEWINSTALL="YES"
@@ -18,7 +18,8 @@ if [ "xYES" == "x${NEWINSTALL}" ]; then
         # install squid and dependencies
         pkg install -y www/squid
         # remove squid because we want custom options
-        pkg remove -y www/squid
+        # openssl from ports conflicts https://lists.freebsd.org/pipermail/freebsd-questions/2015-June/266245.html
+        pkg remove -y www/squid openssl
         # use portsnap
         psnap
 
@@ -26,7 +27,7 @@ if [ "xYES" == "x${NEWINSTALL}" ]; then
         if [ ! -e /usr/ports/www/squid/Makefile.orig ]; then
             cp /usr/ports/www/squid/Makefile /usr/ports/www/squid/Makefile.orig
         fi
-        cat /usr/ports/www/squid/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP ;' >/usr/ports/www/squid/Makefile
+        cat /usr/ports/www/squid/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP SSL SSL_CRTD ;' >/usr/ports/www/squid/Makefile
 
         cd /usr/ports/www/squid
         make && make install && make package && make clean
@@ -79,18 +80,32 @@ http_access allow localhost
 
 http_access deny all
 
-http_port 3128
+http_port 3128 ssl-bump generate-host-certificates=on dynamic_cert_mem_cache_size=4MB key=/usr/local/etc/squid/private.pem cert=/usr/local/etc/squid/public.pem
+always_direct allow all
+ssl_bump server-first all
+ssl_bump peek all
+ssl_bump bump all
+sslcrtd_program /usr/local/libexec/squid/ssl_crtd -s /var/squid/ssl_db -M 4MB
+sslcrtd_children 3
+
+##### Unsafe
+# sslproxy_cert_error allow all
+# sslproxy_flags DONT_VERIFY_PEER
 
 cache_dir ufs /var/squid/cache 100000 16 256
 coredump_dir /var/squid/logs
 
-# match against download urls for specific packages - their content never changes for the same url, so we cache aggressively
-refresh_pattern -i (quarterly|latest)\/All\/.*(\.txz) 1440 100% 1051200 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+##### Rubygems?
+# match against download urls for specific gems - 28800 = 20 days
+refresh_pattern -i \/.*(\.gem) 1440 100% 28800 ignore-private ignore-must-revalidate override-expire ignore-no-cache
 
-# match against meta-information - this shouldn't be cached quite so aggressively
-refresh_pattern -i (quarterly|latest)\/.*(\.txz) 1440 100% 40080 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+##### FreeBSD pkgng
+# match against download urls for specific packages - their content never changes for the same url, so we cache aggressively for 525600 = 1 year
+refresh_pattern -i (quarterly|latest)\/All\/.*(\.txz) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+# match against meta-information - this shouldn't be cached quite so aggressively 28800 = 20 days
+refresh_pattern -i (quarterly|latest)\/.*(\.txz) 1440 100% 28800 ignore-private ignore-must-revalidate override-expire ignore-no-cache
 
-refresh_pattern ^ftp:       1440    20% 1051200
+refresh_pattern ^ftp:       1440    20% 525600
 refresh_pattern ^gopher:    1440    0%  1440
 refresh_pattern -i (/cgi-bin/|\?) 0 0%  0
 refresh_pattern .       0   20% 4320
@@ -100,6 +115,18 @@ maximum_object_size 2000 MB
 
 visible_hostname squid
 EOF
+
+if [ ! -e /usr/local/etc/squid/public.pem ]; then
+    yes '' | openssl req -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -keyout /usr/local/etc/squid/private.pem -out /usr/local/etc/squid/public.pem
+fi
+chown squid:squid /usr/local/etc/squid/*.pem
+chmod 644 /usr/local/etc/squid/public.pem
+chmod 600 /usr/local/etc/squid/private.pem
+
+if [ ! -e /var/squid/ssl_db ]; then
+    /usr/local/libexec/squid/ssl_crtd -c -s /var/squid/ssl_db -M 4MB
+fi
+chown squid:squid /var/squid/ssl_db
 
 sysrc squid_enable="YES"
 
