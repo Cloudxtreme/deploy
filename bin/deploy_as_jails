@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150621-235310
+SCRIPTVERSION=150623-090409
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -81,6 +81,7 @@ pydio
 
 cat >/etc/pf/jails.anchor <<EOF
 nat pass on ${HOSTNIC} inet from 10.7.7.0/24 to any -> ${HOSTIP}
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3127 -> 10.7.7.1
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3128 -> 10.7.7.1
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 80 -> 10.7.7.2
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 443 -> 10.7.7.2
@@ -88,6 +89,31 @@ rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 5222 -> 10.7.
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 64738 -> 10.7.7.7
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 23 -> 10.7.7.9
 EOF
+if [ "x" != "x${SQUIDIPALIAS}" ]; then
+    # if we have a squid IP alias from HOSTNIC
+    cat >>/etc/pf/jails.anchor <<EOF
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 443 -> 10.7.7.1 port 3129
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3127 -> 10.7.7.1
+EOF
+    if [ ! -e /etc/rc.conf.d/ucarp ]; then
+        cat >>/etc/rc.conf.d/ucarp <<EOF
+# primary   ucarp_preempt="YES"
+# primary   ucarp_advskew="100"
+# secondary ucarp_advskew="200"
+# ucarp_enable="YES"
+# ucarp_pass=""
+# ucarp_passfile="/usr/local/etc/ucarppass"
+ucarp_addr="${SQUIDIPALIAS}"
+ucarp_if="${HOSTNIC}"
+ucarp_src="${HOSTIP}"
+EOF
+    fi
+cat <<EOF
+You may want to:
+    vi /etc/rc.conf.d/ucarp
+    service ucarp start
+EOF
+fi
 pf-anchor clear jails
 pf-anchor load jails
 
@@ -225,6 +251,17 @@ allowsysvipc() {
     fi
 }
 
+interceptdnsssl() {
+    if [ "x" != "x${SQUIDIPALIAS}" ]; then
+        echo "${SQUIDIPALIAS} ${2}" >>/usr/jails/${1}/etc/hosts
+        fetch -o /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem http://${SQUIDIPALIAS}:3127/public.pem
+        cat      /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
+    else
+        echo "10.7.7.1 ${2}" >>/usr/jails/${1}/etc/hosts
+        cat /usr/jails/squid/usr/local/etc/squid/public.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
+    fi
+}
+
 count=0
 for i in ${JAILNAMES} ; do
     count=$((count+1))
@@ -248,6 +285,17 @@ for i in ${JAILNAMES} ; do
             eza console -f -e "deploy ${i}" ${i}
             # easydns-client here to reduce risk of lost/rollbacked config
             eza console -f -e "deploy easydnsclient" ${i}
+            # 3127 for public.pem
+            cat >/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+                server {
+                    listen   10.7.7.1:3127 default_server;
+                    server_name 10.7.7.1;
+                    location =/public.pem {
+                        alias /usr/local/etc/squid/public.pem;
+                    }
+                }
+EOF
+            eza console -f -e "deploy nginx" ${i}
             ;;
         nginx)
             setupnginxconfig ${i} ${FQDN}
@@ -274,6 +322,11 @@ for i in ${JAILNAMES} ; do
             ;;
         gitlab)
             allowsysvipc ${i}
+            # clear proxy so it doens't attempt a CONNECT command
+            echo >/usr/jails/${i}/root/local/cshproxy
+            interceptdnsssl ${i} rubygems.org
+            interceptdnsssl ${i} api.rubygems.org
+            interceptdnsssl ${i} rubygems.global.ssl.fastly.net
             eza console -f -e "env FQDN=${FQDN} GITLABSRC=${GITLABSRC} deploy ${i}_src" ${i}
             ;;
         # BAD JAILNAMES
