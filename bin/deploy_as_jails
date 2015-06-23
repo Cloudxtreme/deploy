@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150623-090409
+SCRIPTVERSION=150623-120944
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -92,8 +92,10 @@ EOF
 if [ "x" != "x${SQUIDIPALIAS}" ]; then
     # if we have a squid IP alias from HOSTNIC
     cat >>/etc/pf/jails.anchor <<EOF
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 80 -> 10.7.7.1 port 3128
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 443 -> 10.7.7.1 port 3129
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3127 -> 10.7.7.1
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3128 -> 10.7.7.1
 EOF
     if [ ! -e /etc/rc.conf.d/ucarp ]; then
         cat >>/etc/rc.conf.d/ucarp <<EOF
