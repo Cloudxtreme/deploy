@@ -5,12 +5,15 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150622-002742
+SCRIPTVERSION=150623-090409
+
+OUTPUT="env"
 
 while [ "x" == "x${FQDN}" ]; do
     echo -n "FQDN:"
     read FQDN
 done
+OUTPUT="${OUTPUT} FQDN=${FQDN}"
 
 
 while [ "x" == "x${SQUID}" ]; do
@@ -20,6 +23,7 @@ while [ "x" == "x${SQUID}" ]; do
         SQUID="10.7.7.1:3128"
     fi
 done
+OUTPUT="${OUTPUT} SQUID=${SQUID}"
 
 
 while [ "x" == "x${REPOSRC}" ]; do
@@ -29,6 +33,7 @@ while [ "x" == "x${REPOSRC}" ]; do
         REPOSRC=https://github.com/
     fi
 done
+OUTPUT="${OUTPUT} REPOSRC=${REPOSRC}"
 
 
 while [ "x" == "x${GITLABSRC}" ]; do
@@ -38,6 +43,7 @@ while [ "x" == "x${GITLABSRC}" ]; do
         GITLABSRC=https://gitlab.com/
     fi
 done
+OUTPUT="${OUTPUT} GITLABSRC=${GITLABSRC}"
 
 
 while [ "x" == "x${NIC}" ]; do
@@ -47,6 +53,7 @@ while [ "x" == "x${NIC}" ]; do
         NIC="lo1"
     fi
 done
+OUTPUT="${OUTPUT} NIC=${NIC}"
 if ! ifconfig ${NIC} >/dev/null ; then
     ifconfig ${NIC} create
 fi
@@ -59,6 +66,7 @@ while [ "x" == "x${IPNET}" ]; do
         IPNET="10.7.7."
     fi
 done
+OUTPUT="${OUTPUT} IPNET=${IPNET}"
 
 
 while [ "x" == "x${HOSTIP}" ]; do
@@ -69,6 +77,7 @@ while [ "x" == "x${HOSTIP}" ]; do
         HOSTIP="${IP}"
     fi
 done
+OUTPUT="${OUTPUT} HOSTIP=${HOSTIP}"
 
 
 while [ "x" == "x${HOSTNIC}" ]; do
@@ -79,6 +88,16 @@ while [ "x" == "x${HOSTNIC}" ]; do
         HOSTNIC="${REALNIC}"
     fi
 done
+OUTPUT="${OUTPUT} HOSTNIC=${HOSTNIC}"
+
+
+if [ "x" == "x${SQUIDIPALIAS}" ]; then
+    echo -n "SQUIDIPALIAS:"
+    read SQUIDIPALIAS
+    if [ "x" != "x${SQUIDIPALIAS}" ]; then
+        OUTPUT="${OUTPUT} SQUIDIPALIAS=${SQUIDIPALIAS}"
+    fi
+fi
 
 
 while [ "x" == "x${OWNCLOUDDBPASS}" ]; do
@@ -88,6 +107,7 @@ while [ "x" == "x${OWNCLOUDDBPASS}" ]; do
         OWNCLOUDDBPASS="password"
     fi
 done
+OUTPUT="${OUTPUT} OWNCLOUDDBPASS=${OWNCLOUDDBPASS}"
 
 
 while [ "x" == "x${GITLABROOTPASS}" ]; do
@@ -97,6 +117,7 @@ while [ "x" == "x${GITLABROOTPASS}" ]; do
         GITLABROOTPASS="password"
     fi
 done
+OUTPUT="${OUTPUT} GITLABROOTPASS=${GITLABROOTPASS}"
 
 
 while [ "x" == "x${GITLABDBPASS}" ]; do
@@ -106,6 +127,7 @@ while [ "x" == "x${GITLABDBPASS}" ]; do
         GITLABDBPASS="password"
     fi
 done
+OUTPUT="${OUTPUT} GITLABDBPASS=${GITLABDBPASS}"
 
 
 while [ "x" == "x${EJABBERDROOTPASS}" ]; do
@@ -115,15 +137,10 @@ while [ "x" == "x${EJABBERDROOTPASS}" ]; do
         EJABBERDROOTPASS="password"
     fi
 done
+OUTPUT="${OUTPUT} EJABBERDROOTPASS=${EJABBERDROOTPASS}"
 
 
 cat <<EOF
 You can run:
-env FQDN=${FQDN} SQUID=${SQUID} \\
-REPOSRC=${REPOSRC} GITLABSRC=${GITLABSRC} \\
-NIC=${NIC} IPNET=${IPNET} HOSTIP=${HOSTIP} HOSTNIC=${HOSTNIC} \\
-OWNCLOUDDBPASS=${OWNCLOUDDBPASS} \\
-GITLABROOTPASS=${GITLABROOTPASS} GITLABDBPASS=${GITLABDBPASS} \\
-EJABBERDROOTPASS=${EJABBERDROOTPASS} \\
-deploy as_jails good
+    ${OUTPUT} deploy as_jails good
 EOF
