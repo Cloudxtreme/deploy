@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150623-113125
+SCRIPTVERSION=150623-113222
 
 OUTPUT="env"
 
@@ -140,7 +140,7 @@ done
 OUTPUT="${OUTPUT} EJABBERDROOTPASS=${EJABBERDROOTPASS}"
 
 
-OUTFILE="/root/local/deployed"
+OUTFILE="/root/local/deploy_helper"
 mkdir -p ${OUTFILE%/*}
 echo "${OUTPUT} deploy as_jails good" >>${OUTFILE}
 
