@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-170358
+SCRIPTVERSION=150624-172228
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -130,16 +130,18 @@ chown squid:squid /usr/local/etc/squid/*.pem
 chmod 644 /usr/local/etc/squid/public.pem
 chmod 600 /usr/local/etc/squid/private.pem
 
+sysrc squid_enable="YES"
+
+if [ "xYES" == "x${NEWINSTALL}" ]; then
+    squid -z
+fi
+
 if [ ! -e /var/squid/ssl_db ]; then
     /usr/local/libexec/squid/ssl_crtd -c -s /var/squid/ssl_db -M 4MB
 fi
 chown -R squid:squid /var/squid/ssl_db
 
-sysrc squid_enable="YES"
-
 if [ "xYES" == "x${NEWINSTALL}" ]; then
-    squid -z
-
     service squid start
 fi
 
