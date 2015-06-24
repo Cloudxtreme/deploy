@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-144947
+SCRIPTVERSION=150624-151418
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -329,10 +329,11 @@ add include \$devfsrules_unhide_login
 add path zfs unhide
 add path pf unhide mode 0640 group 100
 EOF
-            if [ -e /var/ports/packages/All/squid-3.5.5.txz ]; then
-                rsync -viaP /var/ports/ /usr/jails/${i}/var/ports/
+            if [ -e /var/ports ]; then
+                rsync -viaP --exclude work /var/ports/ /usr/jails/${i}/var/ports/
             fi
             eza console -f -e "deploy ${i}" ${i}
+            rsync -viaP --exclude work /usr/jails/${i}/var/ports/ /var/ports/
             # easydns-client here to reduce risk of lost/rollbacked config
             eza console -f -e "deploy easydnsclient" ${i}
             # 3127 for public.pem
