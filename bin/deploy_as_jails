@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-101029
+SCRIPTVERSION=150624-135606
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -83,6 +83,7 @@ cat >/etc/pf/jails.anchor <<EOF
 nat pass on ${HOSTNIC} inet from 10.7.7.0/24 to any -> ${HOSTIP}
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3127 -> 10.7.7.1
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3128 -> 10.7.7.1
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3129 -> 10.7.7.1
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 80 -> 10.7.7.2
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 443 -> 10.7.7.2
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 5222 -> 10.7.7.6
@@ -91,11 +92,19 @@ rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 23 -> 10.7.7.
 EOF
 if [ "x" != "x${SQUIDIPALIAS}" ]; then
     # if we have a squid IP alias from HOSTNIC
+    if ifconfig | grep ${SQUIDIPALIAS} >/dev/null ; then
+        cat >>/etc/pf/jails.anchor <<EOF
+rdr pass on lo1 inet proto tcp from 10.7.7.9 to any port = 443 -> 10.7.7.1 port 3129
+EOF
+    else
+        cat >>/etc/pf/jails.anchor <<EOF
+rdr pass on lo1 inet proto tcp from 10.7.7.9 to any port = 443 -> ${SQUIDIPALIAS} port 3129
+EOF
+    fi
     cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 80 -> 10.7.7.1 port 3128
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 443 -> 10.7.7.1 port 3129
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3127 -> 10.7.7.1
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3128 -> 10.7.7.1
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3129 -> 10.7.7.1
 EOF
     if [ ! -e /etc/rc.conf.d/ucarp ]; then
         cat >>/etc/rc.conf.d/ucarp <<EOF
@@ -311,6 +320,15 @@ for i in ${JAILNAMES} ; do
     case ${i} in
         # GOOD JAILNAMES
         squid)
+            # based on https://forums.freebsd.org/threads/transparent-proxy-in-jail-with-pf-in-host.42075/
+            cat >>/etc/devfs.rules <<EOF
+[devfsrules_jail=4]
+add include \$devfsrules_hide_all
+add include \$devfsrules_unhide_basic
+add include \$devfsrules_unhide_login
+add path zfs unhide
+add path pf unhide mode 0640 group 100
+EOF
             if [ -e /var/ports/packages/All/squid-3.5.5.txz ]; then
                 rsync -viaP /var/ports/ /usr/jails/${i}/var/ports/
             fi
@@ -356,9 +374,10 @@ EOF
             allowsysvipc ${i}
             # clear proxy so it doens't attempt a CONNECT command
             echo >/usr/jails/${i}/root/local/cshproxy
-            interceptdnsssl ${i} rubygems.org
-            interceptdnsssl ${i} api.rubygems.org
-            interceptdnsssl ${i} rubygems.global.ssl.fastly.net
+            #interceptdnsssl ${i} rubygems.org
+            #interceptdnsssl ${i} api.rubygems.org
+            #interceptdnsssl ${i} rubygems.global.ssl.fastly.net
+            #interceptdnsssl ${i} s3.amazonaws.com
             eza console -f -e "env FQDN=${FQDN} GITLABSRC=${GITLABSRC} deploy ${i}_src" ${i}
             ;;
         # BAD JAILNAMES

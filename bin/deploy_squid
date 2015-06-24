@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-101029
+SCRIPTVERSION=150624-135606
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -29,7 +29,12 @@ if [ "xYES" == "x${NEWINSTALL}" ]; then
         if [ ! -e /usr/ports/www/squid/Makefile.orig ]; then
             cp /usr/ports/www/squid/Makefile /usr/ports/www/squid/Makefile.orig
         fi
-        cat /usr/ports/www/squid/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP SSL SSL_CRTD ;' >/usr/ports/www/squid/Makefile
+        cat /usr/ports/www/squid/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP SSL SSL_CRTD TP_PF LARGEFILE ;' >/usr/ports/www/squid/Makefile
+
+        # remove old config
+        if [ -e /var/db/ports/www_squid/options ]; then
+            rm /var/db/ports/www_squid/options
+        fi
 
         cd /usr/ports/www/squid
         make && make install && make package && make clean
@@ -129,7 +134,7 @@ chmod 600 /usr/local/etc/squid/private.pem
 if [ ! -e /var/squid/ssl_db ]; then
     /usr/local/libexec/squid/ssl_crtd -c -s /var/squid/ssl_db -M 4MB
 fi
-chown squid:squid /var/squid/ssl_db
+chown -R squid:squid /var/squid/ssl_db
 
 sysrc squid_enable="YES"
 
