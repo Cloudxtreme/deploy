@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-170655
+SCRIPTVERSION=150624-183925
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -365,7 +365,7 @@ EOF
         gitlab)
             allowsysvipc ${i}
             copysslselfcert ${i}
-            eza console -f -e "env FQDN=${FQDN} GITLABSRC=${GITLABSRC} deploy ${i}_src" ${i}
+            eza console -f -e "env FQDN=${FQDN} GITLABSRC=${GITLABSRC} HTTP_PROXY=http://${SQUID} deploy ${i}_src" ${i}
             ;;
         # BAD JAILNAMES
         baikal)
