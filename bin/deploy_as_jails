@@ -83,7 +83,6 @@ cat >/etc/pf/jails.anchor <<EOF
 nat pass on ${HOSTNIC} inet from 10.7.7.0/24 to any -> ${HOSTIP}
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3127 -> 10.7.7.1
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3128 -> 10.7.7.1
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3129 -> 10.7.7.1
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 80 -> 10.7.7.2
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 443 -> 10.7.7.2
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 5222 -> 10.7.7.6
@@ -95,7 +94,6 @@ if [ "x" != "x${SQUIDIPALIAS}" ]; then
     cat >>/etc/pf/jails.anchor <<EOF
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3127 -> 10.7.7.1
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3128 -> 10.7.7.1
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3129 -> 10.7.7.1
 EOF
     if [ ! -e /etc/rc.conf.d/ucarp ]; then
         cat >>/etc/rc.conf.d/ucarp <<EOF

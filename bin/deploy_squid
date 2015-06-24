@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-135606
+SCRIPTVERSION=150624-170358
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -87,8 +87,7 @@ http_access allow localhost
 
 http_access deny all
 
-http_port 3128
-http_port 3129 intercept ssl-bump generate-host-certificates=on dynamic_cert_mem_cache_size=4MB key=/usr/local/etc/squid/private.pem cert=/usr/local/etc/squid/public.pem
+http_port 3128 ssl-bump generate-host-certificates=on dynamic_cert_mem_cache_size=4MB key=/usr/local/etc/squid/private.pem cert=/usr/local/etc/squid/public.pem
 always_direct allow all
 ssl_bump server-first all
 ssl_bump peek all
