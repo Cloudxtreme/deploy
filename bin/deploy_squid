@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-172228
+SCRIPTVERSION=150624-174009
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -93,7 +93,7 @@ ssl_bump server-first all
 ssl_bump peek all
 ssl_bump bump all
 sslcrtd_program /usr/local/libexec/squid/ssl_crtd -s /var/squid/ssl_db -M 4MB
-sslcrtd_children 3
+sslcrtd_children 5
 
 ##### Unsafe
 # sslproxy_cert_error allow all
@@ -134,12 +134,17 @@ sysrc squid_enable="YES"
 
 if [ "xYES" == "x${NEWINSTALL}" ]; then
     squid -z
+    sleep 5
 fi
+
+chown -R squid:squid /var/squid
 
 if [ ! -e /var/squid/ssl_db ]; then
     /usr/local/libexec/squid/ssl_crtd -c -s /var/squid/ssl_db -M 4MB
+    sleep 5
 fi
-chown -R squid:squid /var/squid/ssl_db
+
+chown -R squid:squid /var/squid
 
 if [ "xYES" == "x${NEWINSTALL}" ]; then
     service squid start
