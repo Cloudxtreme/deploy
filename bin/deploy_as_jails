@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-151418
+SCRIPTVERSION=150624-170124
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -92,15 +92,6 @@ rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 23 -> 10.7.7.
 EOF
 if [ "x" != "x${SQUIDIPALIAS}" ]; then
     # if we have a squid IP alias from HOSTNIC
-    if ifconfig | grep ${SQUIDIPALIAS} >/dev/null ; then
-        cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on lo1 inet proto tcp from 10.7.7.9 to any port = 443 -> 10.7.7.1 port 3129
-EOF
-    else
-        cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on lo1 inet proto tcp from 10.7.7.9 to any port = 443 -> ${SQUIDIPALIAS} port 3129
-EOF
-    fi
     cat >>/etc/pf/jails.anchor <<EOF
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3127 -> 10.7.7.1
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3128 -> 10.7.7.1
@@ -290,13 +281,15 @@ allowsysvipc() {
     fi
 }
 
-interceptdnsssl() {
+copysslselfcert() {
     if [ "x" != "x${SQUIDIPALIAS}" ]; then
-        echo "${SQUIDIPALIAS} ${2}" >>/usr/jails/${1}/etc/hosts
-        fetch -o /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem http://${SQUIDIPALIAS}:3127/public.pem
-        cat      /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
+        if ifconfig | grep ${SQUIDIPALIAS} >/dev/null ; then
+            cat /usr/jails/squid/usr/local/etc/squid/public.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
+        else
+            fetch -o /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem http://${SQUIDIPALIAS}:3127/public.pem
+            cat      /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
+        fi
     else
-        echo "10.7.7.1 ${2}" >>/usr/jails/${1}/etc/hosts
         cat /usr/jails/squid/usr/local/etc/squid/public.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
     fi
 }
@@ -373,12 +366,7 @@ EOF
             ;;
         gitlab)
             allowsysvipc ${i}
-            # clear proxy so it doens't attempt a CONNECT command
-            echo >/usr/jails/${i}/root/local/cshproxy
-            #interceptdnsssl ${i} rubygems.org
-            #interceptdnsssl ${i} api.rubygems.org
-            #interceptdnsssl ${i} rubygems.global.ssl.fastly.net
-            #interceptdnsssl ${i} s3.amazonaws.com
+            copysslselfcert ${i}
             eza console -f -e "env FQDN=${FQDN} GITLABSRC=${GITLABSRC} deploy ${i}_src" ${i}
             ;;
         # BAD JAILNAMES

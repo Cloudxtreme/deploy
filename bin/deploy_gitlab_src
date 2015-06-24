@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150622-043251
+SCRIPTVERSION=150624-170124
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -62,6 +62,8 @@ if [ ! -e /usr/local/bin/createuser ]; then
     exit 1
 fi
 
+HTTP_PROXY=`echo $HTTP_PROXY | sed 's;3128;3129;'`
+export HTTP_PROXY
 gem install bundler --no-ri --no-rdoc
 
 if sysctl security.jail.jailed | grep 0 >/dev/null ; then
