@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-135606
+SCRIPTVERSION=150624-144947
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -45,7 +45,7 @@ if [ "x" == "x${HOSTNIC}" ]; then
 fi
 
 if ! zfs list tank >/dev/null ; then
-    fzg -i
+    fzg -i -D
 fi
 
 if ! zfs list tank/ezjail >/dev/null ; then
