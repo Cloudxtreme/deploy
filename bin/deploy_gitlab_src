@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-183925
+SCRIPTVERSION=150624-192732
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -184,11 +184,11 @@ cat config/resque.yml.example \
 | sed 's;/var/run/redis/redis.sock;/usr/local/var/run/redis/redis.sock;' \
 >config/resque.yml
 sudo -u git -H cp config/database.yml.postgresql config/database.yml
-sudo -u git -H bundle install --deployment --without development test mysql aws
+sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle install --deployment --without development test mysql aws
 
 
 # 7 GitLab Shell
-sudo -u git -H bundle exec rake gitlab:shell:install[v2.4.1] REDIS_URL=unix:/usr/local/var/run/redis/redis.sock RAILS_ENV=production
+sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:shell:install[v2.4.1] REDIS_URL=unix:/usr/local/var/run/redis/redis.sock RAILS_ENV=production
 # Edit the gitlab-shell config
 # Change the 'socket' option to '/usr/local/var/run/redis/redis.sock'
 # Change the 'gitlab_url' option to 'http://localhost:8080/'
@@ -198,7 +198,7 @@ sudo -u git -H bundle exec rake gitlab:shell:install[v2.4.1] REDIS_URL=unix:/usr
 
 
 # 8 Initialise Database
-sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=${ROOTPASS}
+sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=${ROOTPASS}
 
 
 # 9 Init script
@@ -209,9 +209,9 @@ chmod a+x /usr/local/etc/rc.d/gitlab
 
 # 10 compile
 cd /usr/home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
-sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
-sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
+sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:env:info RAILS_ENV=production
+sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake assets:precompile RAILS_ENV=production
+sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:check RAILS_ENV=production
 
 
 # 11 start
