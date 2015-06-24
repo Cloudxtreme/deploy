@@ -5,11 +5,12 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-085436
+SCRIPTVERSION=150624-101029
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
     NEWINSTALL="NO"
+    pkg remove -y openssl
 fi
 
 if [ "xYES" == "x${NEWINSTALL}" ]; then
