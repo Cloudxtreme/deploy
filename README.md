@@ -20,7 +20,9 @@ Pulls from github.com and gitlab.com. May be slow.
 fres ; fres -b
 rm /var/ports/packages/All/squid-3.5.5.txz
 fzg -r mirror -d ada0 -d ada1 -d ada2 -z 2g -m -n -D -H alpha.local
-vi /mnt/etc/rc.conf.d/{network,routing} /mnt/boot/loader.conf.local
+cat /etc/rc.conf.d/network >/mnt/etc/rc.conf.d/network
+cat /etc/rc.conf.d/routing >/mnt/etc/rc.conf.d/routing
+vi /mnt/boot/loader.conf.local
 reboot
 
 pg pkg || fres
@@ -87,7 +89,9 @@ env SQUID=192.168.255.201:3128 setproxy
 env REPOSRC=https://virtual.local/alpha. fres
 env REPOSRC=https://virtual.local/alpha. fres -b
 fzg -d ada0 -d ada2 -z 2g -m -n -D -H sega.local
-vi /mnt/etc/rc.conf.d/{network,routing} /mnt/boot/loader.conf.local
+cat /etc/rc.conf.d/network >/mnt/etc/rc.conf.d/network
+cat /etc/rc.conf.d/routing >/mnt/etc/rc.conf.d/routing
+vi /mnt/boot/loader.conf.local
 reboot
 
 env SQUID=192.168.255.201:3128 setproxy
