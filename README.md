@@ -26,6 +26,7 @@ reboot
 pg pkg || fres
 ifconfig lagg0 alias 192.168.255.200/32
 ifconfig lagg0 alias 192.168.255.201/32
+gdf
 env FQDN=virtual.local WEBIPALIAS=192.168.255.200 SQUIDIPALIAS=192.168.255.201 SQUID=10.7.7.1:3128 deploy as_jails good
 rsync -viaP --exclude work /usr/jails/squid/var/ports /var/ports/
 vi /etc/rc.conf.d/ucar{p,w}
