@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150625-005535
+SCRIPTVERSION=150625-020641
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -101,6 +101,9 @@ sslcrtd_children 5
 
 cache_dir ufs /var/squid/cache 100000 16 256
 coredump_dir /var/squid/logs
+
+# Don't abort the retrieval if the client aborts, this may be risky as it keeps file descriptors open
+quick_abort_min -1 KB
 
 ##### Image - 525600 = 1 year
 # refresh_pattern -i \/.*\.(ai|bmp|eps|gif|jpeg|jpg|png|ps|psd|svg|tif|tiff) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
