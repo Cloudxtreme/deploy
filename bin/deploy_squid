@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150625-041139
+SCRIPTVERSION=150625-045505
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -117,12 +117,21 @@ quick_abort_min -1 KB
 ##### Doc - 525600 = 1 year
 # refresh_pattern -i \/.*\.(doc|docx|eot|pdf|ppt|pptx|rtf|xls|xlsx) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
 
-##### Software - 525600 = 1 year
-refresh_pattern -i \/.*\.(7z|bz|bz2|deb|dmg|exe|gz|img|iso|msi|msm|msp|pkg|rar|rpm|sit|swf|tbz|tgz|txz|xpi|zip) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+##### Other Software - 525600 = 1 year
+refresh_pattern -i \/.*\.(swf|xpi) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+
+##### Archives - 525600 = 1 year
+refresh_pattern -i \/.*\.(7z|bz|bz2|deb|gz|img|iso|rar|rpm|sit|tbz|tgz|txz|zip) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+
+##### Windows Software
+refresh_pattern -i \/.*\.(exe|msi|msm|msp) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+
+##### Mac Software
+refresh_pattern -i \/.*\.(dmg|pkg) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
 
 ##### iTunes iPhone update
 # match against iPhone software update - cache aggressively for 525600 = 1 year
-refresh_pattern -i \/.*(\.ipsw) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+refresh_pattern -i \/.*\.(ipa|ipsw) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
 
 ##### Rubygems?
 # match against download urls for specific gems - 28800 = 20 days
