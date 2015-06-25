@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-183925
+SCRIPTVERSION=150625-033740
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -334,6 +334,9 @@ EOF
                     server_name 10.7.7.1;
                     location =/public.pem {
                         alias /usr/local/etc/squid/public.pem;
+                    }
+                    location =/public.pac {
+                        alias /usr/local/etc/squid/public.pac;
                     }
                 }
 EOF
