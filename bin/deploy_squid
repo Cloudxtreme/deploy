@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150625-020641
+SCRIPTVERSION=150625-033635
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -151,6 +151,14 @@ fi
 chown squid:squid /usr/local/etc/squid/*.pem
 chmod 644 /usr/local/etc/squid/public.pem
 chmod 600 /usr/local/etc/squid/private.pem
+
+cat >/usr/local/etc/squid/public.pac <<EOF
+function FindProxyForURL(url, host) {
+    if (isInNet(myIpAddress(), "192.168.255.0", "255.255.255.0"))
+        return "PROXY 192.168.255.201:3128";
+}
+EOF
+chmod 644 /usr/local/etc/squid/public.pac
 
 sysrc squid_enable="YES"
 
