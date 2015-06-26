@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150626-215534
+SCRIPTVERSION=150626-232105
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -292,7 +292,15 @@ copysslselfcert() {
     fi
 }
 
-count=0
+if [ "x" == "x${STARTCOUNT}" ]; then
+    # remove anything that's not a digit
+    count=`echo ${STARTCOUNT} | sed 's/[^[:digit:]]//g'`
+fi
+
+if [ "x" == "x${count}" ]; then
+    count=0
+fi
+
 for i in ${JAILNAMES} ; do
     count=$((count+1))
     if [ ! -e /usr/jails/${i} ]; then
