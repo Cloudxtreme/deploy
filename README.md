@@ -44,6 +44,25 @@ You may need to make a bundle:
 cat server.crt intermediate.pem root.pem > /usr/jails/nginx/usr/local/etc/nginx/ssl/ssl.crt
 ```
 
+Then start jails:
+
+```
+eza stop ; eza start
+```
+
+Maybe setup scheduled dynamic easydns as user urep:
+
+```
+eza console squid
+su -l urep
+crontabbed
+echo >crontabbed/zsnapple_bootpool_hourly
+echo >crontabbed/zsnapple_pool_hourly
+echo "0 * * * * /usr/home/urep/bin/easydns-client username password fqdn" >crontabbed/easydns_hourly
+crontabbed
+crontab -l
+```
+
 Visit https://virtual.local/explore and setup a GitLab group for:
 - alpha.johnko
 - alpha.qq99
