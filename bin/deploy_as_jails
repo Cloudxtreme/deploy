@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150626-215412
+SCRIPTVERSION=150626-215534
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -182,7 +182,7 @@ EOF
             listen   10.7.7.2:80 default_server;
             server_name ${FQDN};
             server_name 10.7.7.2;
-            return 301 https://$host$request_uri;
+            return 302 https://$host$request_uri;
         }
         server {
             listen 443 ssl;
