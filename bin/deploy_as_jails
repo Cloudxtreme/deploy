@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150625-033740
+SCRIPTVERSION=150626-151244
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -341,6 +341,13 @@ EOF
                 }
 EOF
             eza console -f -e "deploy nginx" ${i}
+            eza console -f -e sh ${i} <<EOF
+su urep -c "/bin/mkdir -p /usr/home/urep/bin"
+cp -a /root/bin/fres /usr/home/urep/bin/fres
+chown urep /usr/home/urep/bin/fres
+su urep -c "/usr/home/urep/bin/fres"
+su urep -c "/usr/home/urep/bin/deploy easydnsclient"
+EOF
             ;;
         nginx)
             setupnginxconfig ${i} ${FQDN}

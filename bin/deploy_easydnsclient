@@ -5,10 +5,11 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150619-080837
+SCRIPTVERSION=150626-150132
 
 pkg install -y p5-Crypt-SSLeay p5-DNS-EasyDNS
 
+mkdir -p ~/bin
 cat >~/bin/easydns-client <<EOF
 #!/bin/sh
 perl /usr/local/share/examples/DNS-EasyDNS/easydns-simple \$*
