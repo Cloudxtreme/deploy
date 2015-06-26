@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150626-150132
+SCRIPTVERSION=150626-151355
 
 pkg install -y p5-Crypt-SSLeay p5-DNS-EasyDNS
 
@@ -17,5 +17,5 @@ EOF
 chmod 755 ~/bin/easydns-client
 
 echo
-echo "Usage: easydns-client username password hostname"
-echo "crontabbed: 0 * * * * easydns-client username password hostname"
+echo "Usage as user urep: easydns-client username password hostname"
+echo "crontabbed as user urep: 0 * * * * easydns-client username password hostname"
