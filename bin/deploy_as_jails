@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150626-151244
+SCRIPTVERSION=150626-215412
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -176,7 +176,7 @@ EOF
 EOF
         done
         cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
-            ~^/\$         https://${FQDN}/wiki/;
+            ~^/\$         https://${FQDN}/explore;
         }
         server {
             listen   10.7.7.2:80 default_server;
