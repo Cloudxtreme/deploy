@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-052723
+SCRIPTVERSION=150627-054607
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -332,7 +332,7 @@ copysslselfcert() {
 
 setuppf
 
-echo "$JAILDATASET" \
+echo "$JAILNAMES" \
     | while read num i ; do
     if [ ! -e /usr/jails/${i} ]; then
         eza create ${i}        "${NIC}|${IPNET}${num}"
