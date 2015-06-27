@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150626-232105
+SCRIPTVERSION=150627-052723
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -53,101 +53,132 @@ if ! zfs list tank/ezjail >/dev/null ; then
     eza-update
 fi
 
-GOOD="
-squid
-nginx
-couch
-dtfc
-owncloud
-ejabberd
-murmur
-vnc
-gitlab
-"
+if [ "x" == "x${STARTCOUNT}" ]; then
+    # remove anything that's not a digit
+    count=`echo ${STARTCOUNT} | sed 's/[^[:digit:]]//g'`
+fi
 
-BAD="
-baikal
-couchdtfc
-horde
+if [ "x" == "x${count}" ]; then
+    count=0
+fi
+
+GOOD="
+     1  squid
+     2  nginx
+     3  couch
+     4  dtfc
+     5  piwik
+     6  owncloud
+     7  ejabberd
+     8  murmur
+     9  vnc
+    10  gitlab
 "
 
 DEV="
-monit
-zabbix
-minidlna
-firefly
-echoplexus
-gitannex
-gogs
-phabricator
-pydio
+    11  monit
+    12  zabbix
+    13  minidlna
+    14  firefly
+    15  echoplexus
+    16  gitannex
+    17  gogs
+    18  phabricator
+    19  pydio
 "
 
-cat >/etc/pf/jails.anchor <<EOF
-nat pass on ${HOSTNIC} inet from 10.7.7.0/24 to any -> ${HOSTIP}
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3127 -> 10.7.7.1
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3128 -> 10.7.7.1
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 80 -> 10.7.7.2
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 443 -> 10.7.7.2
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 5222 -> 10.7.7.6
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 64738 -> 10.7.7.7
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 23 -> 10.7.7.9
+BAD="
+    30  baikal
+    31  couchdtfc
+    32  horde
+"
+
+
+
+setuppf() {
+    cat >/etc/pf/jails.anchor <<EOF
+    nat pass on ${HOSTNIC} inet from ${IPNET}0/24 to any -> ${HOSTIP}
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3127 -> ${IPNET}`jailip squid`
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3128 -> ${IPNET}`jailip squid`
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 80 -> ${IPNET}`jailip nginx`
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 443 -> ${IPNET}`jailip nginx`
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 5222 -> ${IPNET}`jailip ejabberd`
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 64738 -> ${IPNET}`jailip murmur`
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 23 -> ${IPNET}`jailip gitlab`
 EOF
-if [ "x" != "x${SQUIDIPALIAS}" ]; then
-    # if we have a squid IP alias from HOSTNIC
-    cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3127 -> 10.7.7.1
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3128 -> 10.7.7.1
+    if [ "x" != "x${SQUIDIPALIAS}" ]; then
+        # if we have a squid IP alias from HOSTNIC
+        cat >>/etc/pf/jails.anchor <<EOF
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3127 -> ${IPNET}`jailip squid`
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3128 -> ${IPNET}`jailip squid`
 EOF
-    if [ ! -e /etc/rc.conf.d/ucarp ]; then
-        cat >>/etc/rc.conf.d/ucarp <<EOF
-# primary   ucarp_preempt="YES"
-# primary   ucarp_advskew="100"
-# secondary ucarp_advskew="200"
-# ucarp_enable="YES"
-# ucarp_pass=""
-# ucarp_passfile="/usr/local/etc/ucarppass"
-ucarp_addr="${SQUIDIPALIAS}"
-ucarp_if="${HOSTNIC}"
-ucarp_src="${HOSTIP}"
+        if [ ! -e /etc/rc.conf.d/ucarp ]; then
+            cat >>/etc/rc.conf.d/ucarp <<EOF
+    # primary   ucarp_preempt="YES"
+    # primary   ucarp_advskew="100"
+    # secondary ucarp_advskew="200"
+    # ucarp_enable="YES"
+    # ucarp_pass=""
+    # ucarp_passfile="/usr/local/etc/ucarppass"
+    ucarp_addr="${SQUIDIPALIAS}"
+    ucarp_if="${HOSTNIC}"
+    ucarp_src="${HOSTIP}"
 EOF
-    fi
-cat <<EOF
-You may want to:
-    vi /etc/rc.conf.d/ucarp
-    service ucarp start
-EOF
-fi
-if [ "x" != "x${WEBIPALIAS}" ]; then
-    # if we have a web IP alias from HOSTNIC
-    cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 80 -> 10.7.7.2
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 443 -> 10.7.7.2
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 23 -> 10.7.7.9
-EOF
-    cat /usr/local/etc/rc.d/ucarp | sed 's;ucarp;ucarw;' | sed 's;/usr/local/sbin/ucarw;/usr/local/sbin/ucarp;' >/usr/local/etc/rc.d/ucarw
-    chmod 755 /usr/local/etc/rc.d/ucarw
-    if [ ! -e /etc/rc.conf.d/ucarw ]; then
-        cat >>/etc/rc.conf.d/ucarw <<EOF
-# primary   ucarw_preempt="YES"
-# primary   ucarw_advskew="100"
-# secondary ucarw_advskew="200"
-# ucarw_enable="YES"
-# ucarw_pass=""
-# ucarw_passfile="/usr/local/etc/ucarwpass"
-ucarw_addr="${WEBIPALIAS}"
-ucarw_if="${HOSTNIC}"
-ucarw_src="${HOSTIP}"
+        fi
+    cat <<EOF
+    You may want to:
+        vi /etc/rc.conf.d/ucarp
+        service ucarp start
 EOF
     fi
-cat <<EOF
-You may want to:
-    vi /etc/rc.conf.d/ucarw
-    service ucarw start
+    if [ "x" != "x${WEBIPALIAS}" ]; then
+        # if we have a web IP alias from HOSTNIC
+        cat >>/etc/pf/jails.anchor <<EOF
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 80 -> ${IPNET}`jailip nginx`
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 443 -> ${IPNET}`jailip nginx`
+    rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 23 -> ${IPNET}`jailip gitlab`
 EOF
-fi
-pf-anchor clear jails
-pf-anchor load jails
+        cat /usr/local/etc/rc.d/ucarp | sed 's;ucarp;ucarw;' | sed 's;/usr/local/sbin/ucarw;/usr/local/sbin/ucarp;' >/usr/local/etc/rc.d/ucarw
+        chmod 755 /usr/local/etc/rc.d/ucarw
+        if [ ! -e /etc/rc.conf.d/ucarw ]; then
+            cat >>/etc/rc.conf.d/ucarw <<EOF
+    # primary   ucarw_preempt="YES"
+    # primary   ucarw_advskew="100"
+    # secondary ucarw_advskew="200"
+    # ucarw_enable="YES"
+    # ucarw_pass=""
+    # ucarw_passfile="/usr/local/etc/ucarwpass"
+    ucarw_addr="${WEBIPALIAS}"
+    ucarw_if="${HOSTNIC}"
+    ucarw_src="${HOSTIP}"
+EOF
+        fi
+    cat <<EOF
+    You may want to:
+        vi /etc/rc.conf.d/ucarw
+        service ucarw start
+EOF
+    fi
+    pf-anchor clear jails
+    pf-anchor load jails
+}
+
+jailip() {
+    # omit ${BAD}
+    JAILDATASET="${GOOD} ${DEV} ${BAD}"
+    addtocount=""
+    echo "$JAILDATASET" \
+        | while read num name ; do
+            if [ "${1}" == "${name}" ]; then
+                addtocount=${num}
+            fi
+        done
+    if [ "x" != "x${addtocount}" ]; then
+        echo $(( count + addtocount ))
+    else
+        echo 0
+    fi
+}
 
 setupnginxconfig() {
     local i=${1}
@@ -159,16 +190,16 @@ setupnginxconfig() {
     cat >/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
         client_max_body_size 0;
         upstream couchsources {
-            server 10.7.7.3:5984;
+            server ${IPNET}`jailip couch`:5984;
         }
         upstream dtfcsources {
-            server 10.7.7.4:8080;
+            server ${IPNET}`jailip dtfc`:8080;
         }
         upstream owncloudsources {
-            server 10.7.7.5:443;
+            server ${IPNET}`jailip owncloud`:443;
         }
         upstream gitlabsources {
-            server 10.7.7.9:8080;
+            server ${IPNET}`jailip gitlab`:8080;
         }
         map \$uri \$redirect_uri {
             ~^/owncloud\$ https://${FQDN}/owncloud/;
@@ -183,9 +214,9 @@ EOF
             ~^/\$         https://${FQDN}/explore;
         }
         server {
-            listen   10.7.7.2:80 default_server;
+            listen   ${IPNET}`jailip nginx`:80 default_server;
             server_name ${FQDN};
-            server_name 10.7.7.2;
+            server_name ${IPNET}`jailip nginx`;
             return 302 https://$host$request_uri;
         }
         server {
@@ -268,6 +299,7 @@ case ${1} in
         JAILNAMES="${DEV}"
         ;;
     nginx)
+        setuppf
         setupnginxconfig nginx ${FQDN}
         exit
         ;;
@@ -296,19 +328,14 @@ copysslselfcert() {
     fi
 }
 
-if [ "x" == "x${STARTCOUNT}" ]; then
-    # remove anything that's not a digit
-    count=`echo ${STARTCOUNT} | sed 's/[^[:digit:]]//g'`
-fi
 
-if [ "x" == "x${count}" ]; then
-    count=0
-fi
 
-for i in ${JAILNAMES} ; do
-    count=$((count+1))
+setuppf
+
+echo "$JAILDATASET" \
+    | while read num i ; do
     if [ ! -e /usr/jails/${i} ]; then
-        eza create ${i}        "${NIC}|${IPNET}${count}"
+        eza create ${i}        "${NIC}|${IPNET}${num}"
         env SQUID=${SQUID} REPOSRC=${REPOSRC} eza-unlink-basejail ${i}
         eza stop ${i}
         zfs snap tank/ezjail/${i}@10.1-RELEASE-p12
@@ -342,8 +369,8 @@ EOF
             # 3127 for public.pem
             cat >/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
                 server {
-                    listen   10.7.7.1:3127 default_server;
-                    server_name 10.7.7.1;
+                    listen   ${IPNET}`jailip squid`:3127 default_server;
+                    server_name ${IPNET}`jailip squid`;
                     location =/public.pem {
                         alias /usr/local/etc/squid/public.pem;
                     }
