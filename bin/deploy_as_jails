@@ -72,6 +72,10 @@ horde
 "
 
 DEV="
+monit
+zabbix
+minidlna
+firefly
 echoplexus
 gitannex
 gogs
