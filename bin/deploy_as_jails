@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-090325
+SCRIPTVERSION=150627-093101
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -96,80 +96,87 @@ BAD="
 
 
 setuppf() {
-    pfanchorfile="/etc/pf/jails.anchor"
-    cat >${pfanchorfile} <<EOF
+    local name
+    cat >/etc/pf/jails.anchor <<EOF
     nat pass on ${HOSTNIC} inet from ${IPNET}0/24 to any -> ${HOSTIP}
 EOF
     if [ "x" == "x${SQUIDIPALIAS}" ]; then
-        SQUIDIPALIAS="-"
+        SQUIDIPALIAS=0
     fi
     if [ "x" == "x${WEBIPALIAS}" ]; then
-        WEBIPALIAS="-"
+        WEBIPALIAS=0
     fi
     if [ "x" == "x${XMPPIPALIAS}" ]; then
-        XMPPIPALIAS="-"
+        XMPPIPALIAS=0
     fi
     if [ "x" == "x${MURMURIPALIAS}" ]; then
-        MURMURIPALIAS="-"
+        MURMURIPALIAS=0
     fi
     # name alias pubport realport
     ALIASES="
-        squid     ${SQUIDIPALIAS}     3127    3127
-        squid     ${SQUIDIPALIAS}     3128    3128
-        nginx     ${WEBIPALIAS}         80      80
-        nginx     ${WEBIPALIAS}        443     443
-        gitlab    ${WEBIPALIAS}         23      23
-        ejabberd  ${XMPPIPALIAS}      5222    5222
-        murmur    ${MURMURIPALIAS}   64738   64738
+    squid     ${SQUIDIPALIAS}     3127    3127
+    squid     ${SQUIDIPALIAS}     3128    3128
+    nginx     ${WEBIPALIAS}         80      80
+    nginx     ${WEBIPALIAS}        443     443
+    gitlab    ${WEBIPALIAS}         23      23
+    ejabberd  ${XMPPIPALIAS}      5222    5222
+    murmur    ${MURMURIPALIAS}   64738   64738
 "
     echo "$ALIASES" \
-    | while read namepf ipalias pubport realport ; do
-        echo "${namepf} ${ipalias} ${pubport} ${realport}"
-        if [ "x-" != "x${ipalias}" ] && [ "x" != "x${ipalias}" ] \
-            && [ "x" != "x${namepf}" ] && [ "x" != "x${pubport}" ] \
+    | while read name ipalias pubport realport ; do
+        #echo "debug ${name} ${ipalias} ${pubport} ${realport}"
+        if [ "x0" != "x${ipalias}" ] && [ "x" != "x${ipalias}" ] \
+            && [ "x" != "x${name}" ] && [ "x" != "x${pubport}" ] \
             && [ "x" != "x${realport}" ]; then
-                cat >>${pfanchorfile} <<EOF
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP}  port = ${pubport} -> ${IPNET}`jailip ${namepf}` port ${realport}
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${ipalias} port = ${pubport} -> ${IPNET}`jailip ${namepf}` port ${realport}
+                cat >>/etc/pf/jails.anchor <<EOF
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP}  port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${ipalias} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
 EOF
-                cat /usr/local/etc/rc.d/ucarp | sed "s;ucarp;ucarp${namepf};g" \
-                    | tr '~' "\n" >/usr/local/etc/rc.d/ucarp${namepf}
-                chmod 755 /usr/local/etc/rc.d/ucarp${namepf}
-                if [ ! -e /usr/local/sbin/ucarp${namepf} ]; then
-                    ln /usr/local/sbin/ucarp /usr/local/sbin/ucarp${namepf}
+                if [ ! -e /usr/local/etc/rc.d/ucarp${name} ]; then
+                    cat /usr/local/etc/rc.d/ucarp \
+                    | sed "s;ucarp;ucarp${name};g" >/usr/local/etc/rc.d/ucarp${name}
+                    chmod 755 /usr/local/etc/rc.d/ucarp${name}
                 fi
-                if [ ! -e /etc/rc.conf.d/ucarp${namepf} ]; then
-                    cat | sed "s/ucarp_/ucarp${namepf}_/g" >>/etc/rc.conf.d/ucarp${namepf} <<EOF
+                if [ ! -e /usr/local/sbin/ucarp${name} ]; then
+                    ln /usr/local/sbin/ucarp /usr/local/sbin/ucarp${name}
+                fi
+                if [ ! -e /etc/rc.conf.d/ucarp${name} ]; then
+                    cat >/etc/rc.conf.d/ucarp${name}.tmp <<EOF
 ucarp_enable="YES"
 ucarp_addr="${ipalias}"
 ucarp_if="${HOSTNIC}"
 ucarp_src="${HOSTIP}"
 ucarp_upscript="/usr/local/sbin/ucarp-up"
 ucarp_downscript="/usr/local/sbin/ucarp-down"
-ucarp_pass="${namepf}"
-# ucarp_passfile="/usr/local/etc/ucarp${namepf}password"
+ucarp_pass="${name}"
+# ucarp_passfile="/usr/local/etc/ucarp${name}password"
 # primary   ucarp_preempt="YES"
 # primary   ucarp_advskew="100"
 # secondary ucarp_advskew="200"
 EOF
+                    sed "s/ucarp_/ucarp${name}_/g" /etc/rc.conf.d/ucarp${name}.tmp >/etc/rc.conf.d/ucarp${name}
+                    rm /etc/rc.conf.d/ucarp${name}.tmp
                 fi
-                /etc/rc.conf.d/ucarp${namepf} start
+                service ucarp${name} onestatus >/dev/null 2>/dev/null || service ucarp${name} start
         fi
+        #echo "debug after if name ${name}"
     done
     pf-anchor clear jails
     pf-anchor load jails
 }
 
 jailip() {
+    local name
+    local num
     # omit ${BAD}
     JAILDATASET="${GOOD} ${DEV} ${BAD}"
     echo "$JAILDATASET" \
-        | while read numji nameji ; do
-            if [ "x" != "x${numji}" ] && [ "x" != "x${nameji}" ]; then
-                #echo "search:${1}, name:${name}"
-                if [ "x${1}" == "x${nameji}" ]; then
-                    RESULT=$(( count + numji ))
-                    #echo "match ${num}, result ${RESULT}"
+        | while read num name ; do
+            if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
+                #echo "debug: search ${1}, name ${name}"
+                if [ "x${1}" == "x${name}" ]; then
+                    RESULT=$(( count + num ))
+                    #echo "debug: match ${num}, result ${RESULT}"
                     echo "${RESULT}"
                 fi
             fi
