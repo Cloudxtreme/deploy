@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-083844
+SCRIPTVERSION=150627-085733
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -133,7 +133,6 @@ rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP}  port = ${pubport} -
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${ipalias} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
 EOF
                 cat /usr/local/etc/rc.d/ucarp | sed "s;ucarp;ucarp${name};g" \
-                    | sed 's;/usr/local/sbin/ucarp[a-z][a-z]*;/usr/local/sbin/ucarp;g' \
                     | tr '~' "\n" >/usr/local/etc/rc.d/ucarp${name}
                 chmod 755 /usr/local/etc/rc.d/ucarp${name}
                 if [ ! -e /usr/local/sbin/ucarp${name} ]; then
