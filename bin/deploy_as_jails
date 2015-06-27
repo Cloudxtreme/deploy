@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-093101
+SCRIPTVERSION=150627-095609
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -121,6 +121,12 @@ EOF
     gitlab    ${WEBIPALIAS}         23      23
     ejabberd  ${XMPPIPALIAS}      5222    5222
     murmur    ${MURMURIPALIAS}   64738   64738
+    monit     ${MONITIPALIAS}     2812    2812
+    zabbix    ${ZABBIXIPALIAS}   10050   10050
+    zabbix    ${ZABBIXIPALIAS}   10051   10051
+    minidlna  ${MINIDLNAIPALIAS}  1900    1900
+    minidlna  ${MINIDLNAIPALIAS}  8200    8200
+    firefly   ${FIREFLYIPALIAS}   3689    3689
 "
     echo "$ALIASES" \
     | while read name ipalias pubport realport ; do
@@ -128,10 +134,12 @@ EOF
         if [ "x0" != "x${ipalias}" ] && [ "x" != "x${ipalias}" ] \
             && [ "x" != "x${name}" ] && [ "x" != "x${pubport}" ] \
             && [ "x" != "x${realport}" ]; then
-                cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP}  port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
+                if  ! cat /etc/pf/jails.anchor | grep "rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = ${pubport} " >/dev/null ; then
+                    cat >>/etc/pf/jails.anchor <<EOF
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
 rdr pass on ${HOSTNIC} inet proto tcp from any to ${ipalias} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
 EOF
+                fi
                 if [ ! -e /usr/local/etc/rc.d/ucarp${name} ]; then
                     cat /usr/local/etc/rc.d/ucarp \
                     | sed "s;ucarp;ucarp${name};g" >/usr/local/etc/rc.d/ucarp${name}
@@ -204,6 +212,9 @@ setupnginxconfig() {
         upstream gitlabsources {
             server ${IPNET}`jailip gitlab`:8080;
         }
+        upstream zabbixsources {
+            server ${IPNET}`jailip zabbix`:443;
+        }
         map \$uri \$redirect_uri {
             ~^/owncloud\$ https://${FQDN}/owncloud/;
             ~^/couch\$    https://${FQDN}/couch/;
@@ -247,6 +258,11 @@ EOF
                 rewrite /owncloud/(.*) /owncloud/\$1 break;
                 include ${proxypass};
                 proxy_pass https://owncloudsources;
+            }
+            location  ~^/zabbix/ {
+                rewrite /zabbix/(.*) /zabbix/\$1 break;
+                include ${proxypass};
+                proxy_pass https://zabbixsources;
             }
             location / {
                 try_files \$uri \$uri/ @redirect-map;
