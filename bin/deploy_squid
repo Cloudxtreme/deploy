@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150625-045505
+SCRIPTVERSION=150627-073113
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -191,4 +191,4 @@ fi
 
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
-echo "Squid is setup, eza-unlink-basejail will setup PKG_ENV to 10.7.7.1:3128"
+echo "Squid is setup, eza-unlink-basejail will setup PKG_ENV to ${JAILIP}:3128"
