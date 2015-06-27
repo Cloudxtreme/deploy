@@ -5,46 +5,54 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150621-234104
+SCRIPTVERSION=150627-084203
 
 GOOD="
-squid
-nginx
-couch
-dtfc
-owncloud
-ejabberd
-murmur
-vnc
-gitlab
-"
-
-BAD="
-baikal
-couchdtfc
-horde
+     1  squid
+     2  nginx
+     3  couch
+     4  dtfc
+     5  piwik
+     6  owncloud
+     7  ejabberd
+     8  murmur
+     9  vnc
+    10  gitlab
 "
 
 DEV="
-echoplexus
-gitannex
-gogs
-phabricator
-pydio
+    11  monit
+    12  zabbix
+    13  minidlna
+    14  firefly
+    15  echoplexus
+    16  gitannex
+    17  gogs
+    18  phabricator
+    19  pydio
+"
+
+BAD="
+    30  baikal
+    31  couchdtfc
+    32  horde
 "
 
 JAILNAMES="${GOOD} ${BAD} ${DEV}"
 
 eza stop
 
-for i in ${JAILNAMES} ; do
-    if [ "xsquid" != "x${i}" ]; then
-        if zfs list -H tank/ezjail/${i} 2>/dev/null ; then
-            eza delete ${i}
-            zfs destroy -fr tank/ezjail/${i}
-        fi
-        if [ -d /usr/jails/${i} ]; then
-            rmdir /usr/jails/${i}
+echo "$JAILNAMES" \
+| while read num name ; do
+    if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
+        if [ "xsquid" != "x${name}" ]; then
+            if zfs list -H tank/ezjail/${name} 2>/dev/null ; then
+                eza delete ${name}
+                zfs destroy -fr tank/ezjail/${name}
+            fi
+            if [ -d /usr/jails/${name} ]; then
+                rmdir /usr/jails/${name}
+            fi
         fi
     fi
 done
