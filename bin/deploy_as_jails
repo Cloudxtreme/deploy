@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-055240
+SCRIPTVERSION=150627-055920
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -181,13 +181,13 @@ jailip() {
 }
 
 setupnginxconfig() {
-    local i=${1}
+    local name=${1}
     local FQDN=${2}
     couchdatabases="movies music wiki"
     gitlabpaths="admin assets dashboard explore groups help profile projects s snippets u users"
     tlsconf="/usr/local/etc/nginx/tls.conf"
     proxypass="/usr/local/etc/nginx/proxypass.conf"
-    cat >/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+    cat >/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
         client_max_body_size 0;
         upstream couchsources {
             server ${IPNET}`jailip couch`:5984;
@@ -206,11 +206,11 @@ setupnginxconfig() {
             ~^/couch\$    https://${FQDN}/couch/;
 EOF
         for c in ${couchdatabases} ; do
-            cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+            cat >>/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
             ~^/${c}\$   https://${FQDN}/${c}/;
 EOF
         done
-        cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+        cat >>/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
             ~^/\$         https://${FQDN}/explore;
         }
         server {
@@ -255,7 +255,7 @@ EOF
             }
 EOF
             for c in ${couchdatabases} ; do
-                cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+                cat >>/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
             location  ~^/${c}/ {
                 rewrite /${c}/(.*) /${c}/_design/${c}/_rewrite/\$1 break;
                 include ${proxypass};
@@ -264,7 +264,7 @@ EOF
 EOF
             done
             for g in ${gitlabpaths} ; do
-                cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+                cat >>/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
             location  ~^/${g}/ {
                 rewrite /${g}/(.*) /${g}/\$1 break;
                 include ${proxypass};
@@ -277,7 +277,7 @@ EOF
             }
 EOF
             done
-            cat >>/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+            cat >>/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
             #letfover slashes or more to gitlab
             location  ~^/(.*)/(.*) {
                 rewrite /(.*)/(.*) /\$1/\$2 break;
@@ -333,25 +333,25 @@ copysslselfcert() {
 setuppf
 
 echo "$JAILNAMES" \
-    | while read num i ; do
-    if [ "x" != "x${num}" ] && [ "x" != "x${i}" ]; then
-        if [ ! -e /usr/jails/${i} ]; then
-            echo "Creating: ${num} ${i}"
-            eza create ${i}        "${NIC}|${IPNET}${num}"
-            env SQUID=${SQUID} REPOSRC=${REPOSRC} eza-unlink-basejail ${i}
-            eza stop ${i}
-            zfs snap tank/ezjail/${i}@10.1-RELEASE-p12
+    | while read num name ; do
+    if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
+        if [ ! -e /usr/jails/${name} ]; then
+            echo "Creating: ${num} ${name}"
+            eza create ${name}        "${NIC}|${IPNET}${num}"
+            env SQUID=${SQUID} REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
+            eza stop ${name}
+            zfs snap tank/ezjail/${name}@10.1-RELEASE-p12
         else
-            echo "Updating: ${num} ${i}"
-            eza console -f -e "env REPOSRC=${REPOSRC} fres" ${i}
-            if [ "squid" != "${i}" ]; then
-                eza console -f -e "pkg update" ${i}
-                eza console -f -e "pkg upgrade -y" ${i}
+            echo "Updating: ${num} ${name}"
+            eza console -f -e "env REPOSRC=${REPOSRC} fres" ${name}
+            if [ "squid" != "${name}" ]; then
+                eza console -f -e "pkg update" ${name}
+                eza console -f -e "pkg upgrade -y" ${name}
             fi
         fi
     fi
     # The following case can be in any order
-    case ${i} in
+    case ${name} in
         # GOOD JAILNAMES
         squid)
             # based on https://forums.freebsd.org/threads/transparent-proxy-in-jail-with-pf-in-host.42075/
@@ -364,14 +364,14 @@ add path zfs unhide
 add path pf unhide mode 0640 group 100
 EOF
             if [ -e /var/ports ]; then
-                rsync -viaP --exclude work /var/ports/ /usr/jails/${i}/var/ports/
+                rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
             fi
-            eza console -f -e "deploy ${i}" ${i}
-            rsync -viaP --exclude work /usr/jails/${i}/var/ports/ /var/ports/
+            eza console -f -e "deploy ${name}" ${name}
+            rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
             # easydns-client here to reduce risk of lost/rollbacked config
-            eza console -f -e "deploy easydnsclient" ${i}
+            eza console -f -e "deploy easydnsclient" ${name}
             # 3127 for public.pem
-            cat >/usr/jails/${i}/usr/local/etc/nginx/sites-enabled/${i} <<EOF
+            cat >/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
                 server {
                     listen   ${IPNET}`jailip squid`:3127 default_server;
                     server_name ${IPNET}`jailip squid`;
@@ -383,8 +383,8 @@ EOF
                     }
                 }
 EOF
-            eza console -f -e "deploy nginx" ${i}
-            eza console -f -e sh ${i} <<EOF
+            eza console -f -e "deploy nginx" ${name}
+            eza console -f -e sh ${name} <<EOF
 su urep -c "/bin/mkdir -p /usr/home/urep/bin"
 cp -a /root/bin/fres /usr/home/urep/bin/fres
 chown urep /usr/home/urep/bin/fres
@@ -393,62 +393,62 @@ su urep -c "/usr/home/urep/bin/deploy easydnsclient"
 EOF
             ;;
         nginx)
-            setupnginxconfig ${i} ${FQDN}
-            eza console -f -e "deploy ${i}" ${i}
+            setupnginxconfig ${name} ${FQDN}
+            eza console -f -e "deploy ${name}" ${name}
             ;;
         couch)
-            eza console -f -e "env FQDN=${FQDN} deploy ${i}db" ${i}
+            eza console -f -e "env FQDN=${FQDN} deploy ${name}db" ${name}
             ;;
         owncloud)
-            allowsysvipc ${i}
-            eza console -f -e "env FQDN=${FQDN} deploy ${i}" ${i}
+            allowsysvipc ${name}
+            eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
             ;;
         dtfc)
-            eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy ${i}" ${i}
+            eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy ${name}" ${name}
             ;;
         ejabberd)
-            eza console -f -e "env FQDN=${FQDN} deploy ${i}" ${i}
+            eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
             ;;
         murmur)
-            eza console -f -e "deploy ${i}" ${i}
+            eza console -f -e "deploy ${name}" ${name}
             ;;
         vnc)
-            eza console -f -e "deploy ${i}" ${i}
+            eza console -f -e "deploy ${name}" ${name}
             ;;
         gitlab)
-            allowsysvipc ${i}
-            copysslselfcert ${i}
-            eza console -f -e "env FQDN=${FQDN} GITLABSRC=${GITLABSRC} HTTP_PROXY=http://${SQUID} deploy ${i}_src" ${i}
+            allowsysvipc ${name}
+            copysslselfcert ${name}
+            eza console -f -e "env FQDN=${FQDN} GITLABSRC=${GITLABSRC} HTTP_PROXY=http://${SQUID} deploy ${name}_src" ${name}
             ;;
         # BAD JAILNAMES
         baikal)
-            eza console -f -e "env FQDN=${FQDN} deploy ${i}" ${i}
+            eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
             ;;
         couchdtfc)
-            eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy couchdbdtfc" ${i}
+            eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy couchdbdtfc" ${name}
             ;;
         horde)
-            allowsysvipc ${i}
-            eza console -f -e "env FQDN=${FQDN} deploy ${i}webmail" ${i}
+            allowsysvipc ${name}
+            eza console -f -e "env FQDN=${FQDN} deploy ${name}webmail" ${name}
             ;;
         # DEV JAILNAMES
         echoplexus)
-            eza console -f -e "env REPOSRC=${REPOSRC} deploy ${i}" ${i}
+            eza console -f -e "env REPOSRC=${REPOSRC} deploy ${name}" ${name}
             ;;
         gitannex)
-            eza console -f -e "deploy ${i}" ${i}
+            eza console -f -e "deploy ${name}" ${name}
             ;;
         gogs)
-            eza console -f -e "deploy ${i}_src" ${i}
+            eza console -f -e "deploy ${name}_src" ${name}
             ;;
         phabricator)
-            eza console -f -e "deploy ${i}" ${i}
+            eza console -f -e "deploy ${name}" ${name}
             ;;
         pydio)
-            eza console -f -e "deploy ${i}" ${i}
+            eza console -f -e "deploy ${name}" ${name}
             ;;
     esac
-    if [ "xsquid" != "x${i}" ]; then
-        eza stop ${i}
+    if [ "xsquid" != "x${name}" ]; then
+        eza stop ${name}
     fi
 done
