@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-073248
+SCRIPTVERSION=150627-074747
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -143,6 +143,8 @@ ucarp_enable="YES"
 ucarp_addr="${ipalias}"
 ucarp_if="${HOSTNIC}"
 ucarp_src="${HOSTIP}"
+ucarp_upscript="/usr/local/sbin/ucarp-up"
+ucarp_downscript="/usr/local/sbin/ucarp-down"
 ucarp_pass="${name}"
 # ucarp_passfile="/usr/local/etc/ucarp${name}password"
 # primary   ucarp_preempt="YES"
