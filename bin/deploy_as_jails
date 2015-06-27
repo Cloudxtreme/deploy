@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-054911
+SCRIPTVERSION=150627-055240
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -334,18 +334,20 @@ setuppf
 
 echo "$JAILNAMES" \
     | while read num i ; do
-    if [ ! -e /usr/jails/${i} ]; then
-        echo "Creating: ${num} ${i}"
-        eza create ${i}        "${NIC}|${IPNET}${num}"
-        env SQUID=${SQUID} REPOSRC=${REPOSRC} eza-unlink-basejail ${i}
-        eza stop ${i}
-        zfs snap tank/ezjail/${i}@10.1-RELEASE-p12
-    else
-        echo "Updating: ${num} ${i}"
-        eza console -f -e "env REPOSRC=${REPOSRC} fres" ${i}
-        if [ "squid" != "${i}" ]; then
-            eza console -f -e "pkg update" ${i}
-            eza console -f -e "pkg upgrade -y" ${i}
+    if [ "x" != "x${num}" ] && [ "x" != "x${i}" ]; then
+        if [ ! -e /usr/jails/${i} ]; then
+            echo "Creating: ${num} ${i}"
+            eza create ${i}        "${NIC}|${IPNET}${num}"
+            env SQUID=${SQUID} REPOSRC=${REPOSRC} eza-unlink-basejail ${i}
+            eza stop ${i}
+            zfs snap tank/ezjail/${i}@10.1-RELEASE-p12
+        else
+            echo "Updating: ${num} ${i}"
+            eza console -f -e "env REPOSRC=${REPOSRC} fres" ${i}
+            if [ "squid" != "${i}" ]; then
+                eza console -f -e "pkg update" ${i}
+                eza console -f -e "pkg upgrade -y" ${i}
+            fi
         fi
     fi
     # The following case can be in any order
