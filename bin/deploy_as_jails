@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-055920
+SCRIPTVERSION=150627-071237
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -96,69 +96,61 @@ BAD="
 
 
 setuppf() {
-    cat >/etc/pf/jails.anchor <<EOF
+    pfanchorfile="/etc/pf/jails.anchor"
+    cat >${pfanchorfile} <<EOF
     nat pass on ${HOSTNIC} inet from ${IPNET}0/24 to any -> ${HOSTIP}
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3127 -> ${IPNET}`jailip squid`
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 3128 -> ${IPNET}`jailip squid`
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 80 -> ${IPNET}`jailip nginx`
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 443 -> ${IPNET}`jailip nginx`
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 5222 -> ${IPNET}`jailip ejabberd`
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 64738 -> ${IPNET}`jailip murmur`
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = 23 -> ${IPNET}`jailip gitlab`
 EOF
-    if [ "x" != "x${SQUIDIPALIAS}" ]; then
-        # if we have a squid IP alias from HOSTNIC
-        cat >>/etc/pf/jails.anchor <<EOF
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3127 -> ${IPNET}`jailip squid`
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${SQUIDIPALIAS} port = 3128 -> ${IPNET}`jailip squid`
-EOF
-        if [ ! -e /etc/rc.conf.d/ucarp ]; then
-            cat >>/etc/rc.conf.d/ucarp <<EOF
-    # primary   ucarp_preempt="YES"
-    # primary   ucarp_advskew="100"
-    # secondary ucarp_advskew="200"
-    # ucarp_enable="YES"
-    # ucarp_pass=""
-    # ucarp_passfile="/usr/local/etc/ucarppass"
-    ucarp_addr="${SQUIDIPALIAS}"
-    ucarp_if="${HOSTNIC}"
-    ucarp_src="${HOSTIP}"
-EOF
-        fi
-    cat <<EOF
-    You may want to:
-        vi /etc/rc.conf.d/ucarp
-        service ucarp start
-EOF
+    if [ "x" == "x${SQUIDIPALIAS}" ]; then
+        SQUIDIPALIAS="-"
     fi
-    if [ "x" != "x${WEBIPALIAS}" ]; then
-        # if we have a web IP alias from HOSTNIC
-        cat >>/etc/pf/jails.anchor <<EOF
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 80 -> ${IPNET}`jailip nginx`
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 443 -> ${IPNET}`jailip nginx`
-    rdr pass on ${HOSTNIC} inet proto tcp from any to ${WEBIPALIAS} port = 23 -> ${IPNET}`jailip gitlab`
-EOF
-        cat /usr/local/etc/rc.d/ucarp | sed 's;ucarp;ucarw;' | sed 's;/usr/local/sbin/ucarw;/usr/local/sbin/ucarp;' >/usr/local/etc/rc.d/ucarw
-        chmod 755 /usr/local/etc/rc.d/ucarw
-        if [ ! -e /etc/rc.conf.d/ucarw ]; then
-            cat >>/etc/rc.conf.d/ucarw <<EOF
-    # primary   ucarw_preempt="YES"
-    # primary   ucarw_advskew="100"
-    # secondary ucarw_advskew="200"
-    # ucarw_enable="YES"
-    # ucarw_pass=""
-    # ucarw_passfile="/usr/local/etc/ucarwpass"
-    ucarw_addr="${WEBIPALIAS}"
-    ucarw_if="${HOSTNIC}"
-    ucarw_src="${HOSTIP}"
-EOF
-        fi
-    cat <<EOF
-    You may want to:
-        vi /etc/rc.conf.d/ucarw
-        service ucarw start
-EOF
+    if [ "x" == "x${WEBIPALIAS}" ]; then
+        WEBIPALIAS="-"
     fi
+    if [ "x" == "x${XMPPIPALIAS}" ]; then
+        XMPPIPALIAS="-"
+    fi
+    if [ "x" == "x${MURMURIPALIAS}" ]; then
+        MURMURIPALIAS="-"
+    fi
+    # name alias pubport realport
+    ALIASES="
+        squid     ${SQUIDIPALIAS}     3127    3127
+        squid     ${SQUIDIPALIAS}     3128    3128
+        nginx     ${WEBIPALIAS}         80      80
+        nginx     ${WEBIPALIAS}        443     443
+        gitlab    ${WEBIPALIAS}         23      23
+        ejabberd  ${XMPPIPALIAS}      5222    5222
+        murmur    ${MURMURIPALIAS}   64738   64738
+"
+    echo "$ALIASES" \
+    | while read name ipalias pubport realport ; do
+        echo "${name} ${ipalias} ${pubport} ${realport}"
+        if [ "x-" != "x${ipalias}" ] && [ "x" != "x${ipalias}" ] \
+            && [ "x" != "x${name}" ] && [ "x" != "x${pubport}" ] \
+            && [ "x" != "x${realport}" ]; then
+                cat >>${pfanchorfile} <<EOF
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP}  port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
+rdr pass on ${HOSTNIC} inet proto tcp from any to ${ipalias} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
+EOF
+                cat /usr/local/etc/rc.d/ucarp | sed "s;ucarp;ucarp${name};g" \
+                    | sed 's;/usr/local/sbin/ucarp[a-z][a-z]*;/usr/local/sbin/ucarp;g' >/usr/local/etc/rc.d/ucarp${name}
+                chmod 755 /usr/local/etc/rc.d/ucarp${name}
+                if [ ! -e /etc/rc.conf.d/ucarp${name} ]; then
+                    cat | sed "s/ucarp_/ucarp${name}_/g" >>/etc/rc.conf.d/ucarp${name} <<EOF
+ucarp_enable="YES"
+ucarp_addr="${ipalias}"
+ucarp_if="${HOSTNIC}"
+ucarp_src="${HOSTIP}"
+ucarp_pass="${name}"
+# ucarp_passfile="/usr/local/etc/ucarp${name}password"
+# primary   ucarp_preempt="YES"
+# primary   ucarp_advskew="100"
+# secondary ucarp_advskew="200"
+EOF
+                fi
+                service ucarp${name} start
+        fi
+    done
     pf-anchor clear jails
     pf-anchor load jails
 }
@@ -166,18 +158,17 @@ EOF
 jailip() {
     # omit ${BAD}
     JAILDATASET="${GOOD} ${DEV} ${BAD}"
-    addtocount=""
     echo "$JAILDATASET" \
         | while read num name ; do
-            if [ "${1}" == "${name}" ]; then
-                addtocount=${num}
+            if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
+                #echo "search:${1}, name:${name}"
+                if [ "x${1}" == "x${name}" ]; then
+                    RESULT=$(( count + num ))
+                    #echo "match ${num}, result ${RESULT}"
+                    echo "${RESULT}"
+                fi
             fi
         done
-    if [ "x" != "x${addtocount}" ]; then
-        echo $(( count + addtocount ))
-    else
-        echo 0
-    fi
 }
 
 setupnginxconfig() {
