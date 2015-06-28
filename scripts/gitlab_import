@@ -1,0 +1,84 @@
+#!/bin/sh
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150628-180040
+
+if [ "x" == "x${FQDN}" ]; then
+    echo "Please set or export variable FQDN"
+    exit 1
+fi
+
+if [ "x" == "x${TOKEN}" ]; then
+    echo "Please set or export variable TOKEN"
+    exit 1
+fi
+
+PROJECTS="
+    apache-config-freebsd       https://github.com/johnko/apache-config-freebsd.git
+    btfc2                       https://github.com/johnko/btfc2.git
+    crontabbed                  https://github.com/johnko/crontabbed.git
+    deploy                      https://github.com/johnko/deploy.git
+    eza                         https://github.com/johnko/eza.git
+    freebsd-install-script      https://github.com/johnko/freebsd-install-script.git
+    freebsd-pf-script           https://github.com/johnko/freebsd-pf-script.git
+    freebsd-sortconf            https://github.com/johnko/freebsd-sortconf.git
+    freebsd-system-info         https://github.com/johnko/freebsd-system-info.git
+    github-backup               https://github.com/johnko/github-backup.git
+    gtfc                        https://github.com/johnko/gtfc.git
+    hddid                       https://github.com/johnko/hddid.git
+    mount_iso                   https://github.com/johnko/mount_iso.git
+    netconn                     https://github.com/johnko/netconn.git
+    nginx-config-sites-enabled  https://github.com/johnko/nginx-config-sites-enabled.git
+    psnap                       https://github.com/johnko/psnap.git
+    pwgen                       https://github.com/johnko/pwgen.git
+    randomword                  https://github.com/johnko/randomword.git
+    setproxy                    https://github.com/johnko/setproxy.git
+    ssh-multi                   https://github.com/johnko/ssh-multi.git
+    ssh-tools                   https://github.com/johnko/ssh-tools.git
+    zsnapple                    https://github.com/johnko/zsnapple.git
+    skel                        https://github.com/johnko/skel.git
+    dtfc                        https://github.com/johnko/dtfc.git
+    echoplexus                  https://github.com/qq99/echoplexus.git
+    gitlab-ce                   https://gitlab.com/gitlab-org/gitlab-ce.git
+"
+
+groups() {
+    echo "${PROJECTS}" \
+    | while read name url ; do
+        if [ "x" != "x${name}" ] && [ "x" != "x${url}" ]; then
+            echo "${url}" | sed -E 's;https?://[^/][^/]*/;v.;g' | sed -E 's;/.*;;g'
+        fi
+    done
+}
+
+for name in `groups | sort -u` ; do
+    if [ "x" != "x${name}" ]; then
+        curl \
+        --header "PRIVATE-TOKEN: ${TOKEN}" \
+        -X POST \
+        -d "name=${name}&path=${name}" "https://${FQDN}/api/v3/groups"
+    fi
+done
+
+echo "${PROJECTS}" \
+| while read name url ; do
+    if [ "x" != "x${name}" ] && [ "x" != "x${url}" ]; then
+        projectid=`curl -s --header "PRIVATE-TOKEN: ${TOKEN}" \
+            -X POST -d "user_id=root&name=${name}&public=true&import_url=${url}" \
+            "https://${FQDN}/api/v3/projects" \
+            | grep -o '"id" *: *[0-9][0-9]* *,' | head -1 | grep -o '[0-9][0-9]*'`
+        groupname=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;v.;g' | sed -E 's;/.*;;g'`
+        groupid=`curl --header "PRIVATE-TOKEN: ${TOKEN}" \
+            "https://${FQDN}/api/v3/groups" \
+            | grep -o "\"id\" *: *[0-9][0-9]* *, *\"name\" *: *\"${groupname}\"" | head -1 | grep -o '[0-9][0-9]*' | head -1`
+        echo
+        echo "==== Transferring ${name} to ${groupname}: https://${FQDN}/api/v3/groups/${groupid}/projects/${projectid}"
+        while curl -s --header "PRIVATE-TOKEN: ${TOKEN}" \
+            -X POST \
+            "https://${FQDN}/api/v3/groups/${groupid}/projects/${projectid}" | grep 'Cannot move project' ; do
+                sleep 20
+        done
+    fi
+done
