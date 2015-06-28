@@ -25,6 +25,14 @@ cat /etc/rc.conf.d/routing >/mnt/etc/rc.conf.d/routing
 vi /mnt/boot/loader.conf.local
 reboot
 
+## Optional
+mkdir -p /root/local/gitcache/johnko
+mkdir -p /root/local/gitcache/gitlab-org
+mkdir -p /root/local/gitcache/qq99
+git clone https://github.com/johnko/dtfc.git /root/local/gitcache/johnko/dtfc
+git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-8-stable /root/local/gitcache/gitlab-org/gitlab-ce.git
+git clone https://github.com/qq99/echoplexus.git /root/local/gitcache/qq99/echoplexus
+
 pg pkg || fres
 env FQDN=virtual.local SQUID=10.7.7.1:3128 SQUIDIPALIAS=192.168.255.201 WEBIPALIAS=192.168.255.202 XMPPIPALIAS=192.168.255.203 MURMURIPALIAS=192.168.255.204 MONITIPALIAS=192.168.255.205 ZABBIXIPALIAS=192.168.255.206 MINIDLNAIPALIAS=192.168.255.207 FIREFLYIPALIAS=192.168.255.208 deploy as_jails good
 rsync -viaP --exclude work /usr/jails/squid/var/ports /var/ports/

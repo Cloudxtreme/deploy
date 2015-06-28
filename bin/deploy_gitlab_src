@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150624-204014
+SCRIPTVERSION=150628-140210
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -45,7 +45,7 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
-# 1 UTF-8
+echo 1 UTF-8
 #pkg install -y sudo
 #if ! locale | grep 'UTF-8' ; then
 #    patch -N /etc/login.conf <<EOF
@@ -54,8 +54,11 @@ fi
 #fi
 
 
-# 2 Dependencies
-pkg install -y sudo bash icu cmake pkgconf git nginx ruby ruby21-gems logrotate redis postgresql94-server postfix krb5
+echo 2 Dependencies
+# to overwrite mailer.conf
+yes y | pkg install -fy postfix
+
+pkg install -y sudo bash icu cmake pkgconf git nginx ruby ruby21-gems logrotate redis postgresql94-server krb5
 
 if [ ! -e /usr/local/bin/createuser ]; then
     echo "ERROR: install failed"
@@ -80,7 +83,7 @@ sysrc sshd_enable="YES"
 sysrc redis_enable="YES"
 sysrc postgresql_enable="YES"
 sysrc gitlab_enable="YES"
-sysrc nginx_enable="YES"
+#sysrc nginx_enable="YES"
 service sendmail onestop
 sysrc postfix_enable="YES"
 sysrc sendmail_enable="NO"
@@ -89,12 +92,12 @@ sysrc sendmail_outbound_enable="NO"
 sysrc sendmail_msp_queue_enable="NO"
 
 
-# 3 git user
+echo 3 git user
 echo "git:1005:::::GitLab:/usr/home/git:/usr/local/bin/bash:" | adduser -w no -f -
 pw user mod git -G redis
 
 
-# 4 postgresql
+echo 4 postgresql
 service postgresql initdb
 service postgresql start
 /usr/local/bin/createuser -U pgsql ${DBUSER}
@@ -112,7 +115,7 @@ EOF
 service postgresql restart
 
 
-# 5 redis
+echo 5 redis
 if [ ! -e /usr/local/etc/redis.conf.orig ]; then
     cp /usr/local/etc/redis.conf /usr/local/etc/redis.conf.orig
 fi
@@ -125,69 +128,79 @@ chmod 755 /usr/local/var/run/redis
 service redis start
 
 
-# 6 gitlab
+echo 6 gitlab
 cd /usr/home/git
-sudo -u git -H git clone ${GITLABSRC}gitlab-org/gitlab-ce.git -b ${BRANCH} gitlab
+if [         -d /root/local/gitcache/gitlab-org/gitlab-ce.git ]; then
+    rsync -qalP /root/local/gitcache/gitlab-org/gitlab-ce.git/ /usr/home/git/gitlab/
+    chown -R git /usr/home/git/gitlab/
+    cd /usr/home/git/gitlab/
+    sudo -u git -i -- git checkout -t origin/${BRANCH}
+    sudo -u git -i -- git pull origin ${BRANCH}
+fi
+if [ ! -d /usr/home/git/gitlab ]; then
+    sudo -u git -H git clone ${GITLABSRC}gitlab-org/gitlab-ce.git -b ${BRANCH} gitlab
+fi
+chown -R git /usr/home/git/gitlab
 cd /usr/home/git/gitlab
-sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
+sudo -u git -H cp /usr/home/git/gitlab/config/gitlab.yml.example /usr/home/git/gitlab/config/gitlab.yml
 #The option host: should be set to your domain, e.g. "gitlab.mysite.com".
 #The line bin_path: should be set to FreeBSD's git location: /usr/local/bin/git.
 #sudo -u git -H vi config/gitlab.yml
 if sysctl security.jail.jailed | grep 1 >/dev/null ; then
-    cat config/gitlab.yml.example \
+    cat /usr/home/git/gitlab/config/gitlab.yml.example \
     | sed 's/# ssh_port: 22/ssh_port: 23/' \
     | sed "s/host: localhost/host: ${FQDN}/" \
     | sed 's/port: 80/port: 443/' \
     | sed 's/https: false/https: true/' \
     | sed 's;bin_path: /usr/bin/git;bin_path: /usr/local/bin/git;' \
     | sed 's; /home/git/; /usr/home/git/;g' \
-    >config/gitlab.yml
+    >/usr/home/git/gitlab/config/gitlab.yml
 #    | sed 's/# email_enabled: true/email_enabled: false/' \
 else
-    cat config/gitlab.yml.example \
+    cat /usr/home/git/gitlab/config/gitlab.yml.example \
     | sed "s/host: localhost/host: ${FQDN}/" \
     | sed 's/port: 80/port: 443/' \
     | sed 's/https: false/https: true/' \
     | sed 's;bin_path: /usr/bin/git;bin_path: /usr/local/bin/git;' \
     | sed 's; /home/git/; /usr/home/git/;g' \
-    >config/gitlab.yml
+    >/usr/home/git/gitlab/config/gitlab.yml
 #    | sed 's/# email_enabled: true/email_enabled: false/' \
 fi
 cd /usr/home/git/gitlab
-chown -R git log/
-chown -R git tmp/
-chmod -R u+rwX,go-w log/
-chmod -R u+rwX tmp/
+chown -R git /usr/home/git/gitlab/log/
+chown -R git /usr/home/git/gitlab/tmp/
+chmod -R u+rwX,go-w /usr/home/git/gitlab/log/
+chmod -R u+rwX /usr/home/git/gitlab/tmp/
 sudo -u git -H mkdir /usr/home/git/gitlab-satellites
 sudo -u git -H chmod u+rwx,g=rx,o-rwx /usr/home/git/gitlab-satellites
-sudo -u git -H chmod -R u+rwX tmp/pids/
-sudo -u git -H chmod -R u+rwX tmp/sockets/
-sudo -u git -H chmod -R u+rwX public/uploads/
-sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+sudo -u git -H chmod -R u+rwX /usr/home/git/gitlab/tmp/pids/
+sudo -u git -H chmod -R u+rwX /usr/home/git/gitlab/tmp/sockets/
+sudo -u git -H chmod -R u+rwX /usr/home/git/gitlab/public/uploads/
+sudo -u git -H cp /usr/home/git/gitlab/config/unicorn.rb.example /usr/home/git/gitlab/config/unicorn.rb
 # Set the number of workers to at least the number of cores
 #sudo -u git -H vi config/unicorn.rb
-cat config/unicorn.rb.example \
+cat /usr/home/git/gitlab/config/unicorn.rb.example \
 | sed 's/worker_processes 2/worker_processes 1/' \
 | sed 's;\"/home;\"/usr/home;g' \
->config/unicorn.rb
+>/usr/home/git/gitlab/config/unicorn.rb
 sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 # Configure Git global settings for git user, useful when editing via web
 # Edit user.email according to what is set in gitlab.yml
 sudo -u git -H git config --global user.name "GitLab"
 sudo -u git -H git config --global user.email "example@example.com"
 sudo -u git -H git config --global core.autocrlf "input"
-sudo -u git -H cp config/resque.yml.example config/resque.yml
+sudo -u git -H cp /usr/home/git/gitlab/config/resque.yml.example /usr/home/git/gitlab/config/resque.yml
 # Configure Redis to use the modified socket path
 # Change 'production' line to 'unix:/usr/local/var/run/redis/redis.sock'
 #sudo -u git -H vi config/resque.yml
-cat config/resque.yml.example \
+cat /usr/home/git/gitlab/config/resque.yml.example \
 | sed 's;/var/run/redis/redis.sock;/usr/local/var/run/redis/redis.sock;' \
->config/resque.yml
-sudo -u git -H cp config/database.yml.postgresql config/database.yml
+>/usr/home/git/gitlab/config/resque.yml
+sudo -u git -H cp /usr/home/git/gitlab/config/database.yml.postgresql /usr/home/git/gitlab/config/database.yml
 sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle install --deployment --without development test mysql aws
 
 
-# 7 GitLab Shell
+echo 7 GitLab Shell
 sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:shell:install[v2.4.1] REDIS_URL=unix:/usr/local/var/run/redis/redis.sock RAILS_ENV=production
 # Edit the gitlab-shell config
 # Change the 'socket' option to '/usr/local/var/run/redis/redis.sock'
@@ -197,39 +210,39 @@ sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:shell:instal
 #TODO cat /usr/home/git/gitlab-shell/config.yml | sed 's;;;' | tee /usr/home/git/gitlab-shell/config.yml
 
 
-# 8 Initialise Database
-sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=${ROOTPASS}
+echo 8 Initialise Database
+yes yes | sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=${ROOTPASS}
 
 
-# 9 Init script
+echo 9 Init script
 #wget -O /usr/local/etc/rc.d/gitlab https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/init/init/freebsd/gitlab-unicorn
 cp /home/git/gitlab/lib/support/init.d/gitlab /usr/local/etc/rc.d/gitlab
 chmod a+x /usr/local/etc/rc.d/gitlab
 
 
-# 10 compile
+echo 10 compile
 cd /usr/home/git/gitlab
 sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:env:info RAILS_ENV=production
 sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake assets:precompile RAILS_ENV=production
 sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 
-# 11 start
+echo 11 start
 service gitlab start
 
 
-# 12 nginx
+echo 12 nginx
 #wget -O /usr/local/etc/nginx/sites-enabled/gitlab.conf https://gitlab.com/gitlab-org/gitlab-ce/raw/master/lib/support/nginx/gitlab-ssl
-cp /usr/home/git/gitlab/lib/support/nginx/gitlab /usr/local/etc/nginx/sites-enabled/gitlab.conf
-cat /usr/home/git/gitlab/lib/support/nginx/gitlab \
-| sed 's/gzip_static on;/#gzip_static on;/' \
->/usr/local/etc/nginx/sites-enabled/gitlab.conf
-pw user mod www -G git
-chmod g+rx /usr/home/git/
-service nginx start
+#cp /usr/home/git/gitlab/lib/support/nginx/gitlab /usr/local/etc/nginx/sites-enabled/gitlab.conf
+#cat /usr/home/git/gitlab/lib/support/nginx/gitlab \
+#| sed 's/gzip_static on;/#gzip_static on;/' \
+#>/usr/local/etc/nginx/sites-enabled/gitlab.conf
+#pw user mod www -G git
+#chmod g+rx /usr/home/git/
+#service nginx start
 
 
-# Other services: SSH
+echo Other services: SSH
 if sysctl security.jail.jailed | grep 1 >/dev/null ; then
     cat /etc/ssh/sshd_config \
     | sed 's/#Port 22/Port 23/' \
@@ -243,7 +256,7 @@ sysrc sshd_ecdsa_enable="NO"
 service sshd start
 
 
-# Other services: MAIL
+echo Other services: MAIL
 service postfix start
 sysrc -f /etc/periodic.conf daily_clean_hoststat_enable="NO"
 sysrc -f /etc/periodic.conf daily_status_mail_rejects_enable="NO"

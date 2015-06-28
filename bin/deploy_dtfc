@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150622-022644
+SCRIPTVERSION=150628-141427
 
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
@@ -23,7 +23,15 @@ pkg install -y lang/go nginx sudo
 echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
 
 cd /usr/home/dtfc
-sudo -u ${MYUSER} -i -- git clone ${REPOSRC}johnko/dtfc.git /usr/home/dtfc/src
+if [         -d /root/local/gitcache/johnko/dtfc ]; then
+    rsync -qalP /root/local/gitcache/johnko/dtfc/ /usr/home/dtfc/src/
+    chown -R ${MYUSER} /usr/home/dtfc/src/
+    cd /usr/home/dtfc/src/
+    sudo -u ${MYUSER} -i -- git pull
+fi
+if [ ! -d /usr/home/dtfc/src ]; then
+    sudo -u ${MYUSER} -i -- git clone ${REPOSRC}johnko/dtfc.git /usr/home/dtfc/src
+fi
 
 cd /usr/home/dtfc/src
 sh scripts/install.sh

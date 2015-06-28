@@ -5,28 +5,38 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150621-235310
+SCRIPTVERSION=150628-143357
 
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
 fi
 
+MYUSER="echoplexus"
+
 # Based on https://github.com/qq99/echoplexus/blob/master/INSTALL.md
 
-echo "git:1006:::::echoplexus:/usr/home/echoplexus:/usr/sbin/nologin:" | adduser -w no -f -
-pw user mod echoplexus -G redis
+echo "${MYUSER}:1006:::::Echoplexus:/usr/home/${MYUSER}:/usr/sbin/nologin:" | adduser -w no -f -
+pw user mod ${MYUSER} -G redis
 
 pkg install -y www/node www/npm sudo git nginx ruby ruby21-gems redis
 
-cd /home/echoplexus
-sudo -u echoplexus -H git clone ${REPOSRC}qq99/echoplexus.git
+cd /usr/home/echoplexus
+if [         -d /root/local/gitcache/qq99/echoplexus ]; then
+    rsync -qalP /root/local/gitcache/qq99/echoplexus/ /usr/home/echoplexus/echoplexus/
+    chown -R ${MYUSER} /usr/home/echoplexus/echoplexus/
+    cd /usr/home/echoplexus/echoplexus
+    sudo -u ${MYUSER} -i -- git pull
+fi
+if [ ! -d /usr/home/echoplexus/echoplexus ]; then
+    sudo -u ${MYUSER} -H git clone ${REPOSRC}qq99/echoplexus.git /usr/home/echoplexus/echoplexus
+fi
 
-sudo -u echoplexus -H npm install
+sudo -u ${MYUSER} -H npm install
 npm install -g coffee-script grunt grunt-cli supervisor bower browserify testem
 
-sudo -u echoplexus -H bower install
+sudo -u ${MYUSER} -H bower install
 
-sudo -u echoplexus -H gem install sass
+sudo -u ${MYUSER} -H gem install sass
 
 sysrc redis_enable="YES"
 
