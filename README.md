@@ -26,14 +26,11 @@ vi /mnt/boot/loader.conf.local
 reboot
 
 pg pkg || fres
-ifconfig lagg0 alias 192.168.255.200/32
-ifconfig lagg0 alias 192.168.255.201/32
-gdf
 env FQDN=virtual.local SQUID=10.7.7.1:3128 SQUIDIPALIAS=192.168.255.201 WEBIPALIAS=192.168.255.202 XMPPIPALIAS=192.168.255.203 MURMURIPALIAS=192.168.255.204 MONITIPALIAS=192.168.255.205 ZABBIXIPALIAS=192.168.255.206 MINIDLNAIPALIAS=192.168.255.207 FIREFLYIPALIAS=192.168.255.208 deploy as_jails good
 rsync -viaP --exclude work /usr/jails/squid/var/ports /var/ports/
-vi /etc/rc.conf.d/ucar{p,w}
-service ucarp start
-service ucarw start
+
+## Optional
+# vi /etc/rc.conf.d/ucarp*
 ```
 
 Setup a valid FQDN SSL certficate and key (in this example: `virtual.local`) in `/usr/jails/nginx/usr/local/etc/nginx/ssl/ssl{.crt,.key}`
@@ -115,12 +112,9 @@ reboot
 
 env SQUID=192.168.255.201:3128 setproxy
 pg pkg || env REPOSRC=https://virtual.local/alpha. fres
-env REPOSRC=https://virtual.local/alpha. fres -b
 env FQDN=virtual.local SQUID=192.168.255.201:3128 REPOSRC=https://virtual.local/alpha. GITLABSRC=https://virtual.local/alpha. SQUIDIPALIAS=192.168.255.201 WEBIPALIAS=192.168.255.202 XMPPIPALIAS=192.168.255.203 MURMURIPALIAS=192.168.255.204 MONITIPALIAS=192.168.255.205 ZABBIXIPALIAS=192.168.255.206 MINIDLNAIPALIAS=192.168.255.207 FIREFLYIPALIAS=192.168.255.208  deploy as_jails good
 rsync -viaP --exclude work alpha:/var/ports /var/ports/
 
 ## Optional
-# vi /etc/rc.conf.d/ucar{p,w}
-# service ucarp start
-# service ucarw start
+# vi /etc/rc.conf.d/ucarp*
 ```
