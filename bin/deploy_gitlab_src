@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150628-140210
+SCRIPTVERSION=150628-144206
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -134,7 +134,7 @@ if [         -d /root/local/gitcache/gitlab-org/gitlab-ce.git ]; then
     rsync -qalP /root/local/gitcache/gitlab-org/gitlab-ce.git/ /usr/home/git/gitlab/
     chown -R git /usr/home/git/gitlab/
     cd /usr/home/git/gitlab/
-    sudo -u git -i -- git checkout -t origin/${BRANCH}
+    sudo -u git -i -- git checkout -t origin/${BRANCH} || sudo -u git -i -- git checkout ${BRANCH}
     sudo -u git -i -- git pull origin ${BRANCH}
 fi
 if [ ! -d /usr/home/git/gitlab ]; then
