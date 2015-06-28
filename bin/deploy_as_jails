@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150628-032648
+SCRIPTVERSION=150628-054851
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -361,6 +361,8 @@ echo "$JAILNAMES" \
             echo "Creating: ${num} ${name}"
             eza create ${name}        "${NIC}|${IPNET}${num}"
             env SQUID=${SQUID} REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
+            # this extra fres for cshpkglist
+            eza console -f -e "env REPOSRC=${REPOSRC} fres" ${name}
             eza stop ${name}
             zfs snap tank/ezjail/${name}@10.1-RELEASE-p12
         else
