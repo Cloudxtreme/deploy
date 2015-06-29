@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150629-154330
+SCRIPTVERSION=150629-170010
 
 DB="owncloud"
 DBUSER="owncloud"
@@ -37,6 +37,7 @@ apache24
 
 # different uid so shared memory of postgresql don't clash
 pw usermod -n pgsql -u 1060
+find / -user 70 -exec chown pgsql {} \;
 
 if [ ! -e /usr/local/bin/createuser ]; then
     echo "ERROR: install failed"
