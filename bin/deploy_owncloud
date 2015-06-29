@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150621-140921
+SCRIPTVERSION=150629-154330
 
 DB="owncloud"
 DBUSER="owncloud"
@@ -34,6 +34,9 @@ php56-pdo_pgsql \
 php56-pgsql \
 postgresql93-server \
 apache24
+
+# different uid so shared memory of postgresql don't clash
+pw usermod -n pgsql -u 1060
 
 if [ ! -e /usr/local/bin/createuser ]; then
     echo "ERROR: install failed"

@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150628-144206
+SCRIPTVERSION=150629-154330
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -59,6 +59,9 @@ echo 2 Dependencies
 yes y | pkg install -fy postfix
 
 pkg install -y sudo bash icu cmake pkgconf git nginx ruby ruby21-gems logrotate redis postgresql94-server krb5
+
+# different uid so shared memory of postgresql don't clash
+pw usermod -n pgsql -u 1100
 
 if [ ! -e /usr/local/bin/createuser ]; then
     echo "ERROR: install failed"
