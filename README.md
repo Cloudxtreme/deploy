@@ -1,18 +1,18 @@
 # deploy
 Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be dumb
 
-## Example
+# Example
 
-### Planning
+## Planning
 
-#### FQDN and WEBIPALIAS that would be reachable if this service is to be public
+### FQDN and WEBIPALIAS that would be reachable if this service is to be public
 - virtual.local
 - 192.168.255.200
 
-#### SQUIDIPALIAS, IP to use as alias for transparent ssl proxy
+### SQUIDIPALIAS, IP to use as alias for transparent ssl proxy
 - 192.168.255.201
 
-### Host (alpha.local 192.168.255.120)
+## Host (alpha.local 192.168.255.120)
 
 Pulls from github.com and gitlab.com. May be slow.
 
@@ -55,6 +55,8 @@ Then start jails:
 eza stop ; eza start
 ```
 
+### Dynamic DNS with EasyDNS
+
 Maybe setup scheduled dynamic easydns as user urep:
 
 ```
@@ -68,6 +70,32 @@ crontabbed
 crontab -l
 ```
 
+### CouchDB
+
+You may want to visit https://virtual.local/couch/_utils/ and set it up.
+
+### owncloud
+
+You may want to visit https://virtual.local/owncloud/ and set it up.
+
+Then https://virtual.local/owncloud/index.php/settings/apps and under Productivity enable:
+
+- Mail
+- Calendar
+- Contacts
+- Documents
+- Bookmarks
+
+Then https://virtual.local/owncloud/index.php/settings/admin and set the Email Server.
+
+### GitLab
+
+You may want to visit https://virtual.local/admin/application_settings and turn off:
+
+- Sign Up
+- Gravatar
+- Twitter
+
 Visit https://virtual.local/profile/account and get your `Private token`
 
 Then start importing:
@@ -76,7 +104,7 @@ Then start importing:
 env TOKEN=... FQDN=virtual.local git/deploy/scripts/gitlab_import
 ```
 
-### Host (sega.local 192.168.255.160)
+## Host (sega.local 192.168.255.160)
 
 Pulls from alpha.local. Fast for local network.
 
@@ -98,3 +126,9 @@ rsync -viaP --exclude work alpha:/var/ports /var/ports/
 ## Optional
 # vi /etc/rc.conf.d/ucarp*
 ```
+
+## Notes
+
+Outbound email is not enabled yet.
+
+If running multiple PostgreSQL jails, they each need to have different UIDs in order to not crash each other.
