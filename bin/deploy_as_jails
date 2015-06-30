@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150629-150730
+SCRIPTVERSION=150630-114339
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -449,11 +449,13 @@ EOF
                     mkdir -p                                                   /usr/jails/${name}/root/local/gitcache/gitlab-org/gitlab-ce.git
                     rsync -qalP /root/local/gitcache/gitlab-org/gitlab-ce.git/ /usr/jails/${name}/root/local/gitcache/gitlab-org/gitlab-ce.git/
                 fi
-                # Set jailip nginx as FQDN
-                grep -v " ${FQDN}" /usr/jails/${name}/etc/hosts >/usr/jails/${name}/etc/hosts.tmp
-                cat /usr/jails/${name}/etc/hosts.tmp >/usr/jails/${name}/etc/hosts
-                echo "${IPNET}`jailip nginx` ${FQDN}" >>/usr/jails/${name}/etc/hosts
-                rm  /usr/jails/${name}/etc/hosts.tmp
+                if ifconfig | grep ${WEBIPALIAS} >/dev/null ; then
+                    # Set jailip nginx as FQDN
+                    grep -v " ${FQDN}" /usr/jails/${name}/etc/hosts >/usr/jails/${name}/etc/hosts.tmp
+                    cat /usr/jails/${name}/etc/hosts.tmp >/usr/jails/${name}/etc/hosts
+                    echo "${IPNET}`jailip nginx` ${FQDN}" >>/usr/jails/${name}/etc/hosts
+                    rm  /usr/jails/${name}/etc/hosts.tmp
+                fi
                 eza console -f -e "env FQDN=${FQDN} GITLABSRC=${GITLABSRC} HTTP_PROXY=http://${SQUID} deploy ${name}_src" ${name}
                 ;;
             # BAD JAILNAMES
