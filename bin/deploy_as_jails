@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150630-114339
+SCRIPTVERSION=150701-030840
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -342,8 +342,8 @@ copysslselfcert() {
         if ifconfig | grep ${SQUIDIPALIAS} >/dev/null ; then
             cat /usr/jails/squid/usr/local/etc/squid/public.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
         else
-            fetch -o /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem http://${SQUIDIPALIAS}:3127/public.pem
-            cat      /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
+            curl --output /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem http://${SQUIDIPALIAS}:3127/public.pem
+            cat           /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
         fi
     else
         cat /usr/jails/squid/usr/local/etc/squid/public.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
@@ -378,14 +378,14 @@ echo "$JAILNAMES" \
             # GOOD JAILNAMES
             squid)
                 # based on https://forums.freebsd.org/threads/transparent-proxy-in-jail-with-pf-in-host.42075/
-                cat >>/etc/devfs.rules <<EOF
-[devfsrules_jail=4]
-add include \$devfsrules_hide_all
-add include \$devfsrules_unhide_basic
-add include \$devfsrules_unhide_login
-add path zfs unhide
-add path pf unhide mode 0640 group 100
-EOF
+#                cat >>/etc/devfs.rules <<EOF
+#[devfsrules_jail=4]
+#add include \$devfsrules_hide_all
+#add include \$devfsrules_unhide_basic
+#add include \$devfsrules_unhide_login
+#add path zfs unhide
+#add path pf unhide mode 0640 group 100
+#EOF
                 if [ -e /var/ports ]; then
                     rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
                 fi
