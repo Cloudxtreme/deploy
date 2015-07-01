@@ -84,7 +84,9 @@ Then https://virtual.local/owncloud/index.php/settings/apps and under Productivi
 - Documents
 - Bookmarks
 
-Then https://virtual.local/owncloud/index.php/settings/admin and set the Email Server.
+Then login to https://virtual.local/owncloud/index.php/apps/rainloop/app/?admin with admin and 12345 and change the admin password.
+
+Then https://virtual.local/owncloud/index.php/settings/admin and set the outgoing Email Server.
 
 ### GitLab
 
