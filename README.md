@@ -21,7 +21,6 @@ fres ; fres -b
 rm /var/ports/packages/All/squid-3.5.5.txz
 fzg -r mirror -d ada0 -d ada1 -d ada2 -z 2g -m -n -D -H alpha.local
 copy-network-conf-to-mnt
-vi /mnt/boot/loader.conf.local
 reboot
 
 ## Optional
@@ -113,7 +112,6 @@ env REPOSRC=https://virtual.local/v. fres
 env REPOSRC=https://virtual.local/v. fres -b
 fzg -d ada0 -d ada2 -z 2g -m -n -D -H sega.local
 copy-network-conf-to-mnt
-vi /mnt/boot/loader.conf.local
 reboot
 
 env SQUID=192.168.255.201:3128 setproxy
