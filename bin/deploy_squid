@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-073113
+SCRIPTVERSION=150701-025358
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -22,8 +22,12 @@ if [ "xYES" == "x${NEWINSTALL}" ]; then
         # remove squid because we want custom options
         # openssl from ports conflicts https://lists.freebsd.org/pipermail/freebsd-questions/2015-June/266245.html
         pkg remove -y www/squid openssl
-        # use portsnap
-        psnap
+        # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
+        cat <<EOF
+Please type the following:
+    psnap ; exit
+EOF
+        sh
 
         # we want LAX_HTTP=on
         if [ ! -e /usr/ports/www/squid/Makefile.orig ]; then
