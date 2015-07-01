@@ -83,7 +83,6 @@ Then https://virtual.local/owncloud/index.php/settings/apps and under Productivi
 - Contacts
 - Documents
 - Bookmarks
-- Search Lucene
 
 Then https://virtual.local/owncloud/index.php/settings/admin and set the Email Server.
 
