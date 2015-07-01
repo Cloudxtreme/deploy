@@ -78,7 +78,7 @@ You may want to visit https://virtual.local/owncloud/ and set it up.
 
 Then https://virtual.local/owncloud/index.php/settings/apps and under Productivity enable:
 
-- Mail
+- RainLoop Webmail / Mail
 - Calendar
 - Contacts
 - Documents
