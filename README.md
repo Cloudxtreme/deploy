@@ -19,7 +19,7 @@ Pulls from github.com and gitlab.com. May be slow.
 ```
 fres ; fres -b
 rm /var/ports/packages/All/squid-3.5.5.txz
-fzg -r mirror -d ada0 -d ada1 -d ada2 -z 2g -m -n -D -H alpha.local
+fzg -r mirror -d ada0 -d ada1 -d ada2 -z 2g -m -n -D -H `hostname-by-etc-hosts`
 copy-network-conf-to-mnt
 reboot
 
@@ -110,7 +110,7 @@ Pulls from alpha.local. Fast for local network.
 env SQUID=192.168.255.201:3128 setproxy
 env REPOSRC=https://virtual.local/v. fres
 env REPOSRC=https://virtual.local/v. fres -b
-fzg -d ada0 -d ada2 -z 2g -m -n -D -H sega.local
+fzg -d ada0 -d ada2 -z 2g -m -n -D -H `hostname-by-etc-hosts`
 copy-network-conf-to-mnt
 reboot
 
