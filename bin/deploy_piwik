@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150702-081138
+SCRIPTVERSION=150702-084849
 
 DB="piwik"
 DBUSER="piwik"
@@ -24,6 +24,7 @@ pkg install -y www/piwik \
 php56-mbstring \
 php56-simplexml \
 php56-openssl \
+percona55-server \
 apache24
 
 if [ ! -e /usr/local/www/piwik ]; then
@@ -47,9 +48,21 @@ fi
 
 sysrc apache24_enable="YES"
 #sysrc php_fpm_enable="YES"
+sysrc mysql_enable="YES"
 
 #service php-fpm start
 service apache24 start
+service mysql-server start
+
+
+while ! mysql -u root mysql -e "CREATE database ${DB};" 2>&1 | grep -o "database exists" ; do
+    sleep 10
+done
+
+mysql -u root mysql -e "GRANT ALL PRIVILEGES ON databasename TO '${DBUSER}'@'localhost' IDENTIFIED BY '${DBPASS}';"
+mysql -u root mysql -e "FLUSH PRIVILEGES;"
+mysql -u root mysql -e "GRANT ALL PRIVILEGES ON databasename.* TO '${DBUSER}'@'localhost' IDENTIFIED BY '${DBPASS}' WITH GRANT OPTION;"
+mysql -u root mysql -e "FLUSH PRIVILEGES;"
 
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
