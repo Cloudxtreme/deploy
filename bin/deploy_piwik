@@ -67,3 +67,4 @@ mysql -u root mysql -e "FLUSH PRIVILEGES;"
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
 echo "Visit http://${JAILIP}/piwik/"
+echo "- setup Database to MySQL with sql://${DBUSER}:${DBPASS}@localhost/${DB}"
