@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150702-084849
+SCRIPTVERSION=150702-090932
 
 DB="piwik"
 DBUSER="piwik"
@@ -59,9 +59,9 @@ while ! mysql -u root mysql -e "CREATE database ${DB};" 2>&1 | grep -o "database
     sleep 10
 done
 
-mysql -u root mysql -e "GRANT ALL PRIVILEGES ON databasename TO '${DBUSER}'@'localhost' IDENTIFIED BY '${DBPASS}';"
+mysql -u root mysql -e "GRANT ALL PRIVILEGES ON ${DB} TO '${DBUSER}'@'localhost' IDENTIFIED BY '${DBPASS}';"
 mysql -u root mysql -e "FLUSH PRIVILEGES;"
-mysql -u root mysql -e "GRANT ALL PRIVILEGES ON databasename.* TO '${DBUSER}'@'localhost' IDENTIFIED BY '${DBPASS}' WITH GRANT OPTION;"
+mysql -u root mysql -e "GRANT ALL PRIVILEGES ON ${DB}.* TO '${DBUSER}'@'localhost' IDENTIFIED BY '${DBPASS}' WITH GRANT OPTION;"
 mysql -u root mysql -e "FLUSH PRIVILEGES;"
 
 echo
