@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150702-073656
+SCRIPTVERSION=150702-075811
 
 DB="piwik"
 DBUSER="piwik"
@@ -20,7 +20,11 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
-pkg install -y www/piwik apache24
+pkg install -y www/piwik \
+php56-mbstring \
+php56-simplexml \
+php56-openssl \
+apache24
 
 if [ ! -e /usr/local/www/piwik ]; then
     echo "ERROR: install failed"
@@ -31,9 +35,11 @@ apache-config-freebsd
 pkg install -fy www/mod_php56
 cat /usr/local/etc/apache24/extra/example-piwik.conf | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/apache24/Includes/piwik.conf
 
+# To pass the piwik system check
+cat /usr/local/etc/php.ini-production | sed 's/;always_populate_raw_post_data = -1/always_populate_raw_post_data = -1/' >/usr/local/etc/php.ini
+
 sysrc apache24_enable="YES"
 #sysrc php_fpm_enable="YES"
-sysrc postgresql_enable="YES"
 
 #service php-fpm start
 service apache24 start
