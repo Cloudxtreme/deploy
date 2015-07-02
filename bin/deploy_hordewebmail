@@ -6,7 +6,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150618-013505
+SCRIPTVERSION=150702-072047
 
 DB="horde"
 DBUSER="horde"
@@ -38,6 +38,10 @@ pecl-imagick \
 pecl-pam \
 postgresql93-server \
 apache24
+
+# different uid so shared memory of postgresql don't clash
+pw usermod -n pgsql -u 1320
+find / -user 70 -exec chown pgsql {} \;
 
 if [ ! -e /usr/local/www/horde/config/conf.php.dist ]; then
     echo "ERROR: install failed"

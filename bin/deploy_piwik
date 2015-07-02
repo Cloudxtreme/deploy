@@ -5,10 +5,39 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-051139
+SCRIPTVERSION=150702-073656
 
-pkg install -y www/piwik
+DB="piwik"
+DBUSER="piwik"
+DBPASS="password"
+
+if [ "x" != "x${PIWIKDBPASS}" ]; then
+    DBPASS=${PIWIKDBPASS}
+fi
+
+if [ "x" == "x${FQDN}" ]; then
+    echo "Please set or export variable FQDN"
+    exit 1
+fi
+
+pkg install -y www/piwik apache24
+
+if [ ! -e /usr/local/www/piwik ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
+
+apache-config-freebsd
+pkg install -fy www/mod_php56
+cat /usr/local/etc/apache24/extra/example-piwik.conf | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/apache24/Includes/piwik.conf
+
+sysrc apache24_enable="YES"
+#sysrc php_fpm_enable="YES"
+sysrc postgresql_enable="YES"
+
+#service php-fpm start
+service apache24 start
 
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
-echo "Visit http://${JAILIP}/"
+echo "Visit http://${JAILIP}/piwik/"

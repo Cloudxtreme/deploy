@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150701-030840
+SCRIPTVERSION=150702-072047
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -422,16 +422,19 @@ EOF
             couch)
                 eza console -f -e "env FQDN=${FQDN} deploy ${name}db" ${name}
                 ;;
-            owncloud)
-                allowsysvipc ${name}
-                eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
-                ;;
             dtfc)
                 if [         -d /root/local/gitcache/johnko/dtfc ]; then
                     mkdir -p                                      /usr/jails/${name}/root/local/gitcache/johnko/dtfc
                     rsync -qalP /root/local/gitcache/johnko/dtfc/ /usr/jails/${name}/root/local/gitcache/johnko/dtfc/
                 fi
                 eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy ${name}" ${name}
+                ;;
+            piwik)
+                eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                ;;
+            owncloud)
+                allowsysvipc ${name}
+                eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
                 ;;
             ejabberd)
                 eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
@@ -458,18 +461,19 @@ EOF
                 fi
                 eza console -f -e "env FQDN=${FQDN} GITLABSRC=${GITLABSRC} HTTP_PROXY=http://${SQUID} deploy ${name}_src" ${name}
                 ;;
-            # BAD JAILNAMES
-            baikal)
-                eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
-                ;;
-            couchdtfc)
-                eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy couchdbdtfc" ${name}
-                ;;
-            horde)
-                allowsysvipc ${name}
-                eza console -f -e "env FQDN=${FQDN} deploy ${name}webmail" ${name}
-                ;;
             # DEV JAILNAMES
+            monit)
+                eza console -f -e "deploy ${name}" ${name}
+                ;;
+            zabbix)
+                eza console -f -e "deploy ${name}" ${name}
+                ;;
+            minidlna)
+                eza console -f -e "deploy ${name}" ${name}
+                ;;
+            firefly)
+                eza console -f -e "deploy ${name}" ${name}
+                ;;
             echoplexus)
                 if [         -d /root/local/gitcache/qq99/echoplexus ]; then
                     mkdir -p                                          /usr/jails/${name}/root/local/gitcache/qq99/echoplexus
@@ -488,6 +492,21 @@ EOF
                 ;;
             pydio)
                 eza console -f -e "deploy ${name}" ${name}
+                ;;
+            # BAD JAILNAMES
+            baikal)
+                eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                ;;
+            couchdtfc)
+                if [         -d /root/local/gitcache/johnko/dtfc ]; then
+                    mkdir -p                                      /usr/jails/${name}/root/local/gitcache/johnko/dtfc
+                    rsync -qalP /root/local/gitcache/johnko/dtfc/ /usr/jails/${name}/root/local/gitcache/johnko/dtfc/
+                fi
+                eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy couchdbdtfc" ${name}
+                ;;
+            horde)
+                allowsysvipc ${name}
+                eza console -f -e "env FQDN=${FQDN} deploy ${name}webmail" ${name}
                 ;;
         esac
         if [ "xsquid" != "x${name}" ]; then
