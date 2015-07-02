@@ -72,6 +72,10 @@ crontab -l
 
 You may want to visit https://virtual.local/couch/_utils/ and set it up.
 
+### Piwik
+
+You may want to visit https://virtual.local/piwik/ and set it up.
+
 ### owncloud
 
 You may want to visit https://virtual.local/owncloud/ and set it up.

@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150702-074751
+SCRIPTVERSION=150702-135911
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -65,32 +65,34 @@ fi
 GOOD="
      1  squid
      2  nginx
-     3  couch
-     4  dtfc
-     5  piwik
-     6  owncloud
-     7  ejabberd
-     8  murmur
-     9  vnc
-    10  gitlab
+     3  postfix
+     4  dovecot
+     5  couch
+     6  dtfc
+     7  piwik
+     8  owncloud
+     9  gitlab
+    10  ejabberd
+    11  murmur
+    12  vnc
 "
 
 DEV="
-    11  monit
-    12  zabbix
-    13  minidlna
-    14  firefly
-    15  echoplexus
-    16  gitannex
-    17  gogs
-    18  phabricator
-    19  pydio
+    14  monit
+    16  zabbix
+    18  minidlna
+    20  firefly
+    22  echoplexus
+    24  gitannex
+    26  gogs
+    28  phabricator
+    30  pydio
 "
 
 BAD="
-    30  baikal
-    31  couchdtfc
-    32  horde
+    36  baikal
+    38  couchdtfc
+    40  horde
 "
 
 
@@ -106,11 +108,29 @@ EOF
     if [ "x" == "x${WEBIPALIAS}" ]; then
         WEBIPALIAS=0
     fi
+    if [ "x" == "x${POSTFIXIPALIAS}" ]; then
+        POSTFIXIPALIAS=0
+    fi
+    if [ "x" == "x${DOVECOTIPALIAS}" ]; then
+        DOVECOTIPALIAS=0
+    fi
     if [ "x" == "x${XMPPIPALIAS}" ]; then
         XMPPIPALIAS=0
     fi
     if [ "x" == "x${MURMURIPALIAS}" ]; then
         MURMURIPALIAS=0
+    fi
+    if [ "x" == "x${MONITIPALIAS}" ]; then
+        MONITIPALIAS=0
+    fi
+    if [ "x" == "x${ZABBIXIPALIAS}" ]; then
+        ZABBIXIPALIAS=0
+    fi
+    if [ "x" == "x${MINIDLNAIPALIAS}" ]; then
+        MINIDLNAIPALIAS=0
+    fi
+    if [ "x" == "x${FIREFLYIPALIAS}" ]; then
+        FIREFLYIPALIAS=0
     fi
     # name alias pubport realport ucarp
     ALIASES="
@@ -119,6 +139,8 @@ EOF
     nginx     ${WEBIPALIAS}         80      80  u
     nginx     ${WEBIPALIAS}        443     443  .
     gitlab    ${WEBIPALIAS}         23      23  .
+    postfix   ${POSTFIXIPALIAS}    587     587  u
+    dovecot   ${DOVECOTIPALIAS}    993     993  u
     ejabberd  ${XMPPIPALIAS}      5222    5222  u
     murmur    ${MURMURIPALIAS}   64738   64738  u
     monit     ${MONITIPALIAS}     2812    2812  u
