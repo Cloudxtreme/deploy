@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150702-075811
+SCRIPTVERSION=150702-081138
 
 DB="piwik"
 DBUSER="piwik"
@@ -37,6 +37,13 @@ cat /usr/local/etc/apache24/extra/example-piwik.conf | sed "s/localhost.my.domai
 
 # To pass the piwik system check
 cat /usr/local/etc/php.ini-production | sed 's/;always_populate_raw_post_data = -1/always_populate_raw_post_data = -1/' >/usr/local/etc/php.ini
+if [ ! -e /usr/local/www/piwik/misc/log-analytics/import_logs.py.orig ]; then
+    cp -a /usr/local/www/piwik/misc/log-analytics/import_logs.py /usr/local/www/piwik/misc/log-analytics/import_logs.py.orig
+fi
+cat /usr/local/www/piwik/misc/log-analytics/import_logs.py.orig | sed 's;/usr/local/bin/python;/usr/bin/python;' >/usr/local/www/piwik/misc/log-analytics/import_logs.py
+if [ ! -e /usr/bin/python ]; then
+    ln -s /usr/local/bin/python /usr/bin/python
+fi
 
 sysrc apache24_enable="YES"
 #sysrc php_fpm_enable="YES"
