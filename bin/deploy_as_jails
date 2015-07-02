@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150702-072047
+SCRIPTVERSION=150702-074751
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -198,6 +198,7 @@ setupnginxconfig() {
     local name=${1}
     local FQDN=${2}
     couchdatabases="movies music wiki"
+    otherslashes="couch dtfc piwik owncloud zabbix"
     gitlabpaths="admin assets dashboard explore groups help profile projects s snippets u users"
     tlsconf="/usr/local/etc/nginx/tls.conf"
     proxypass="/usr/local/etc/nginx/proxypass.conf"
@@ -209,6 +210,9 @@ setupnginxconfig() {
     upstream dtfcsources {
         server ${IPNET}`jailip dtfc`:8080;
     }
+    upstream piwiksources {
+        server ${IPNET}`jailip piwik`:443;
+    }
     upstream owncloudsources {
         server ${IPNET}`jailip owncloud`:443;
     }
@@ -219,10 +223,8 @@ setupnginxconfig() {
         server ${IPNET}`jailip zabbix`:443;
     }
     map \$uri \$redirect_uri {
-        ~^/owncloud\$ https://${FQDN}/owncloud/;
-        ~^/couch\$    https://${FQDN}/couch/;
 EOF
-    for c in ${couchdatabases} ; do
+    for c in ${couchdatabases} ${otherslashes} ; do
         cat >>/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
         ~^/${c}\$   https://${FQDN}/${c}/;
 EOF
@@ -256,6 +258,11 @@ EOF
             rewrite /dtfc/(.*) /\$1 break;
             include ${proxypass};
             proxy_pass http://dtfcsources;
+        }
+        location  ~^/piwik/ {
+            rewrite /piwik/(.*) /piwik/\$1 break;
+            include ${proxypass};
+            proxy_pass https://piwiksources;
         }
         location  ~^/owncloud/ {
             rewrite /owncloud/(.*) /owncloud/\$1 break;
