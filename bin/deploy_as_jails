@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150702-135911
+SCRIPTVERSION=150703-214021
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -258,7 +258,7 @@ EOF
         listen   ${IPNET}`jailip nginx`:80 default_server;
         server_name ${FQDN};
         server_name ${IPNET}`jailip nginx`;
-        return 302 https://$host$request_uri;
+        return 302 https://\$host\$request_uri;
     }
     server {
         listen 443 ssl;
