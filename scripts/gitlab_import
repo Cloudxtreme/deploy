@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150705-142553
+SCRIPTVERSION=150705-165447
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -48,7 +48,7 @@ PROJECTS="
     zsnapple                    ${REPOSRC}johnko/zsnapple.git
     skel                        ${REPOSRC}johnko/skel.git
     dtfc                        ${REPOSRC}johnko/dtfc.git
-    echoplexus                  ${REPOSRC}qq99/echoplexus.git
+    echoplexus                  ${REPOSRC}johnko/echoplexus.git
     gitlab-ce                   ${GITLABSRC}gitlab-org/gitlab-ce.git
 "
 
