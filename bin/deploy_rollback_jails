@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150705-144304
+SCRIPTVERSION=150705-150254
 
 . ~/bin/deploy_conf_jails
 
@@ -17,8 +17,8 @@ echo "$JAILNAMES" \
 | while read num name ; do
     if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
         if [ "xsquid" != "x${name}" ]; then
-            if zfs list -H tank/ezjail/${name}@10.1-RELEASE-p12 2>/dev/null ; then
-                zfs rollback tank/ezjail/${name}@10.1-RELEASE-p12
+            if zfs list -H tank/ezjail/${name}@created 2>/dev/null ; then
+                zfs rollback tank/ezjail/${name}@created
             fi
         fi
     fi
