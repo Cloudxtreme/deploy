@@ -34,6 +34,7 @@ pg pkg || fres
 setenv FQDN virtual.local
 cat ~/perm/deploy.a.good | sed "s;virtual.local;${FQDN};g" > ~/local/deploy.${FQDN}.good
 cat ~/local/deploy.${FQDN}.good | sed 's;good;nginx;g' > ~/local/deploy.${FQDN}.nginx
+sh ~/local/deploy.${FQDN}.good
 
 ## Optional
 # vi /etc/rc.conf.d/ucarp*
@@ -127,6 +128,7 @@ pg pkg || env REPOSRC=https://${FQDN}/v. fres
 rsync -viaP --exclude work alpha:/var/ports /var/ports/
 cat ~/perm/deploy.s.good | sed "s;virtual.local;${FQDN};g" > ~/local/deploy.${FQDN}.good
 cat ~/local/deploy.${FQDN}.good | sed 's;good;nginx;g' > ~/local/deploy.${FQDN}.nginx
+sh ~/local/deploy.${FQDN}.good
 
 ## Optional
 # vi /etc/rc.conf.d/ucarp*
