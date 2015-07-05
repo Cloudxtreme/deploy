@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# TODO
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150705-180114
+
+cd ~/git/vmrc
+sh install-vmrc.sh
+if ! ls /usr/local/vmrc/vm/ | grep pfsense ; then
+    sh mkvm.sh pfsense223amd64raw pfsense
+fi
+if ! ls /dev/vmm/ | grep pfsense ; then
+    service vm oneload pfsense0
+fi
+if ls /dev/vmm/ | grep pfsense ; then
+    service vm oneboot pfsense0
+fi
