@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150628-191156
+SCRIPTVERSION=150705-142553
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -15,33 +15,41 @@ if [ "x" == "x${TOKEN}" ]; then
     exit 1
 fi
 
+if [ "x" == "x${REPOSRC}" ]; then
+    REPOSRC=https://github.com/
+fi
+
+if [ "x" == "x${GITLABSRC}" ]; then
+    GITLABSRC=https://gitlab.com/
+fi
+
 PROJECTS="
-    apache-config-freebsd       https://github.com/johnko/apache-config-freebsd.git
-    btfc2                       https://github.com/johnko/btfc2.git
-    crontabbed                  https://github.com/johnko/crontabbed.git
-    deploy                      https://github.com/johnko/deploy.git
-    eza                         https://github.com/johnko/eza.git
-    freebsd-install-script      https://github.com/johnko/freebsd-install-script.git
-    freebsd-pf-script           https://github.com/johnko/freebsd-pf-script.git
-    freebsd-sortconf            https://github.com/johnko/freebsd-sortconf.git
-    freebsd-system-info         https://github.com/johnko/freebsd-system-info.git
-    github-backup               https://github.com/johnko/github-backup.git
-    gtfc                        https://github.com/johnko/gtfc.git
-    hddid                       https://github.com/johnko/hddid.git
-    mount_iso                   https://github.com/johnko/mount_iso.git
-    netconn                     https://github.com/johnko/netconn.git
-    nginx-config-sites-enabled  https://github.com/johnko/nginx-config-sites-enabled.git
-    psnap                       https://github.com/johnko/psnap.git
-    pwgen                       https://github.com/johnko/pwgen.git
-    randomword                  https://github.com/johnko/randomword.git
-    setproxy                    https://github.com/johnko/setproxy.git
-    ssh-multi                   https://github.com/johnko/ssh-multi.git
-    ssh-tools                   https://github.com/johnko/ssh-tools.git
-    zsnapple                    https://github.com/johnko/zsnapple.git
-    skel                        https://github.com/johnko/skel.git
-    dtfc                        https://github.com/johnko/dtfc.git
-    echoplexus                  https://github.com/qq99/echoplexus.git
-    gitlab-ce                   https://gitlab.com/gitlab-org/gitlab-ce.git
+    apache-config-freebsd       ${REPOSRC}johnko/apache-config-freebsd.git
+    btfc2                       ${REPOSRC}johnko/btfc2.git
+    crontabbed                  ${REPOSRC}johnko/crontabbed.git
+    deploy                      ${REPOSRC}johnko/deploy.git
+    eza                         ${REPOSRC}johnko/eza.git
+    freebsd-install-script      ${REPOSRC}johnko/freebsd-install-script.git
+    freebsd-pf-script           ${REPOSRC}johnko/freebsd-pf-script.git
+    freebsd-sortconf            ${REPOSRC}johnko/freebsd-sortconf.git
+    freebsd-system-info         ${REPOSRC}johnko/freebsd-system-info.git
+    github-backup               ${REPOSRC}johnko/github-backup.git
+    gtfc                        ${REPOSRC}johnko/gtfc.git
+    hddid                       ${REPOSRC}johnko/hddid.git
+    mount_iso                   ${REPOSRC}johnko/mount_iso.git
+    netconn                     ${REPOSRC}johnko/netconn.git
+    nginx-config-sites-enabled  ${REPOSRC}johnko/nginx-config-sites-enabled.git
+    psnap                       ${REPOSRC}johnko/psnap.git
+    pwgen                       ${REPOSRC}johnko/pwgen.git
+    randomword                  ${REPOSRC}johnko/randomword.git
+    setproxy                    ${REPOSRC}johnko/setproxy.git
+    ssh-multi                   ${REPOSRC}johnko/ssh-multi.git
+    ssh-tools                   ${REPOSRC}johnko/ssh-tools.git
+    zsnapple                    ${REPOSRC}johnko/zsnapple.git
+    skel                        ${REPOSRC}johnko/skel.git
+    dtfc                        ${REPOSRC}johnko/dtfc.git
+    echoplexus                  ${REPOSRC}qq99/echoplexus.git
+    gitlab-ce                   ${GITLABSRC}gitlab-org/gitlab-ce.git
 "
 
 groups() {
