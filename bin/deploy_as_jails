@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150703-214021
+SCRIPTVERSION=150705-144304
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -62,38 +62,7 @@ if [ "x" == "x${count}" ]; then
     count=0
 fi
 
-GOOD="
-     1  squid
-     2  nginx
-     3  postfix
-     4  dovecot
-     5  couch
-     6  dtfc
-     7  piwik
-     8  owncloud
-     9  gitlab
-    10  ejabberd
-    11  murmur
-    12  vnc
-"
-
-DEV="
-    14  monit
-    16  zabbix
-    18  minidlna
-    20  firefly
-    22  echoplexus
-    24  gitannex
-    26  gogs
-    28  phabricator
-    30  pydio
-"
-
-BAD="
-    36  baikal
-    38  couchdtfc
-    40  horde
-"
+. ~/bin/deploy_conf_jails
 
 
 

@@ -5,38 +5,9 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150627-084203
+SCRIPTVERSION=150705-144304
 
-GOOD="
-     1  squid
-     2  nginx
-     3  couch
-     4  dtfc
-     5  piwik
-     6  owncloud
-     7  ejabberd
-     8  murmur
-     9  vnc
-    10  gitlab
-"
-
-DEV="
-    11  monit
-    12  zabbix
-    13  minidlna
-    14  firefly
-    15  echoplexus
-    16  gitannex
-    17  gogs
-    18  phabricator
-    19  pydio
-"
-
-BAD="
-    30  baikal
-    31  couchdtfc
-    32  horde
-"
+. ~/bin/deploy_conf_jails
 
 JAILNAMES="${GOOD} ${BAD} ${DEV}"
 
