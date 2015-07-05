@@ -32,7 +32,18 @@ git clone https://github.com/qq99/echoplexus.git /root/local/gitcache/qq99/echop
 git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-8-stable /root/local/gitcache/gitlab-org/gitlab-ce.git
 
 pg pkg || fres
-env FQDN=virtual.local SQUID=10.7.7.1:3128 SQUIDIPALIAS=192.168.255.201 WEBIPALIAS=192.168.255.202 XMPPIPALIAS=192.168.255.203 MURMURIPALIAS=192.168.255.204 MONITIPALIAS=192.168.255.205 ZABBIXIPALIAS=192.168.255.206 MINIDLNAIPALIAS=192.168.255.207 FIREFLYIPALIAS=192.168.255.208 deploy as_jails good
+env FQDN=virtual.local SQUID=10.7.7.1:3128 \
+    SQUIDIPALIAS=192.168.255.201 \
+    WEBIPALIAS=192.168.255.202 \
+    POSTFIXIPALIAS=192.168.255.203 \
+    DOVECOTIPALIAS=192.168.255.204 \
+    XMPPIPALIAS=192.168.255.205 \
+    MURMURIPALIAS=192.168.255.206 \
+    MONITIPALIAS=192.168.255.207 \
+    ZABBIXIPALIAS=192.168.255.208 \
+    MINIDLNAIPALIAS=192.168.255.209 \
+    FIREFLYIPALIAS=192.168.255.210 \
+    deploy as_jails good
 rsync -viaP --exclude work /usr/jails/squid/var/ports /var/ports/
 
 ## Optional
@@ -123,7 +134,19 @@ reboot
 env SQUID=192.168.255.201:3128 setproxy
 pg pkg || env REPOSRC=https://virtual.local/v. fres
 rsync -viaP --exclude work alpha:/var/ports /var/ports/
-env FQDN=virtual.local SQUID=192.168.255.201:3128 REPOSRC=https://virtual.local/v. GITLABSRC=https://virtual.local/v. SQUIDIPALIAS=192.168.255.201 WEBIPALIAS=192.168.255.202 XMPPIPALIAS=192.168.255.203 MURMURIPALIAS=192.168.255.204 MONITIPALIAS=192.168.255.205 ZABBIXIPALIAS=192.168.255.206 MINIDLNAIPALIAS=192.168.255.207 FIREFLYIPALIAS=192.168.255.208  deploy as_jails good
+env FQDN=virtual.local SQUID=192.168.255.201:3128 \
+    REPOSRC=https://virtual.local/v. GITLABSRC=https://virtual.local/v. \
+    SQUIDIPALIAS=192.168.255.201 \
+    WEBIPALIAS=192.168.255.202 \
+    POSTFIXIPALIAS=192.168.255.203 \
+    DOVECOTIPALIAS=192.168.255.204 \
+    XMPPIPALIAS=192.168.255.205 \
+    MURMURIPALIAS=192.168.255.206 \
+    MONITIPALIAS=192.168.255.207 \
+    ZABBIXIPALIAS=192.168.255.208 \
+    MINIDLNAIPALIAS=192.168.255.209 \
+    FIREFLYIPALIAS=192.168.255.210 \
+    deploy as_jails good
 
 ## Optional
 # vi /etc/rc.conf.d/ucarp*
