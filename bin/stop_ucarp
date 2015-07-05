@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150705-225840
+
+for i in $( service -l | grep '^ucarp' ) ; do
+    service ${i} stop
+done
