@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150706-001133
+SCRIPTVERSION=150706-002109
 
 cd ~/git/vmrc
 sh install-vmrc.sh
@@ -22,6 +22,18 @@ The default user and password is: admin and pfsense
 
 EOF
 
+checkmytap() {
+    while [ 1 -eq 1 ] ; do
+        tapcount=`ifconfig -l | grep -o tap | wc -l`
+        if [ ${tapcount} -gt 1 ]; then
+            gdf
+            exit
+        fi
+        sleep 1
+    done
+}
+
 if ls /dev/vmm/ | grep pfsense ; then
+    checkmytap &
     service vm oneboot pfsense0
 fi
