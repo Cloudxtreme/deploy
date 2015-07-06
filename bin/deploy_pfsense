@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150705-180114
+SCRIPTVERSION=150706-001133
 
 cd ~/git/vmrc
 sh install-vmrc.sh
@@ -15,6 +15,13 @@ fi
 if ! ls /dev/vmm/ | grep pfsense ; then
     service vm oneload pfsense0
 fi
+
+cat <<EOF
+
+The default user and password is: admin and pfsense
+
+EOF
+
 if ls /dev/vmm/ | grep pfsense ; then
     service vm oneboot pfsense0
 fi
