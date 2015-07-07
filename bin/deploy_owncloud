@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150629-170010
+SCRIPTVERSION=150707-151713
 
 DB="owncloud"
 DBUSER="owncloud"
@@ -34,6 +34,26 @@ php56-pdo_pgsql \
 php56-pgsql \
 postgresql93-server \
 apache24
+
+
+APPS="
+    documents   https://apps.owncloud.com/CONTENT/content-files/168711-documents.zip
+    bookmakrs   https://apps.owncloud.com/CONTENT/content-files/168710-bookmarks.zip
+    contact     https://github.com/owncloud/contacts/releases/download/v8.0.5/contacts-0.3.0.19.tar.gz
+    calendar    https://github.com/owncloud/calendar/releases/download/v0.6.5/calendar.zip
+    rainloop    http://repository.rainloop.net/v2/other/owncloud/rainloop.zip
+"
+
+echo "${APPS}" \
+| while read appname appurl ; do
+    if [ -d /root/local/owncloud/${appurl##*/} ]; then
+        wget -P /root/local/owncloud ${appurl}
+    fi
+    if [ ! -d /usr/local/www/owncloud/apps/${appname} ] ; then
+        tar xv -C /usr/local/www/owncloud/apps -f /root/local/owncloud/${appurl##*/}
+    fi
+done
+
 
 # different uid so shared memory of postgresql don't clash
 pw usermod -n pgsql -u 1060
