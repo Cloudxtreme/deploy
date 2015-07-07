@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150707-140638
+SCRIPTVERSION=150707-152316
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -437,6 +437,7 @@ EOF
                 fi
                 allowsysvipc ${name}
                 eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                rsync -qalP /usr/jails/${name}/root/local/owncloud/ /root/local/owncloud/
                 ;;
             ejabberd)
                 eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
