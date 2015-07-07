@@ -74,7 +74,8 @@ echo "${PROJECTS}" \
 | while read name url ; do
     if [ "x" != "x${name}" ] && [ "x" != "x${url}" ]; then
         groupname=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;v.;g' | sed -E 's;/.*;;g'`
-        if ! curl -s --header "PRIVATE-TOKEN: ${TOKEN}" "https://${FQDN}/api/v3/projects" | grep -o "${groupname}/${name}" ; then
+        echo "${groupname}/${name}"
+        if ! curl -s --head "https://${FQDN}/${groupname}/${name}" | grep '200 OK' ; then
             projectid=`curl -s --header "PRIVATE-TOKEN: ${TOKEN}" \
                 -X POST -d "user_id=root&name=${name}&public=true&import_url=${url}" \
                 "https://${FQDN}/api/v3/projects" \
