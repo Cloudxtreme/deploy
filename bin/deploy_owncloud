@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150707-152923
+SCRIPTVERSION=150707-154130
 
 DB="owncloud"
 DBUSER="owncloud"
@@ -46,11 +46,13 @@ APPS="
 
 echo "${APPS}" \
 | while read appname appurl ; do
-    if [ ! -e /root/local/owncloud/${appurl##*/} ]; then
-        wget -P /root/local/owncloud "${appurl}"
-    fi
-    if [ ! -d /usr/local/www/owncloud/apps/${appname} ] ; then
-        tar x -C /usr/local/www/owncloud/apps -f /root/local/owncloud/${appurl##*/}
+    if [ "x" != "x${appname}" ] && [ "x" != "x${appurl}" ]; then
+        if [ ! -e /root/local/owncloud/${appurl##*/} ]; then
+            wget -P /root/local/owncloud "${appurl}"
+        fi
+        if [ ! -d /usr/local/www/owncloud/apps/${appname} ] ; then
+            tar x -C /usr/local/www/owncloud/apps -f /root/local/owncloud/${appurl##*/}
+        fi
     fi
 done
 
