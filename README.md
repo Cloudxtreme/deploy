@@ -3,6 +3,13 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 
 # Example
 
+## pfsense on bhyve
+
+```
+tmux
+sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; done"
+```
+
 ## Planning
 
 ### FQDN and WEBIPALIAS that would be reachable if this service is to be public
