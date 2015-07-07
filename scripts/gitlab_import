@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150707-012649
+SCRIPTVERSION=150707-162122
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -45,6 +45,7 @@ PROJECTS="
     setproxy                    ${REPOSRC}johnko/setproxy.git
     ssh-multi                   ${REPOSRC}johnko/ssh-multi.git
     ssh-tools                   ${REPOSRC}johnko/ssh-tools.git
+    vmrc                        ${REPOSRC}johnko/vmrc.git
     zsnapple                    ${REPOSRC}johnko/zsnapple.git
     skel                        ${REPOSRC}johnko/skel.git
     dtfc                        ${REPOSRC}johnko/dtfc.git
