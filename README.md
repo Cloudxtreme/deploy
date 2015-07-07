@@ -7,7 +7,7 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 
 ```
 tmux
-sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; done"
+sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; sleep 5 ; done"
 ```
 
 ## Planning
