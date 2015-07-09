@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150709-002610
+SCRIPTVERSION=150709-003546
 
 pkg install -y net/minidlna
 
@@ -39,8 +39,8 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo > /root/crontabbed/zsnapple_bootpool_hourly
     echo > /root/crontabbed/zsnapple_pool_hourly
 fi
-echo "10 * * * * /usr/bin/find /usr/home/dlna -type d -exec chmod a+rx {} \;" > /root/crontabbed/permission_folder_hourly
-echo "35 * * * * /usr/bin/find /usr/home/dlna -type f -exec chmod a+r {} \;" > /root/crontabbed/permission_folder_hourly
+echo "10 * * * * /usr/bin/find /usr/home/dlna -type d -exec chmod a+rx {} \;" > /root/crontabbed/permission_folders_hourly
+echo "35 * * * * /usr/bin/find /usr/home/dlna -type f -exec chmod a+r {} \;" > /root/crontabbed/permission_files_hourly
 crontabbed
 
 echo
