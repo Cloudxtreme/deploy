@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150707-152316
+SCRIPTVERSION=150709-011248
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -116,6 +116,7 @@ EOF
     zabbix    ${ZABBIXIPALIAS}   10050   10050  u
     zabbix    ${ZABBIXIPALIAS}   10051   10051  .
     minidlna  ${MINIDLNAIPALIAS}  1900    1900  u
+    minidlna  239.255.255.250     1900    1900  .
     minidlna  ${MINIDLNAIPALIAS}  8200    8200  .
     firefly   ${FIREFLYIPALIAS}   3689    3689  u
 "
@@ -127,8 +128,8 @@ EOF
         && [ "x" != "x${realport}" ] && [ "x" != "x${doucarp}" ]; then
             if  ! cat /etc/pf/jails.anchor | grep "rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = ${pubport} " >/dev/null ; then
                 cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
-rdr pass on ${HOSTNIC} inet proto tcp from any to ${ipalias} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
+rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${HOSTIP} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
+rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${ipalias} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
 EOF
             fi
             if [ "xu" == "x${doucarp}" ]; then

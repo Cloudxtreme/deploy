@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150709-003546
+SCRIPTVERSION=150709-011248
 
 pkg install -y net/minidlna
 
@@ -42,6 +42,10 @@ fi
 echo "10 * * * * /usr/bin/find /usr/home/dlna -type d -exec chmod a+rx {} \;" > /root/crontabbed/permission_folders_hourly
 echo "35 * * * * /usr/bin/find /usr/home/dlna -type f -exec chmod a+r {} \;" > /root/crontabbed/permission_files_hourly
 crontabbed
+
+sysrc minidlna_enable="YES"
+
+service minidlna onestart
 
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
