@@ -1,0 +1,143 @@
+#!/bin/sh
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150708-232245
+
+FOLDER="/Volumes/zzz/git"
+ACTION=$1
+
+if [ "x" == "x${FQDN}" ]; then
+    echo "Please set or export variable FQDN"
+    exit 1
+fi
+
+if [ "x" == "x${TOKEN}" ]; then
+    echo "Please set or export variable TOKEN"
+    exit 1
+fi
+
+if [ "x" == "x${REPOSRC}" ]; then
+    REPOSRC=https://github.com/
+fi
+
+if [ "x" == "x${GITLABSRC}" ]; then
+    GITLABSRC=https://gitlab.com/
+fi
+
+PROJECTS="
+    apache-config-freebsd       ${REPOSRC}johnko/apache-config-freebsd.git
+    btfc2                       ${REPOSRC}johnko/btfc2.git
+    checkmail-ahk               ${REPOSRC}johnko/checkmail-ahk.git
+    crontabbed                  ${REPOSRC}johnko/crontabbed.git
+    deploy                      ${REPOSRC}johnko/deploy.git
+    dmenu                       ${REPOSRC}johnko/dmenu.git
+    doc                         ${REPOSRC}johnko/doc.git
+    dtfc                        ${REPOSRC}johnko/dtfc.git
+    dwm                         ${REPOSRC}johnko/dwm.git
+    dwmsd                       ${REPOSRC}johnko/dwmsd.git
+    echoplexus                  ${REPOSRC}johnko/echoplexus.git
+    eza                         ${REPOSRC}johnko/eza.git
+    freebsd-install-script      ${REPOSRC}johnko/freebsd-install-script.git
+    freebsd-pf-script           ${REPOSRC}johnko/freebsd-pf-script.git
+    freebsd-sortconf            ${REPOSRC}johnko/freebsd-sortconf.git
+    freebsd-system-info         ${REPOSRC}johnko/freebsd-system-info.git
+    github-backup               ${REPOSRC}johnko/github-backup.git
+    gtfc                        ${REPOSRC}johnko/gtfc.git
+    hddid                       ${REPOSRC}johnko/hddid.git
+    kanso-chat                  ${REPOSRC}johnko/kanso-chat.git
+    kanso-example               ${REPOSRC}johnko/kanso-example.git
+    kanso-focus                 ${REPOSRC}johnko/kanso-focus.git
+    kanso-manage-couchdb        ${REPOSRC}johnko/kanso-manage-couchdb.git
+    kanso-movies                ${REPOSRC}johnko/kanso-movies.git
+    kanso-music                 ${REPOSRC}johnko/kanso-music.git
+    kanso-photos                ${REPOSRC}johnko/kanso-photos.git
+    kanso-wiki                  ${REPOSRC}johnko/kanso-wiki.git
+    kanso-wtfc                  ${REPOSRC}johnko/kanso-wtfc.git
+    mfsbsd                      ${REPOSRC}johnko/mfsbsd.git
+    mixxx-novation-launchpad    ${REPOSRC}johnko/mixxx-novation-launchpad.git
+    mount_iso                   ${REPOSRC}johnko/mount_iso.git
+    netconn                     ${REPOSRC}johnko/netconn.git
+    nginx-config-sites-enabled  ${REPOSRC}johnko/nginx-config-sites-enabled.git
+    psnap                       ${REPOSRC}johnko/psnap.git
+    pwgen                       ${REPOSRC}johnko/pwgen.git
+    python-rtmidi               ${REPOSRC}johnko/python-rtmidi.git
+    randomword                  ${REPOSRC}johnko/randomword.git
+    setproxy                    ${REPOSRC}johnko/setproxy.git
+    skel                        ${REPOSRC}johnko/skel.git
+    ssh-multi                   ${REPOSRC}johnko/ssh-multi.git
+    ssh-tools                   ${REPOSRC}johnko/ssh-tools.git
+    vmrc                        ${REPOSRC}johnko/vmrc.git
+    wtfc                        ${REPOSRC}johnko/wtfc.git
+    zsnapple                    ${REPOSRC}johnko/zsnapple.git
+    gitlab-ce                   ${GITLABSRC}gitlab-org/gitlab-ce.git
+"
+
+# ${REPOSRC}johnko/btfc.git
+# ${REPOSRC}johnko/couchdbtodomvc.git
+# ${REPOSRC}johnko/dillinger.git
+# ${REPOSRC}johnko/freebsd-ports-test.git
+# ${REPOSRC}johnko/johnko.github.io.git
+# ${REPOSRC}johnko/kurz.go.git
+# ${REPOSRC}johnko/mac-dev-playbook.git
+# ${REPOSRC}johnko/mac-dotfiles.git
+# ${REPOSRC}johnko/Pico.git
+# ${REPOSRC}johnko/textwrangler-bbedit-solarized.git
+
+groups() {
+    echo "${PROJECTS}" \
+    | while read name url ; do
+        if [ "x" != "x${name}" ] && [ "x" != "x${url}" ]; then
+            echo "${url}" | sed -E 's;https?://[^/][^/]*/;v.;g' | sed -E 's;/.*;;g'
+        fi
+    done
+}
+
+if [ "xcreate" == "x${ACTION}" ]; then
+    for name in `groups | sort -u` ; do
+        if [ "x" != "x${name}" ]; then
+            curl \
+            --header "PRIVATE-TOKEN: ${TOKEN}" \
+            -X POST \
+            -d "name=${name}&path=${name}" "https://${FQDN}/api/v3/groups"
+        fi
+    done
+fi
+
+echo "${PROJECTS}" \
+| while read name url ; do
+    if [ "x" != "x${name}" ] && [ "x" != "x${url}" ]; then
+        groupname=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;v.;g' | sed -E 's;/.*;;g'`
+        echo "${groupname}/${name}"
+        if [ "xcreate" == "x${ACTION}" ]; then
+            if ! curl -s --head "https://${FQDN}/${groupname}/${name}" | grep '200 OK' ; then
+                projectid=`curl -s --header "PRIVATE-TOKEN: ${TOKEN}" \
+                    -X POST -d "user_id=root&name=${name}&public=true" \
+                    "https://${FQDN}/api/v3/projects" \
+                    | grep -o '"id" *: *[0-9][0-9]* *,' | head -1 | grep -o '[0-9][0-9]*'`
+                groupid=`curl -s --header "PRIVATE-TOKEN: ${TOKEN}" \
+                    "https://${FQDN}/api/v3/groups" \
+                    | grep -o "\"id\" *: *[0-9][0-9]* *, *\"name\" *: *\"${groupname}\"" | head -1 | grep -o '[0-9][0-9]*' | head -1`
+                echo
+                echo "==== Transferring ${name} to ${groupname}: https://${FQDN}/api/v3/groups/${groupid}/projects/${projectid}"
+                while curl -s --header "PRIVATE-TOKEN: ${TOKEN}" \
+                    -X POST \
+                    "https://${FQDN}/api/v3/groups/${groupid}/projects/${projectid}" | grep 'Cannot move project' ; do
+                        sleep 20
+                done
+            fi
+        fi
+        novgroupname=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;;g' | sed -E 's;/.*;;g'`
+        if [ ! -e "${FOLDER}/${novgroupname}/${name}" ]; then
+            mkdir -p "${FOLDER}/${novgroupname}"
+            git clone ${url} "${FOLDER}/${novgroupname}/${name}"
+            cd "${FOLDER}/${novgroupname}/${name}"
+            git remote rename origin github
+        else
+            cd "${FOLDER}/${novgroupname}/${name}"
+            urlpath=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;v.;g' | sed -E 's;/.*;;g'`
+            git remote add home ssh://git@${FQDN}:23/v.${urlpath}
+        fi
+    fi
+done

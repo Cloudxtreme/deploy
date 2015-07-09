@@ -127,8 +127,20 @@ Visit https://virtual.local/profile/account and get your `Private token`
 Then start importing:
 
 ```
-env TOKEN=... FQDN=virtual.local git/deploy/scripts/gitlab_import
+# env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/gitlab_import
+env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone
+env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone create
 ```
+
+### miniDLNA
+
+```
+cat /root/perm/cshpkglist > /root/local/cshpkglist
+vi /root/local/cshpkglist
+fres ; fres -b
+```
+
+Put files in /tank/dlna/...
 
 ## Host (sega.local 192.168.255.160)
 
