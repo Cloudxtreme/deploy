@@ -3,6 +3,13 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 
 # Example
 
+## Create zpool tank
+
+```
+fzg-random-key
+fzg -i -D
+```
+
 ## pfsense on bhyve
 
 ```
@@ -10,7 +17,7 @@ tmux
 sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; sleep 5 ; done"
 ```
 
-## Planning
+## EZJails
 
 ### FQDN and WEBIPALIAS that would be reachable if this service is to be public
 - virtual.local
@@ -19,7 +26,7 @@ sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; sleep 5 ; done"
 ### SQUIDIPALIAS, IP to use as alias for transparent ssl proxy
 - 192.168.255.201
 
-## Host (alpha.local 192.168.255.120)
+### Host (alpha.local 192.168.255.120)
 
 Pulls from github.com and gitlab.com. May be slow.
 
@@ -116,7 +123,7 @@ Then start importing:
 env TOKEN=... FQDN=virtual.local git/deploy/scripts/gitlab_import
 ```
 
-## Host (sega.local 192.168.255.160)
+### Host (sega.local 192.168.255.160)
 
 Pulls from alpha.local. Fast for local network.
 

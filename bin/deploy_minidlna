@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150709-040018
+SCRIPTVERSION=150709-163724
 
 BUILDIT="NO"
 
@@ -78,7 +78,12 @@ if [ ! -e /usr/local/etc/minidlna.conf.sample ]; then
     exit 1
 fi
 
-zfs create tank/dlna
+zfs list tank/dlna || zfs create tank/dlna
+if ! zfs list tank/dlna > /dev/null ; then
+    echo "ERROR: missing tank/dlna"
+    exit 1
+fi
+
 install -d -m 755 /tank/dlna/movies
 install -d -m 755 /tank/dlna/music
 install -d -m 755 /tank/dlna/photos
@@ -90,7 +95,7 @@ log_level=debug
 media_dir=A,/tank/dlna/music
 media_dir=V,/tank/dlna/movies
 media_dir=P,/tank/dlna/photos
-friendly_name=MD
+friendly_name=MEDIASERVER
 album_art_names=Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg/AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg/Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg
 inotify=yes
 enable_tivo=no
