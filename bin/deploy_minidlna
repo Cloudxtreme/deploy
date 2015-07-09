@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150709-034848
+SCRIPTVERSION=150709-035542
 
 BUILDIT="NO"
 
@@ -110,7 +110,7 @@ echo "10 * * * * /usr/bin/find /usr/home/dlna -type d -exec chmod a+rx {} \;" > 
 echo "35 * * * * /usr/bin/find /usr/home/dlna -type f -exec chmod a+r {} \;" > /root/crontabbed/permission_files_hourly
 crontabbed
 
-sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
+# sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
 
 service minidlna onestart
 
