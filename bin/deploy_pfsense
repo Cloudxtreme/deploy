@@ -5,7 +5,12 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150706-002109
+SCRIPTVERSION=150709-032330
+
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo "ERROR: Cannot run in a jail"
+    exit 1
+fi
 
 cd ~/git/vmrc
 sh install-vmrc.sh

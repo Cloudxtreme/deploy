@@ -5,27 +5,35 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150709-024153
+SCRIPTVERSION=150709-032330
 
-NEWINSTALL="YES"
-if sysrc minidlna_enable | grep YES >/dev/null ; then
-    NEWINSTALL="NO"
+BUILDIT="NO"
+
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo "ERROR: Multicast udp 1900 has issues reaching a jail"
+    echo "ERROR: Clients will not detect this in a jail"
+    exit 1
 fi
 
-if [ "xYES" == "x${NEWINSTALL}" ]; then
-    if [ -e /var/ports/packages/All/minidlna-1.1.4_1,1.txz ]; then
-        pkg add -f /var/ports/packages/All/minidlna-1.1.4_1,1.txz
-    else
-        # install squid and dependencies
-        pkg install -y net/minidlna devel/autoconf devel/automake devel/gettext-tools converters/libiconv
-        # remove squid because we want custom options
-        # openssl from ports conflicts https://lists.freebsd.org/pipermail/freebsd-questions/2015-June/266245.html
-        pkg remove -y net/minidlna
-        # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
-        psnap
+if [ "xYES" == "x${BUILDIT}" ]; then
+    NEWINSTALL="YES"
+    if sysrc minidlna_enable | grep YES >/dev/null ; then
+        NEWINSTALL="NO"
+    fi
+    if [ "xYES" == "x${NEWINSTALL}" ]; then
+        if [ -e /var/ports/packages/All/minidlna-1.1.4_1,1.txz ]; then
+            pkg add -f /var/ports/packages/All/minidlna-1.1.4_1,1.txz
+        else
+            # install squid and dependencies
+            pkg install -y net/minidlna devel/autoconf devel/automake devel/gettext-tools converters/libiconv
+            # remove squid because we want custom options
+            # openssl from ports conflicts https://lists.freebsd.org/pipermail/freebsd-questions/2015-June/266245.html
+            pkg remove -y net/minidlna
+            # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
+            psnap
 
-        if [ -d /usr/ports/net/minidlna ]; then
-            cat > /tmp/patch-minissdp.c.b64 <<EOF
+            if [ -d /usr/ports/net/minidlna ]; then
+                cat > /tmp/patch-minissdp.c.b64 <<EOF
 LS0tIG1pbmlzc2RwLmMub3JpZwkyMDE1LTA3LTA5IDAyOjI5OjU0LjYzMTk3NTc2
 NCArMDAwMAorKysgbWluaXNzZHAuYwkyMDE1LTA3LTA5IDAyOjMxOjI5LjczNTM0
 OTM5OCArMDAwMApAQCAtNjAsNyArNjAsNyBAQAogQWRkTXVsdGljYXN0TWVtYmVy
@@ -50,18 +58,19 @@ cikpOworCQkJfQogCQkJaWYgKG5fbGFuX2FkZHIgPT0gaSkKIAkJCXsKIAkJCQlE
 UFJJTlRGKEVfREVCVUcsIExfU1NEUCwgIklnbm9yaW5nIFNTRFAgTS1TRUFSQ0gg
 b24gb3RoZXIgaW50ZXJmYWNlIFslc11cbiIsCg==
 EOF
-            openssl enc -d -base64 -in /tmp/patch-minissdp.c.b64 > /usr/ports/net/minidlna/files/patch-minissdp.c
+                openssl enc -d -base64 -in /tmp/patch-minissdp.c.b64 > /usr/ports/net/minidlna/files/patch-minissdp.c
+            fi
+            cd /usr/ports/net/minidlna
+            make && make install && make package && make clean
+            # /var/ports/packages/All/minidlna-1.1.4_1,1.txz
         fi
-
-        cd /usr/ports/net/minidlna
-        make && make install && make package && make clean
-        # /var/ports/packages/All/minidlna-1.1.4_1,1.txz
+        if ! which minidlnad ; then
+            echo "Failed to build minidlna."
+            exit 1
+        fi
     fi
-
-    if ! which minidlnad ; then
-        echo "Failed to build minidlna."
-        exit 1
-    fi
+else
+    pkg install -y net/minidlna
 fi
 
 if [ ! -e /usr/local/etc/minidlna.conf.sample ]; then
@@ -69,16 +78,17 @@ if [ ! -e /usr/local/etc/minidlna.conf.sample ]; then
     exit 1
 fi
 
-install -d -m 755 /usr/home/dlna/movies
-install -d -m 755 /usr/home/dlna/music
-install -d -m 755 /usr/home/dlna/photos
+install -d -m 755 /tank/dlna/movies
+install -d -m 755 /tank/dlna/music
+install -d -m 755 /tank/dlna/photos
 
 cat > /usr/local/etc/minidlna.conf <<EOF
 port=8200
-network_interface=lo1
-media_dir=A,/usr/home/dlna/music
-media_dir=V,/usr/home/dlna/movies
-media_dir=P,/usr/home/dlna/photos
+network_interface=lagg0
+log_level=debug
+media_dir=A,/tank/dlna/music
+media_dir=V,/tank/dlna/movies
+media_dir=P,/tank/dlna/photos
 friendly_name=MD
 album_art_names=Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg/AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg/Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg
 inotify=yes
@@ -99,10 +109,9 @@ echo "10 * * * * /usr/bin/find /usr/home/dlna -type d -exec chmod a+rx {} \;" > 
 echo "35 * * * * /usr/bin/find /usr/home/dlna -type f -exec chmod a+r {} \;" > /root/crontabbed/permission_files_hourly
 crontabbed
 
-sysrc minidlna_enable="YES"
+sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
 
 service minidlna onestart
 
 echo
-JAILIP=`ifconfig | grep inet | awk '{print $2}'`
-echo "Connect a DLNA client to ${JAILIP}"
+echo "Use a DLNA client to search for this machine"

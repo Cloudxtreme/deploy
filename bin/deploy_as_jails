@@ -5,7 +5,12 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150709-024153
+SCRIPTVERSION=150709-032330
+
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo "ERROR: Cannot run in a jail"
+    exit 1
+fi
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -115,11 +120,11 @@ EOF
     monit     ${MONITIPALIAS}     2812    2812  u
     zabbix    ${ZABBIXIPALIAS}   10050   10050  u
     zabbix    ${ZABBIXIPALIAS}   10051   10051  .
-    minidlna  ${MINIDLNAIPALIAS}  1900    1900  u
-    minidlna  239.255.255.250     1900    1900  .
-    minidlna  ${MINIDLNAIPALIAS}  8200    8200  .
     firefly   ${FIREFLYIPALIAS}   3689    3689  u
 "
+# minidlna  ${MINIDLNAIPALIAS}  1900    1900  u
+# minidlna  239.255.255.250     1900    1900  .
+# minidlna  ${MINIDLNAIPALIAS}  8200    8200  .
     echo "$ALIASES" \
     | while read name ipalias pubport realport doucarp ; do
         #echo "debug ${name} ${ipalias} ${pubport} ${realport}"
@@ -476,13 +481,13 @@ EOF
             zabbix)
                 eza console -f -e "deploy ${name}" ${name}
                 ;;
-            minidlna)
-                if [ -e /var/ports ]; then
-                    rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
-                fi
-                eza console -f -e "deploy ${name}" ${name}
-                rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
-                ;;
+#            minidlna)
+#                if [ -e /var/ports ]; then
+#                    rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
+#                fi
+#                eza console -f -e "deploy ${name}" ${name}
+#                rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
+#                ;;
             firefly)
                 eza console -f -e "deploy ${name}" ${name}
                 ;;
