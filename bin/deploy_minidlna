@@ -1,14 +1,48 @@
 #!/bin/sh
 
-# TODO
+# READY
 
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150626-233835
+SCRIPTVERSION=150709-002610
 
 pkg install -y net/minidlna
 
+if [ ! -e /usr/local/etc/minidlna.conf.sample ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
+
+install -d -m 755 /usr/home/dlna/movies
+install -d -m 755 /usr/home/dlna/music
+install -d -m 755 /usr/home/dlna/photos
+
+cat > /usr/local/etc/minidlna.conf <<EOF
+port=8200
+media_dir=A,/usr/home/dlna/music
+media_dir=V,/usr/home/dlna/movies
+media_dir=P,/usr/home/dlna/photos
+friendly_name=MD
+album_art_names=Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg/AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg/Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg
+inotify=yes
+enable_tivo=no
+strict_dlna=no
+notify_interval=900
+serial=12345678
+model_number=1
+EOF
+
+
+crontabbed
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo > /root/crontabbed/zsnapple_bootpool_hourly
+    echo > /root/crontabbed/zsnapple_pool_hourly
+fi
+echo "10 * * * * /usr/bin/find /usr/home/dlna -type d -exec chmod a+rx {} \;" > /root/crontabbed/permission_folder_hourly
+echo "35 * * * * /usr/bin/find /usr/home/dlna -type f -exec chmod a+r {} \;" > /root/crontabbed/permission_folder_hourly
+crontabbed
+
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
-echo "Visit http://${JAILIP}/"
+echo "Connect a DLNA client to ${JAILIP}"
