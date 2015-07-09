@@ -40,9 +40,7 @@ sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; sleep 5 ; done"
 ```
 
 Install the packages:
-- Avahi
 - OpenVPN Client Export Utility
-- Postfix Forwarder
 
 ### EZJails
 
