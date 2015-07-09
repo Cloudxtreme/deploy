@@ -3,21 +3,7 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 
 # Example
 
-## Create zpool tank
-
-```
-fzg-random-key
-fzg -i -D
-```
-
-## pfsense on bhyve
-
-```
-tmux
-sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; sleep 5 ; done"
-```
-
-## EZJails
+## Planning
 
 ### FQDN and WEBIPALIAS that would be reachable if this service is to be public
 - virtual.local
@@ -26,17 +12,38 @@ sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; sleep 5 ; done"
 ### SQUIDIPALIAS, IP to use as alias for transparent ssl proxy
 - 192.168.255.201
 
-### Host (alpha.local 192.168.255.120)
+## Host (alpha.local 192.168.255.120)
 
-Pulls from github.com and gitlab.com. May be slow.
+### Install
 
 ```
-fres ; fres -b
+fres
 rm /var/ports/packages/All/squid-3.5.5.txz
 fzg -r mirror -d ada0 -d ada1 -d ada2 -z 2g -m -n -D -H `hostname-by-ptr-dns`
 copy-network-conf-to-mnt
 reboot
+```
 
+### Create zpool tank
+
+```
+fzg-random-key
+fzg -i -D
+fres ; fres -b
+```
+
+### pfsense on bhyve
+
+```
+tmux
+sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; sleep 5 ; done"
+```
+
+### EZJails
+
+Pulls from github.com and gitlab.com. May be slow.
+
+```
 ## Optional
 mkdir -p /root/local/gitcache/johnko
 mkdir -p /root/local/gitcache/gitlab-org
@@ -123,9 +130,9 @@ Then start importing:
 env TOKEN=... FQDN=virtual.local git/deploy/scripts/gitlab_import
 ```
 
-### Host (sega.local 192.168.255.160)
+## Host (sega.local 192.168.255.160)
 
-Pulls from alpha.local. Fast for local network.
+### Install
 
 ```
 env SQUID=192.168.255.201:3128 setproxy
@@ -135,7 +142,13 @@ env REPOSRC=https://${FQDN}/v. fres -b
 fzg -d ada0 -d ada2 -z 2g -m -n -D -H `hostname-by-ptr-dns`
 copy-network-conf-to-mnt
 reboot
+```
 
+### EZJails
+
+Pulls from alpha.local. Fast for local network.
+
+```
 env SQUID=192.168.255.201:3128 setproxy
 setenv FQDN virtual.local
 pg pkg || env REPOSRC=https://${FQDN}/v. fres
