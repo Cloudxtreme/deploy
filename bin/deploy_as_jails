@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150709-011248
+SCRIPTVERSION=150709-011706
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -126,7 +126,7 @@ EOF
         if [ "x0" != "x${ipalias}" ] && [ "x" != "x${ipalias}" ] \
         && [ "x" != "x${name}" ] && [ "x" != "x${pubport}" ] \
         && [ "x" != "x${realport}" ] && [ "x" != "x${doucarp}" ]; then
-            if  ! cat /etc/pf/jails.anchor | grep "rdr pass on ${HOSTNIC} inet proto tcp from any to ${HOSTIP} port = ${pubport} " >/dev/null ; then
+            if  ! cat /etc/pf/jails.anchor | grep "rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${HOSTIP} port = ${pubport} " >/dev/null ; then
                 cat >>/etc/pf/jails.anchor <<EOF
 rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${HOSTIP} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
 rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${ipalias} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
