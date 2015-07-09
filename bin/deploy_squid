@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150701-151436
+SCRIPTVERSION=150709-021427
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -18,7 +18,7 @@ if [ "xYES" == "x${NEWINSTALL}" ]; then
         pkg add -f /var/ports/packages/All/squid-3.5.5.txz
     else
         # install squid and dependencies
-        pkg install -y www/squid
+        pkg install -y www/squid lang/perl5.20
         # remove squid because we want custom options
         # openssl from ports conflicts https://lists.freebsd.org/pipermail/freebsd-questions/2015-June/266245.html
         pkg remove -y www/squid openssl

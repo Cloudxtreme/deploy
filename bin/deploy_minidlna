@@ -5,9 +5,35 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150709-011248
+SCRIPTVERSION=150709-021427
 
-pkg install -y net/minidlna
+NEWINSTALL="YES"
+if sysrc minidlna_enable | grep YES >/dev/null ; then
+    NEWINSTALL="NO"
+fi
+
+if [ "xYES" == "x${NEWINSTALL}" ]; then
+    if [ -e /var/ports/packages/All/minidlna-1.1.4.txz ]; then
+        pkg add -f /var/ports/packages/All/minidlna-1.1.4.txz
+    else
+        # install squid and dependencies
+        pkg install -y net/minidlna devel/autoconf devel/automake devel/gettext-tools
+        # remove squid because we want custom options
+        # openssl from ports conflicts https://lists.freebsd.org/pipermail/freebsd-questions/2015-June/266245.html
+        pkg remove -y net/minidlna
+        # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
+        psnap
+
+        cd /usr/ports/net/minidlna
+        make && make install && make package && make clean
+        # /var/ports/packages/All/minidlna-1.1.4.txz
+    fi
+
+    if ! which minidlnad ; then
+        echo "Failed to build minidlna."
+        exit 1
+    fi
+fi
 
 if [ ! -e /usr/local/etc/minidlna.conf.sample ]; then
     echo "ERROR: install failed"
@@ -20,6 +46,7 @@ install -d -m 755 /usr/home/dlna/photos
 
 cat > /usr/local/etc/minidlna.conf <<EOF
 port=8200
+network_interface=lo1
 media_dir=A,/usr/home/dlna/music
 media_dir=V,/usr/home/dlna/movies
 media_dir=P,/usr/home/dlna/photos
