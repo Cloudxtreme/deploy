@@ -141,6 +141,7 @@ env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone create
 cat /root/perm/cshpkglist > /root/local/cshpkglist
 vi /root/local/cshpkglist
 fres ; fres -b
+deploy minidlna
 ```
 
 Put files in /tank/dlna/...
