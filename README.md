@@ -161,6 +161,14 @@ copy-network-conf-to-mnt
 reboot
 ```
 
+### Create zpool tank
+
+```
+fzg-random-key
+fzg -i -D
+fres ; fres -b
+```
+
 ### EZJails
 
 Pulls from alpha.local. Fast for local network.
