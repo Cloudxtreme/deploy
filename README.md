@@ -133,6 +133,7 @@ Then start importing:
 # env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/gitlab_import
 env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone
 env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone create
+env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone home
 ```
 
 ### miniDLNA

@@ -139,5 +139,17 @@ echo "${PROJECTS}" \
             urlpath=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;v.;g' | sed -E 's;/.*;;g'`
             git remote add home ssh://git@${FQDN}:23/v.${urlpath}
         fi
+        if [ "xgithub" == "x${ACTION}" ]; then
+            cd "${FOLDER}/${novgroupname}/${name}"
+            if git remote -v | grep "git@${FQDN}:23/v.${urlpath}" ; then
+                git push github master
+            fi
+        fi
+        if [ "xhome" == "x${ACTION}" ]; then
+            cd "${FOLDER}/${novgroupname}/${name}"
+            if git remote -v | grep "git@${FQDN}:23/v.${urlpath}" ; then
+                git push home master
+            fi
+        fi
     fi
 done
