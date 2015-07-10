@@ -1,14 +1,75 @@
 #!/bin/sh
 
-# TODO
+# READY
 
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150626-233835
+SCRIPTVERSION=150710-212323
+
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo "ERROR: Multicast udp 5353 has issues reaching a jail"
+    echo "ERROR: Clients will not detect this in a jail"
+    exit 1
+fi
 
 pkg install -y audio/firefly
 
+if ! which mt-daapd ; then
+    echo "ERROR: install failed"
+    exit 1
+fi
+
+zfs list tank/dlna || zfs create tank/dlna
+if ! zfs list tank/dlna > /dev/null ; then
+    echo "ERROR: missing tank/dlna"
+    exit 1
+fi
+
+install -d -m 755 /tank/dlna/movies
+install -d -m 755 /tank/dlna/music
+install -d -m 755 /tank/dlna/photos
+
+
+cat > /usr/local/etc/firefly/mt-daapd.conf <<EOF
+[general]
+web_root = /usr/local/share/mt-daapd/admin-root
+port = 3689
+admin_pw = password
+db_type = sqlite3
+db_parms = /var/db/firefly
+mp3_dir = /tank/dlna/music
+servername = MUSICSERVER
+runas = daapd
+extensions = .mp3,.m4a,.m4p,.ogg,.flac
+ssc_codectypes = ogg,flac,alac
+ssc_prog = /usr/local/bin/mt-daapd-ssc.sh
+logfile = /var/log/mt-daapd.log
+debuglevel = 5
+rescan_interval = 900
+scan_type = 0
+compress = 1
+[plugins]
+plugin_dir = /usr/local/lib/mt-daapd/plugins
+[scanning]
+process_playlists = 1
+process_itunes = 1
+process_m3u = 1
+EOF
+
+crontabbed
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo > /root/crontabbed/zsnapple_bootpool_hourly
+    echo > /root/crontabbed/zsnapple_pool_hourly
+fi
+echo "10 * * * * /usr/bin/find /tank/dlna -type d -exec chmod a+rx {} \;" > /root/crontabbed/permission_folders_hourly
+echo "35 * * * * /usr/bin/find /tank/dlna -type f -exec chmod a+r {} \;" > /root/crontabbed/permission_files_hourly
+crontabbed
+
+# sysrc -f /etc/rc.conf.d/firefly firefly_enable="YES"
+
+service mt-daapd onestart
+
 echo
-JAILIP=`ifconfig | grep inet | awk '{print $2}'`
-echo "Visit http://${JAILIP}/"
+echo "Scan the network with a DAAP client like iTunes"
+

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150710-212323
+
+service minidlna onestart
+service mt-daapd onestart
+
