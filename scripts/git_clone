@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150710-140407
+SCRIPTVERSION=150710-140908
 
 FOLDER="/Volumes/zzz/git"
 ACTION=$1
@@ -142,7 +142,7 @@ echo "${PROJECTS}" \
         fi
         if [ "xgithub" == "x${ACTION}" ]; then
             cd "${FOLDER}/${novgroupname}/${name}"
-            if git remote -v | grep "git@${FQDN}:23/v.${urlpath}" ; then
+            if git remote -v | grep "github.com/johnko" ; then
                 git push --mirror github
             fi
         fi
