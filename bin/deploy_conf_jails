@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150709-032330
+SCRIPTVERSION=150710-213642
 
 GOOD="
      1  squid
@@ -26,7 +26,6 @@ export GOOD
 DEV="
     14  monit
     16  zabbix
-    20  firefly
     22  echoplexus
     24  gitannex
     26  gogs
@@ -37,6 +36,7 @@ export DEV
 
 BAD="
     18  minidlna
+    20  firefly
     36  baikal
     38  couchdtfc
     40  horde
