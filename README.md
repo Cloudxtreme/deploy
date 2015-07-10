@@ -166,7 +166,9 @@ reboot
 ```
 fzg-random-key
 fzg -i -D
-fres ; fres -b
+setenv FQDN virtual.local
+env REPOSRC=https://${FQDN}/v. fres
+env REPOSRC=https://${FQDN}/v. fres -b
 ```
 
 ### EZJails
