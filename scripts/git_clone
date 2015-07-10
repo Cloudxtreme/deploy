@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150710-140908
+SCRIPTVERSION=150710-234356
 
 FOLDER="/Volumes/zzz/git"
 ACTION=$1
@@ -39,6 +39,7 @@ PROJECTS="
     dwmsd                       ${REPOSRC}johnko/dwmsd.git
     echoplexus                  ${REPOSRC}johnko/echoplexus.git
     eza                         ${REPOSRC}johnko/eza.git
+    ffmpeg-tools                ${REPOSRC}johnko/ffmpeg-tools.git
     freebsd-install-script      ${REPOSRC}johnko/freebsd-install-script.git
     freebsd-pf-script           ${REPOSRC}johnko/freebsd-pf-script.git
     freebsd-sortconf            ${REPOSRC}johnko/freebsd-sortconf.git
