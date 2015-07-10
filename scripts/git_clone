@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150708-232245
+SCRIPTVERSION=150710-140407
 
 FOLDER="/Volumes/zzz/git"
 ACTION=$1
@@ -129,6 +129,7 @@ echo "${PROJECTS}" \
             fi
         fi
         novgroupname=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;;g' | sed -E 's;/.*;;g'`
+             urlpath=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;;g'`
         if [ ! -e "${FOLDER}/${novgroupname}/${name}" ]; then
             mkdir -p "${FOLDER}/${novgroupname}"
             git clone ${url} "${FOLDER}/${novgroupname}/${name}"
@@ -136,19 +137,19 @@ echo "${PROJECTS}" \
             git remote rename origin github
         else
             cd "${FOLDER}/${novgroupname}/${name}"
-            urlpath=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;v.;g' | sed -E 's;/.*;;g'`
+#            git remote remove home
             git remote add home ssh://git@${FQDN}:23/v.${urlpath}
         fi
         if [ "xgithub" == "x${ACTION}" ]; then
             cd "${FOLDER}/${novgroupname}/${name}"
             if git remote -v | grep "git@${FQDN}:23/v.${urlpath}" ; then
-                git push github master
+                git push --mirror github
             fi
         fi
         if [ "xhome" == "x${ACTION}" ]; then
             cd "${FOLDER}/${novgroupname}/${name}"
             if git remote -v | grep "git@${FQDN}:23/v.${urlpath}" ; then
-                git push home master
+                git push --mirror home
             fi
         fi
     fi
