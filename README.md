@@ -36,7 +36,7 @@ fres ; fres -b
 
 ```
 tmux
-sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; sleep 5 ; done"
+sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; echo "Sleeping..." ; sleep 5 ; done"
 ```
 
 Install the packages:
