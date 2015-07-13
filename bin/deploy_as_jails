@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150710-213830
+SCRIPTVERSION=150713-041423
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
@@ -467,6 +467,13 @@ EOF
                     rm  /usr/jails/${name}/etc/hosts.tmp
                 fi
                 eza console -f -e "env FQDN=${FQDN} GITLABSRC=${GITLABSRC} HTTP_PROXY=http://${SQUID} deploy ${name}_src" ${name}
+                ;;
+            ffmpeg)
+                if [ -e /var/ports ]; then
+                    rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
+                fi
+                eza console -f -e "deploy ${name}" ${name}
+                rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
                 ;;
             # DEV JAILNAMES
             monit)

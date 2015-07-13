@@ -5,21 +5,22 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150710-213642
+SCRIPTVERSION=150713-041227
 
 GOOD="
-     1  squid
-     2  nginx
-     3  postfix
-     4  dovecot
-     5  couch
-     6  dtfc
-     7  piwik
-     8  owncloud
-     9  gitlab
-    10  ejabberd
-    11  murmur
-    12  vnc
+      1  squid
+      2  nginx
+      3  postfix
+      4  dovecot
+      5  couch
+      6  dtfc
+      7  piwik
+      8  owncloud
+      9  gitlab
+     10  ejabberd
+     11  murmur
+     12  vnc
+    254  ffmpeg
 "
 export GOOD
 
