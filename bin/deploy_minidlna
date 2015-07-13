@@ -5,9 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150709-163724
-
-BUILDIT="NO"
+SCRIPTVERSION=150713-035744
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Multicast udp 1900 has issues reaching a jail"
@@ -15,62 +13,7 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ "xYES" == "x${BUILDIT}" ]; then
-    NEWINSTALL="YES"
-    if sysrc minidlna_enable | grep YES >/dev/null ; then
-        NEWINSTALL="NO"
-    fi
-    if [ "xYES" == "x${NEWINSTALL}" ]; then
-        if [ -e /var/ports/packages/All/minidlna-1.1.4_1,1.txz ]; then
-            pkg add -f /var/ports/packages/All/minidlna-1.1.4_1,1.txz
-        else
-            # install dependencies
-            pkg install -y net/minidlna devel/autoconf devel/automake devel/gettext-tools converters/libiconv
-            # remove because we want custom options
-            pkg remove -y net/minidlna
-            # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
-            psnap
-
-            if [ -d /usr/ports/net/minidlna ]; then
-                cat > /tmp/patch-minissdp.c.b64 <<EOF
-LS0tIG1pbmlzc2RwLmMub3JpZwkyMDE1LTA3LTA5IDAyOjI5OjU0LjYzMTk3NTc2
-NCArMDAwMAorKysgbWluaXNzZHAuYwkyMDE1LTA3LTA5IDAyOjMxOjI5LjczNTM0
-OTM5OCArMDAwMApAQCAtNjAsNyArNjAsNyBAQAogQWRkTXVsdGljYXN0TWVtYmVy
-c2hpcChpbnQgcywgc3RydWN0IGxhbl9hZGRyX3MgKmlmYWNlKQogewogCWludCBy
-ZXQ7Ci0jaWZkZWYgSEFWRV9TVFJVQ1RfSVBfTVJFUU4KKyNpZiBkZWZpbmVkKEhB
-VkVfU1RSVUNUX0lQX01SRVFOKSAmJiAhZGVmaW5lZChfX0ZyZWVCU0RfXykKIAlz
-dHJ1Y3QgaXBfbXJlcW4gaW1yOwkvKiBJcCBtdWx0aWNhc3QgbWVtYmVyc2hpcCAq
-LwogCS8qIHNldHRpbmcgdXAgaW1yIHN0cnVjdHVyZSAqLwogCW1lbXNldCgmaW1y
-LCAnXDAnLCBzaXplb2YoaW1yKSk7CkBAIC02MzUsNiArNjM1LDE3IEBACiAJCQkJ
-CWJyZWFrOwogCQkJCX0KIAkJCX0KKwkJCS8vIGNoZWNrIGlmIHNlbmRlciBpcyBv
-biBvdGhlciBpbnRlcmZhY2UgYW5kIGlmIHdlIGhhdmUgb25seSBvbmUgaW50ZXJm
-YWNlCisJCQkvLyB0aGlzIHNpdHVhdGlvbiBtZWFucyB0aGF0IHdlIGhhdmUgY2xp
-ZW50IGJlaGluZCBvdGhlciBzdWJuZXQKKwkJCS8vIGluIHRoYXQgY2FzZSByb3V0
-ZXIgc2hvdWxkIGJlIGNhcGFibGUgb2YgaGFuZGxpbmcgUElNIHJvdXRpbmcKKwkJ
-CWlmKCBpID09IG5fbGFuX2FkZHIgJiYgbl9sYW5fYWRkciA9PSAxKQorCQkJewor
-CQkJCS8vIGZvcmNlIHVzaW5nIG9uZSBhbmQgb25seSBpbnRlcmZhY2UgZm9yIHJl
-cXVlc3RzIGZyb20gb3RoZXIgbmV0d29yaworCQkJCWkgPSAwOworCQkJCS8vIGxl
-dHMgcHJpbnQgb3V0IHNvbWUgZGVidWcgaW5mbworCQkJCURQUklOVEYoRV9ERUJV
-RywgTF9TU0RQLCAiUmVjZWl2ZWQgU1NEUCBNLVNFQVJDSCBmcm9tIG90aGVyIHN1
-Ym5ldCBbJXNdXG4iLAorCQkJCQlpbmV0X250b2Eoc2VuZGVybmFtZS5zaW5fYWRk
-cikpOworCQkJfQogCQkJaWYgKG5fbGFuX2FkZHIgPT0gaSkKIAkJCXsKIAkJCQlE
-UFJJTlRGKEVfREVCVUcsIExfU1NEUCwgIklnbm9yaW5nIFNTRFAgTS1TRUFSQ0gg
-b24gb3RoZXIgaW50ZXJmYWNlIFslc11cbiIsCg==
-EOF
-                openssl enc -d -base64 -in /tmp/patch-minissdp.c.b64 > /usr/ports/net/minidlna/files/patch-minissdp.c
-            fi
-            cd /usr/ports/net/minidlna
-            make && make install && make package && make clean
-            # /var/ports/packages/All/minidlna-1.1.4_1,1.txz
-        fi
-        if ! which minidlnad ; then
-            echo "Failed to build minidlna."
-            exit 1
-        fi
-    fi
-else
-    pkg install -y net/minidlna
-fi
+pkg install -y net/minidlna
 
 if [ ! -e /usr/local/etc/minidlna.conf.sample ]; then
     echo "ERROR: install failed"
