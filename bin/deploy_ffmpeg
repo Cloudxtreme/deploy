@@ -5,22 +5,57 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150713-041928
+SCRIPTVERSION=150713-044013
 
-if [ -e /var/ports/packages/All/ffmpeg-2.7.1_1,1.txz ]; then
-    pkg add -f /var/ports/packages/All/ffmpeg-2.7.1_1,1.txz
+LAMEPKG=/var/ports/packages/All/lame-3.99.5_2.txz
+LIBAACPLUSPKG=/var/ports/packages/All/ffmpeg-2.0.2_7.txz
+FFMPEGPKG=/var/ports/packages/All/ffmpeg-2.7.1_1,1.txz
+
+if [ -e ${LAMEPKG} ]; then
+    pkg add -f ${LAMEPKG}
+else
+    PORTNAME="audio/lame"
+    # install dependencies
+    pkg install -y devel/gmake
+    # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
+    psnap
+
+    cd /usr/ports/${PORTNAME}
+    make && make install && make package && make clean
+    # /var/ports/packages/All/lame-3.99.5_2.txz
+fi
+
+
+if [ -e ${LIBAACPLUSPKG} ]; then
+    pkg add -f ${LIBAACPLUSPKG}
+else
+    PORTNAME="audio/libaacplus"
+    # install dependencies
+    pkg install -y devel/autoconf devel/automake devel/libtool \
+        devel/pkgconf
+    # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
+    psnap
+
+    cd /usr/ports/${PORTNAME}
+    make && make install && make package && make clean
+    # see /var/ports/packages/All/
+fi
+
+
+if [ -e ${FFMPEGPKG} ]; then
+    pkg add -f ${FFMPEGPKG}
 else
     PORTNAME="multimedia/ffmpeg"
     # install dependencies
     pkg install -y devel/yasm devel/binutils graphics/frei0r devel/gmake \
         devel/pkgconf textproc/texi2html lang/perl5.20 \
-        audio/libaacplus audio/lame multimedia/libass \
+        multimedia/libass \
         sysutils/libcdio-paranoia multimedia/libbluray \
         multimedia/librtmp
     # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
     psnap
 
-    # we want LAX_HTTP=on
+    # we want custom options
     if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
         cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
     fi
@@ -33,10 +68,10 @@ else
 
     cd /usr/ports/${PORTNAME}
     make && make install && make package && make clean
-    # /var/ports/packages/All/ffmpeg-2.7.1_1,1.txz
+    # see /var/ports/packages/All/
 fi
 
 if ! which ffmpeg ; then
-    echo "Failed to build squid."
+    echo "Failed to build."
     exit 1
 fi
