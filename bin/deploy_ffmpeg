@@ -5,10 +5,10 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150713-064606
+SCRIPTVERSION=150713-064732
 
 LAMEPKG=/var/ports/packages/All/lame-3.99.5_2.txz
-LIBAACPLUSPKG=/var/ports/packages/All/ffmpeg-2.0.2_7.txz
+LIBAACPLUSPKG=/var/ports/packages/All/libaacplus-2.0.2_7.txz
 FFMPEGPKG=/var/ports/packages/All/ffmpeg-2.7.1_1,1.txz
 
 if [ -e ${LAMEPKG} ]; then
@@ -32,7 +32,7 @@ else
     PORTNAME="audio/libaacplus"
     # install dependencies
     pkg install -y devel/autoconf devel/automake devel/libtool \
-        devel/pkgconf
+        devel/pkgconf math/fftw3 math/fftw3-float
     # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
     psnap
 
@@ -51,7 +51,11 @@ else
         devel/pkgconf textproc/texi2html lang/perl5.20 \
         multimedia/libass \
         sysutils/libcdio-paranoia multimedia/libbluray \
-        multimedia/librtmp
+        multimedia/librtmp \
+        x11-fonts/fontconfig print/freetype2 graphics/opencv-core \
+        multimedia/schroedinger multimedia/libtheora audio/libvorbis \
+        multimedia/libvpx multimedia/libx264 multimedia/xvid security/gnutls \
+        converters/libiconv
     # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
     psnap
 
