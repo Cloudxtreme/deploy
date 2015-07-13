@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150713-035821
+
+if [ -e /var/ports/packages/All/ffmpeg-2.7.1_1,1.txz ]; then
+    pkg add -f /var/ports/packages/All/ffmpeg-2.7.1_1,1.txz
+else
+    PORTNAME="www/squid"
+    # install dependencies
+    pkg install -y  : devel/yasm
+as : devel/binutils
+frei0r.h : graphics/frei0r
+gmake : devel/gmake
+pkgconf : devel/pkgconf
+texi2html : textproc/texi2html
+perl5.20.2 : lang/perl5.20
+    # use portsnap, but portsnap doesn't like non-interactive so we need a human to help
+    psnap
+
+    # we want LAX_HTTP=on
+    if [ ! -e /usr/ports/www/squid/Makefile.orig ]; then
+        cp /usr/ports/www/squid/Makefile /usr/ports/www/squid/Makefile.orig
+    fi
+    cat /usr/ports/www/squid/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT= AACPLUS ;' >/usr/ports/www/squid/Makefile
+
+    # remove old config
+    if [ -e /var/db/ports/www_squid/options ]; then
+        rm /var/db/ports/www_squid/options
+    fi
+
+    cd /usr/ports/www/squid
+    make && make install && make package && make clean
+    # /var/ports/packages/All/ffmpeg-2.7.1_1,1.txz
+fi
+
+if ! which squid ; then
+    echo "Failed to build squid."
+    exit 1
+fi
