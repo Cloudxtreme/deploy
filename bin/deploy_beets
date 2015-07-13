@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150712-235945
+
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo "ERROR: beet should be installed on host with minidlna or firefly"
+    exit 1
+fi
+
+pkg install -y
+beets \
+py27-pylast \
+py27-pyechonest \
+py27-requests \
+py27-discogs-client \
+ffmpeg
+
+
+if ! which beet ; then
+    echo "ERROR: install failed"
+    exit 1
+fi
