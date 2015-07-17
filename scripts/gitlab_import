@@ -1,4 +1,6 @@
-#!/bin/sh
+#!env no
+
+# DON'T USE because import sometimes fails
 
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
