@@ -43,3 +43,5 @@ BAD="
     40  horde
 "
 export BAD
+
+# minidlna and firefly have trouble getting multicast from jails
