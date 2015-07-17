@@ -5,6 +5,8 @@
 ######################################################################
 SCRIPTVERSION=150717-050455
 
+# Usage: $0 [create|github|home]
+
 FOLDER="/Volumes/zzz/git"
 ACTION=$1
 
