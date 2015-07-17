@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# READY
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150717-050455
+
+PROJECTS="
+    apache-config-freebsd       ${REPOSRC}johnko/apache-config-freebsd.git
+    btfc2                       ${REPOSRC}johnko/btfc2.git
+    checkmail-ahk               ${REPOSRC}johnko/checkmail-ahk.git
+    crontabbed                  ${REPOSRC}johnko/crontabbed.git
+    deploy                      ${REPOSRC}johnko/deploy.git
+    dmenu                       ${REPOSRC}johnko/dmenu.git
+    doc                         ${REPOSRC}johnko/doc.git
+    dtfc                        ${REPOSRC}johnko/dtfc.git
+    dwm                         ${REPOSRC}johnko/dwm.git
+    dwmsd                       ${REPOSRC}johnko/dwmsd.git
+    echoplexus                  ${REPOSRC}johnko/echoplexus.git
+    eza                         ${REPOSRC}johnko/eza.git
+    ffmpeg-tools                ${REPOSRC}johnko/ffmpeg-tools.git
+    freebsd-install-script      ${REPOSRC}johnko/freebsd-install-script.git
+    freebsd-pf-script           ${REPOSRC}johnko/freebsd-pf-script.git
+    freebsd-sortconf            ${REPOSRC}johnko/freebsd-sortconf.git
+    freebsd-system-info         ${REPOSRC}johnko/freebsd-system-info.git
+    github-backup               ${REPOSRC}johnko/github-backup.git
+    gtfc                        ${REPOSRC}johnko/gtfc.git
+    hddid                       ${REPOSRC}johnko/hddid.git
+    kanso-chat                  ${REPOSRC}johnko/kanso-chat.git
+    kanso-example               ${REPOSRC}johnko/kanso-example.git
+    kanso-focus                 ${REPOSRC}johnko/kanso-focus.git
+    kanso-manage-couchdb        ${REPOSRC}johnko/kanso-manage-couchdb.git
+    kanso-movies                ${REPOSRC}johnko/kanso-movies.git
+    kanso-music                 ${REPOSRC}johnko/kanso-music.git
+    kanso-photos                ${REPOSRC}johnko/kanso-photos.git
+    kanso-wiki                  ${REPOSRC}johnko/kanso-wiki.git
+    kanso-wtfc                  ${REPOSRC}johnko/kanso-wtfc.git
+    mfsbsd                      ${REPOSRC}johnko/mfsbsd.git
+    mixxx-novation-launchpad    ${REPOSRC}johnko/mixxx-novation-launchpad.git
+    mount_iso                   ${REPOSRC}johnko/mount_iso.git
+    netconn                     ${REPOSRC}johnko/netconn.git
+    nginx-config-sites-enabled  ${REPOSRC}johnko/nginx-config-sites-enabled.git
+    psnap                       ${REPOSRC}johnko/psnap.git
+    pwgen                       ${REPOSRC}johnko/pwgen.git
+    python-rtmidi               ${REPOSRC}johnko/python-rtmidi.git
+    randomword                  ${REPOSRC}johnko/randomword.git
+    rsync-tools                 ${REPOSRC}johnko/rsync-tools.git
+    setproxy                    ${REPOSRC}johnko/setproxy.git
+    skel                        ${REPOSRC}johnko/skel.git
+    ssh-multi                   ${REPOSRC}johnko/ssh-multi.git
+    ssh-tools                   ${REPOSRC}johnko/ssh-tools.git
+    vmrc                        ${REPOSRC}johnko/vmrc.git
+    wtfc                        ${REPOSRC}johnko/wtfc.git
+    zsnapple                    ${REPOSRC}johnko/zsnapple.git
+    gitlab-ce                   ${GITLABSRC}gitlab-org/gitlab-ce.git
+"
+# ${REPOSRC}johnko/btfc.git
+# ${REPOSRC}johnko/couchdbtodomvc.git
+# ${REPOSRC}johnko/dillinger.git
+# ${REPOSRC}johnko/freebsd-ports-test.git
+# ${REPOSRC}johnko/johnko.github.io.git
+# ${REPOSRC}johnko/kurz.go.git
+# ${REPOSRC}johnko/mac-dev-playbook.git
+# ${REPOSRC}johnko/mac-dotfiles.git
+# ${REPOSRC}johnko/Pico.git
+# ${REPOSRC}johnko/textwrangler-bbedit-solarized.git
+
+export PROJECTS
