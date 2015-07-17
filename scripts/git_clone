@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150717-050455
+SCRIPTVERSION=150717-051642
 
 # Usage: $0 [create|github|home]
 
@@ -28,7 +28,7 @@ if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
 fi
 
-sh ${0%/*}/git_conf
+. ${0%/*}/git_conf
 
 if [ "x" == "x${PROJECTS}" ]; then
     echo "Can't load git_conf"
