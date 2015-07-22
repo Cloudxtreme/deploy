@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150722-230327
+SCRIPTVERSION=150722-230456
 
 # Usage: $0 [create|github|home]
 
@@ -92,7 +92,9 @@ echo "${PROJECTS}" \
         else
             cd "${FOLDER}/${novgroupname}/${name}"
 #            git remote remove home
-            git remote add home ssh://git@${FQDN}:23/v.${urlpath}
+            if ! git remote -v | grep "^home" ; then
+                git remote add home ssh://git@${FQDN}:23/v.${urlpath}
+            fi
         fi
         if [ "xgithub" == "x${ACTION}" ]; then
             cd "${FOLDER}/${novgroupname}/${name}"
