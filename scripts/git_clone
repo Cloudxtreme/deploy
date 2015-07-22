@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150722-230456
+SCRIPTVERSION=150722-230547
 
 # Usage: $0 [create|github|home]
 
@@ -92,7 +92,7 @@ echo "${PROJECTS}" \
         else
             cd "${FOLDER}/${novgroupname}/${name}"
 #            git remote remove home
-            if ! git remote -v | grep "^home" ; then
+            if ! git remote -v | grep "^home" > /dev/null ; then
                 git remote add home ssh://git@${FQDN}:23/v.${urlpath}
             fi
         fi
