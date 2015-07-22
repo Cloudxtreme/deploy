@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150722-225345
+SCRIPTVERSION=150722-230327
 
 # Usage: $0 [create|github|home]
 
@@ -85,6 +85,10 @@ echo "${PROJECTS}" \
             git clone ${url} "${FOLDER}/${novgroupname}/${name}"
             cd "${FOLDER}/${novgroupname}/${name}"
             git remote rename origin github
+            if git remote -v | grep "github.com/johnko" ; then
+                # use ssh
+                git remote set-url github "git@github.com:johnko/${i##*/}.git"
+            fi
         else
             cd "${FOLDER}/${novgroupname}/${name}"
 #            git remote remove home
