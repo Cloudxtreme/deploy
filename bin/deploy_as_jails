@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150713-041423
+SCRIPTVERSION=150723-141422
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
@@ -194,7 +194,7 @@ setupnginxconfig() {
     local FQDN=${2}
     couchdatabases="movies music wiki"
     otherslashes="couch dtfc piwik owncloud zabbix"
-    gitlabpaths="admin assets dashboard explore groups help profile projects s snippets u users"
+    gitlabpaths="admin assets dashboard explore groups help profile projects s search snippets u users"
     tlsconf="/usr/local/etc/nginx/tls.conf"
     proxypass="/usr/local/etc/nginx/proxypass.conf"
     cat >/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
