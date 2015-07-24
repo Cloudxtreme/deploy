@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150724-232127
+SCRIPTVERSION=150724-233035
 
 # Usage: env SQUID=10.7.7.1:3128 $0 name "lo1|10.7.7.253"
 
@@ -53,7 +53,9 @@ copysslselfcert() {
 if [ ! -e /usr/jails/${name} ]; then
     echo "Creating: ${name}  ${nicip}"
     eza create      ${name} "${nicip}"
-    if [ "x" != "x${SQUID}" ]; then
+    if [ "x" != "x${HTTP_PROXY}" ]; then
+        SQUID=`echo ${HTTP_PROXY} | sed 's;http://;;'`
+        echo SQUID=${SQUID}
         env SQUID=${SQUID} REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
     else
         env REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
