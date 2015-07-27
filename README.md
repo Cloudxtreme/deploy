@@ -179,7 +179,7 @@ Pulls from alpha.local. Fast for local network.
 env SQUID=192.168.255.201:3128 setproxy
 setenv FQDN virtual.local
 pg pkg || env REPOSRC=https://${FQDN}/v. fres
-rsync -viaP --exclude work alpha:/var/ports /var/ports/
+rsync -viaP --exclude work alpha:/var/ports/ /var/ports/
 cat ~/perm/deploy.s.good | sed "s;virtual.local;${FQDN};g" > ~/local/deploy.${FQDN}.good
 cat ~/local/deploy.${FQDN}.good | sed 's;good;nginx;g' > ~/local/deploy.${FQDN}.nginx
 sh ~/local/deploy.${FQDN}.good
