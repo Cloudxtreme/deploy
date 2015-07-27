@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150710-212323
+SCRIPTVERSION=150727-005052
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Multicast udp 5353 has issues reaching a jail"
@@ -62,8 +62,7 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo > /root/crontabbed/zsnapple_bootpool_hourly
     echo > /root/crontabbed/zsnapple_pool_hourly
 fi
-echo "10 * * * * /usr/bin/find /tank/dlna -type d -exec chmod a+rx {} \;" > /root/crontabbed/permission_folders_hourly
-echo "35 * * * * /usr/bin/find /tank/dlna -type f -exec chmod a+r {} \;" > /root/crontabbed/permission_files_hourly
+echo "10 * * * * dlna-permissions" > /root/crontabbed/dlna_permission_hourly
 crontabbed
 
 # sysrc -f /etc/rc.conf.d/firefly firefly_enable="YES"
@@ -72,4 +71,3 @@ service mt-daapd onestart
 
 echo
 echo "Scan the network with a DAAP client like iTunes"
-
