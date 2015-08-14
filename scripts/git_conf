@@ -5,13 +5,14 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150717-050455
+SCRIPTVERSION=150814-003535
 
 PROJECTS="
     apache-config-freebsd       ${REPOSRC}johnko/apache-config-freebsd.git
     btfc2                       ${REPOSRC}johnko/btfc2.git
     checkmail-ahk               ${REPOSRC}johnko/checkmail-ahk.git
     crontabbed                  ${REPOSRC}johnko/crontabbed.git
+    crossdj-mappings            ${REPOSRC}johnko/crossdj-mappings.git
     deploy                      ${REPOSRC}johnko/deploy.git
     dmenu                       ${REPOSRC}johnko/dmenu.git
     doc                         ${REPOSRC}johnko/doc.git
