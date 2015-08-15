@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150815-053154
+SCRIPTVERSION=150815-054518
 
 SQUIDPKG=/var/ports/packages/All/squid-3.5.7.txz
 
@@ -102,7 +102,7 @@ sslcrtd_children 5
 # sslproxy_flags DONT_VERIFY_PEER
 
 cache_dir ufs /var/squid/cache 100000 16 256
-coredump_dir /var/squid/logs
+coredump_dir /var/squid
 
 # Don't abort the retrieval if the client aborts, this may be risky as it keeps file descriptors open
 quick_abort_min -1 KB
