@@ -5,7 +5,9 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150713-040128
+SCRIPTVERSION=150815-053154
+
+SQUIDPKG=/var/ports/packages/All/squid-3.5.7.txz
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
@@ -14,8 +16,8 @@ if sysrc squid_enable | grep YES >/dev/null ; then
 fi
 
 if [ "xYES" == "x${NEWINSTALL}" ]; then
-    if [ -e /var/ports/packages/All/squid-3.5.6.txz ]; then
-        pkg add -f /var/ports/packages/All/squid-3.5.6.txz
+    if [ -e ${SQUIDPKG} ]; then
+        pkg add -f ${SQUIDPKG}
     else
         PORTNAME="www/squid"
         # install squid and dependencies
@@ -39,7 +41,6 @@ if [ "xYES" == "x${NEWINSTALL}" ]; then
 
         cd /usr/ports/${PORTNAME}
         make && make install && make package && make clean
-        # /var/ports/packages/All/squid-3.5.6.txz
     fi
 
     if ! which squid ; then
