@@ -18,7 +18,7 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 
 ```
 fres
-rm /var/ports/packages/All/squid-3.5.6.txz
+rm /var/ports/packages/All/squid-3.5.7.txz
 fzg -r mirror -d ada0 -d ada1 -d ada2 -z 2g -m -n -D -H `hostname-by-ptr-dns`
 copy-network-conf-to-mnt
 reboot
