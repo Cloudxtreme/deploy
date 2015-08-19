@@ -7,7 +7,7 @@ SCRIPTVERSION=150811-004829
 
 # Usage: $0 [create|github|home]
 
-FOLDER="/tank/dlna/git"
+FOLDER="~/git"
 ACTION=$1
 
 if [ "x" == "x${FQDN}" ]; then
