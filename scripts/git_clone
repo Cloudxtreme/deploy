@@ -3,11 +3,11 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150811-004829
+SCRIPTVERSION=150820-082323
 
 # Usage: $0 [create|github|home]
 
-FOLDER="~/git"
+FOLDER="${HOME}/git"
 ACTION=$1
 
 if [ "x" == "x${FQDN}" ]; then
