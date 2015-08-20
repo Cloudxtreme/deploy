@@ -145,7 +145,7 @@ fres ; fres -b
 deploy minidlna
 ```
 
-Put files in /tank/dlna/...
+Put files in /tank/data/...
 
 ## Host (sega.local 192.168.255.160)
 

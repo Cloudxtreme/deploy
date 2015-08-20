@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150727-005052
+SCRIPTVERSION=150820-150735
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Multicast udp 1900 has issues reaching a jail"
@@ -20,23 +20,23 @@ if [ ! -e /usr/local/etc/minidlna.conf.sample ]; then
     exit 1
 fi
 
-zfs list tank/dlna || zfs create tank/dlna
-if ! zfs list tank/dlna > /dev/null ; then
-    echo "ERROR: missing tank/dlna"
+zfs list tank/data || zfs create tank/data
+if ! zfs list tank/data > /dev/null ; then
+    echo "ERROR: missing tank/data"
     exit 1
 fi
 
-install -d -m 755 /tank/dlna/movies
-install -d -m 755 /tank/dlna/music
-install -d -m 755 /tank/dlna/photos
+install -d -m 755 /tank/data/movies
+install -d -m 755 /tank/data/music
+install -d -m 755 /tank/data/photos
 
 cat > /usr/local/etc/minidlna.conf <<EOF
 port=8200
 network_interface=lagg0
 log_level=debug
-media_dir=A,/tank/dlna/music
-media_dir=V,/tank/dlna/movies
-media_dir=P,/tank/dlna/photos
+media_dir=A,/tank/data/music
+media_dir=V,/tank/data/movies
+media_dir=P,/tank/data/photos
 friendly_name=MEDIASERVER
 album_art_names=Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg/AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg/Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg
 inotify=yes

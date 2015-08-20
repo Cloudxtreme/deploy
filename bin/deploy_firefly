@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150727-005052
+SCRIPTVERSION=150820-150735
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Multicast udp 5353 has issues reaching a jail"
@@ -20,15 +20,15 @@ if ! which mt-daapd ; then
     exit 1
 fi
 
-zfs list tank/dlna || zfs create tank/dlna
-if ! zfs list tank/dlna > /dev/null ; then
-    echo "ERROR: missing tank/dlna"
+zfs list tank/data || zfs create tank/data
+if ! zfs list tank/data > /dev/null ; then
+    echo "ERROR: missing tank/data"
     exit 1
 fi
 
-install -d -m 755 /tank/dlna/movies
-install -d -m 755 /tank/dlna/music
-install -d -m 755 /tank/dlna/photos
+install -d -m 755 /tank/data/movies
+install -d -m 755 /tank/data/music
+install -d -m 755 /tank/data/photos
 
 
 cat > /usr/local/etc/firefly/mt-daapd.conf <<EOF
@@ -38,7 +38,7 @@ port = 3689
 admin_pw = password
 db_type = sqlite3
 db_parms = /var/db/firefly
-mp3_dir = /tank/dlna/music
+mp3_dir = /tank/data/music
 servername = MUSICSERVER
 runas = daapd
 extensions = .mp3,.m4a,.m4p,.ogg,.flac
