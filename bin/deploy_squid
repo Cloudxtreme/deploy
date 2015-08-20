@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150815-054518
+SCRIPTVERSION=150820-033522
 
 SQUIDPKG=/var/ports/packages/All/squid-3.5.7.txz
 
@@ -144,6 +144,10 @@ refresh_pattern -i \/.*(\.gem) 1440 100% 28800 ignore-private ignore-must-revali
 refresh_pattern -i (quarterly|latest)\/All\/.*(\.txz) 1440 100% 525600 ignore-private ignore-must-revalidate override-expire ignore-no-cache
 # match against meta-information - this shouldn't be cached quite so aggressively 28800 = 20 days
 refresh_pattern -i (quarterly|latest)\/.*(\.txz) 1440 100% 28800 ignore-private ignore-must-revalidate override-expire ignore-no-cache
+
+##### FreeBSD update
+# match /lastest.ssl cache for 1 day
+refresh_pattern -i \/latest.ssl 1440 100% 1440 ignore-private ignore-must-revalidate override-expire ignore-no-cache
 
 refresh_pattern ^ftp:       1440    20% 525600
 refresh_pattern ^gopher:    1440    0%  1440
