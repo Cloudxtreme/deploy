@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150723-141422
+SCRIPTVERSION=150820-081624
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
@@ -55,6 +55,10 @@ fi
 
 if ! zfs list tank/ezjail >/dev/null ; then
     eza install -h file:///boot/../10.1-RELEASE
+    if ! zfs list tank/ezjail >/dev/null ; then
+        echo "ERROR: tank/ezjail doesn't exist, something went wrong"
+        exit 1
+    fi
     eza-update
 fi
 
