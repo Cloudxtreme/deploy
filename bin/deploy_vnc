@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150621-233207
+SCRIPTVERSION=150822-185210
 
 ROOTPASS="password"
 
@@ -102,6 +102,8 @@ EOF
 chmod 400 ~/.vnc/passwd.b64
 cat ~/.vnc/passwd.b64 | openssl enc -d -base64 >~/.vnc/passwd
 chmod 400 ~/.vnc/passwd
+
+echo > ~/local/cshproxy
 
 vncserver -depth 24 -geometry 1280x800 -nolisten tcp :1
 
