@@ -1,0 +1,3 @@
+#!/bin/sh
+
+eza console -f -e "/usr/local/etc/rc.d/vnc start" vnc
