@@ -46,6 +46,7 @@ PROJECTS="
     psnap                       ${REPOSRC}johnko/psnap.git
     pwgen                       ${REPOSRC}johnko/pwgen.git
     python-rtmidi               ${REPOSRC}johnko/python-rtmidi.git
+    rad                         ${REPOSRC}johnko/rad.git
     randomword                  ${REPOSRC}johnko/randomword.git
     rsync-tools                 ${REPOSRC}johnko/rsync-tools.git
     setproxy                    ${REPOSRC}johnko/setproxy.git
