@@ -10,6 +10,7 @@ SCRIPTVERSION=150814-003535
 PROJECTS="
     apache-config-freebsd       ${REPOSRC}johnko/apache-config-freebsd.git
     btfc2                       ${REPOSRC}johnko/btfc2.git
+    btfs                        ${REPOSRC}johnko/btfs.git
     checkmail-ahk               ${REPOSRC}johnko/checkmail-ahk.git
     crontabbed                  ${REPOSRC}johnko/crontabbed.git
     crossdj-mappings            ${REPOSRC}johnko/crossdj-mappings.git
