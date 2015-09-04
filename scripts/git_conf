@@ -5,16 +5,19 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150814-003535
+SCRIPTVERSION=150904-022717
 
 PROJECTS="
     apache-config-freebsd       ${REPOSRC}johnko/apache-config-freebsd.git
+    btfc                        ${REPOSRC}johnko/btfc.git
     btfc2                       ${REPOSRC}johnko/btfc2.git
     btfs                        ${REPOSRC}johnko/btfs.git
     checkmail-ahk               ${REPOSRC}johnko/checkmail-ahk.git
     crontabbed                  ${REPOSRC}johnko/crontabbed.git
     crossdj-mappings            ${REPOSRC}johnko/crossdj-mappings.git
+    delugefs                    ${REPOSRC}johnko/delugefs.git
     deploy                      ${REPOSRC}johnko/deploy.git
+    dillinger                   ${REPOSRC}johnko/dillinger.git
     dmenu                       ${REPOSRC}johnko/dmenu.git
     doc                         ${REPOSRC}johnko/doc.git
     dtfc                        ${REPOSRC}johnko/dtfc.git
@@ -25,6 +28,7 @@ PROJECTS="
     ffmpeg-tools                ${REPOSRC}johnko/ffmpeg-tools.git
     freebsd-install-script      ${REPOSRC}johnko/freebsd-install-script.git
     freebsd-pf-script           ${REPOSRC}johnko/freebsd-pf-script.git
+    freebsd-ports-test          ${REPOSRC}johnko/freebsd-ports-test.git
     freebsd-sortconf            ${REPOSRC}johnko/freebsd-sortconf.git
     freebsd-system-info         ${REPOSRC}johnko/freebsd-system-info.git
     github-backup               ${REPOSRC}johnko/github-backup.git
@@ -39,11 +43,13 @@ PROJECTS="
     kanso-photos                ${REPOSRC}johnko/kanso-photos.git
     kanso-wiki                  ${REPOSRC}johnko/kanso-wiki.git
     kanso-wtfc                  ${REPOSRC}johnko/kanso-wtfc.git
+    kurz.go                     ${REPOSRC}johnko/kurz.go.git
     mfsbsd                      ${REPOSRC}johnko/mfsbsd.git
     mixxx-novation-launchpad    ${REPOSRC}johnko/mixxx-novation-launchpad.git
     mount_iso                   ${REPOSRC}johnko/mount_iso.git
     netconn                     ${REPOSRC}johnko/netconn.git
     nginx-config-sites-enabled  ${REPOSRC}johnko/nginx-config-sites-enabled.git
+    Pico                        ${REPOSRC}johnko/Pico.git
     psnap                       ${REPOSRC}johnko/psnap.git
     pwgen                       ${REPOSRC}johnko/pwgen.git
     python-rtmidi               ${REPOSRC}johnko/python-rtmidi.git
