@@ -213,7 +213,9 @@ for i in ${PORTPATHS} ; do
     if [ "x" != "x${i}" ] && [ -d ${i} ]; then
         cd ${i}
         # make config-recursive
-        make && make install && make package && make clean
+        make && make install
+        make package
+        make clean
         # make package-recursive
         # see /var/ports/packages/All/
     fi
