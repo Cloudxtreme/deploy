@@ -1,11 +1,11 @@
 #!/bin/sh
 
-# Testing build
+# READY, build works
 
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150928-175704
+SCRIPTVERSION=150928-193911
 
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
