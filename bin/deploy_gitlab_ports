@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# Testing build
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150928-055327
+
+if [ "x" == "x${REPOSRC}" ]; then
+    REPOSRC=https://github.com/
+fi
+
+if [ ! -d ${HOME}/gitlabports ]; then
+    git clone ${REPOSRC}johnko/freebsd-ports-test.git -b gitlab-7.14.1 ${HOME}/gitlabports
+fi
+
+rsync -virthP --exclude .git  ${HOME}/gitlabports/  /usr/ports/
+
+pkg install -y \
+ruby libyaml \
+ruby21-gems \
+redis \
+swig13 \
+sqlite3 \
+node python2 \
+rubygem-multi_json rubygem-json_pure \
+libxslt
+
+cd /usr/ports/www/gitlab/
+# make config-recursive
+make && make install && make package-recursive && make clean
+# see /var/ports/packages/All/
