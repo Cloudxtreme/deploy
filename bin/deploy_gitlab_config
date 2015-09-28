@@ -11,16 +11,12 @@ DB="gitlabhq_production"
 DBUSER="git"
 DBPASS="password"
 ROOTPASS="password"
-BRANCH="7-8-stable"
 
 if [ "x" != "x${GITLABROOTPASS}" ]; then
     ROOTPASS=${GITLABROOTPASS}
 fi
 if [ "x" != "x${GITLABDBPASS}" ]; then
     DBPASS=${GITLABDBPASS}
-fi
-if [ "x" != "x${GITLABBRANCH}" ]; then
-    BRANCH=${GITLABBRANCH}
 fi
 
 if [ "x" == "x${HTTP_PROXY}" ]; then
