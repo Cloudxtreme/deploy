@@ -142,7 +142,6 @@ env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone home
 cat perm/cshpkglist | sed 's/^# //' > local/cshpkglist
 vi /root/local/cshpkglist
 fres ; fres -b
-pkg remove -y ffmpeg
 deploy minidlna
 ```
 
