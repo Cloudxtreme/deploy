@@ -1,0 +1,321 @@
+#!/bin/sh
+
+# Testing build
+
+######################################################################
+# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
+######################################################################
+SCRIPTVERSION=150928-193944
+
+DB="gitlabhq_production"
+DBUSER="git"
+DBPASS="password"
+ROOTPASS="password"
+BRANCH="7-8-stable"
+
+if [ "x" != "x${GITLABROOTPASS}" ]; then
+    ROOTPASS=${GITLABROOTPASS}
+fi
+if [ "x" != "x${GITLABDBPASS}" ]; then
+    DBPASS=${GITLABDBPASS}
+fi
+if [ "x" != "x${GITLABBRANCH}" ]; then
+    BRANCH=${GITLABBRANCH}
+fi
+
+if [ "x" == "x${HTTP_PROXY}" ]; then
+    echo "ERROR: expecting HTTP_PROXY"
+    exit 1
+fi
+
+# Based on https://github.com/t-zuehlsdorff/gitlabhq/blob/master/doc/install/installation-freebsd.md
+
+# 0 jail needs export jail_**MY_JAIL_NAME**_parameters="allow.sysvipc=1"
+if sysctl -a | grep security.jail.sysvipc_allowed >/dev/null ; then
+    if sysctl security.jail.sysvipc_allowed | grep 0 >/dev/null ; then
+        echo "This jail is not configured to allow sysvipc."
+        echo "you need to add jail_example_parameters=\"allow.sysvipc=1\""
+        exit 1
+    fi
+fi
+
+if [ "x" == "x${FQDN}" ]; then
+    echo "Please set or export variable FQDN"
+    exit 1
+fi
+
+
+echo 1.a Dependencies
+
+pkg install -y \
+rubygem-unicorn rubygem-raindrops ruby21-gems ruby libyaml libffi indexinfo libedit rubygem-kgio rubygem-rack16 \
+rubygem-sanitize rubygem-crass rubygem-nokogiri libxslt libxml2 libgcrypt libgpg-error gettext-runtime rubygem-nokogumbo \
+rubygem-state_machine \
+rubygem-redcarpet \
+rubygem-activesupport41 rubygem-json rubygem-minitest rubygem-i18n rubygem-thread_safe1 rubygem-atomic rubygem-tzinfo \
+rubygem-asciidoctor \
+rubygem-gitlab_emoji rubygem-gemojione \
+rubygem-newrelic_rpm \
+rubygem-rdoc \
+rubygem-fog rubygem-fog-softlayer rubygem-fog-core rubygem-net-ssh rubygem-ruby-termios rubygem-builder32 rubygem-formatador rubygem-excon rubygem-net-scp rubygem-mime-types rubygem-fog-json rubygem-multi_json rubygem-json_pure rubygem-fog-google rubygem-fog-xml rubygem-fog-vmfusion rubygem-fission rubygem-CFPropertyList rubygem-fog-radosgw rubygem-fog-local rubygem-fog-dynect rubygem-fog-atmos rubygem-fog-sakuracloud rubygem-fog-brightbox rubygem-inflecto rubygem-fog-powerdns rubygem-fog-storm_on_demand rubygem-ipaddress rubygem-fog-ecloud rubygem-fog-riakcs rubygem-fog-aws rubygem-fog-terremark rubygem-fog-serverlove rubygem-fog-profitbricks rubygem-fog-voxel \
+rubygem-rinku \
+rubygem-creole \
+rubygem-stamp \
+rubygem-virtus rubygem-equalizer rubygem-coercible rubygem-descendants_tracker rubygem-thread_safe rubygem-axiom-types rubygem-ice_nine \
+rubygem-attr_required \
+rubygem-httpclient \
+rubygem-rugged libgit2 curl ca_root_nss libssh2 \
+rubygem-charlock_holmes icu \
+rubygem-gitlab-linguist rubygem-mime-types1 rubygem-escape_utils-rails4 \
+rubygem-jquery-atwho-rails-rails4 \
+rubygem-omniauth-bitbucket rubygem-omniauth rubygem-hashie rubygem-omniauth-oauth rubygem-oauth \
+rubygem-rack-accept \
+rubygem-multi_xml \
+rubygem-rack-mount \
+rubygem-railties41 rubygem-actionpack41 rubygem-rack-test rubygem-actionview41 rubygem-erubis rubygem-rack15 rubygem-thor \
+rubygem-six \
+rubygem-rack-cors \
+rubygem-sidetiq rubygem-ice_cube rubygem-sidekiq rubygem-redis-namespace rubygem-redis rubygem-connection_pool rubygem-celluloid rubygem-celluloid-pool rubygem-timers rubygem-hitimes rubygem-nenv rubygem-bundler rubygem-dotenv rubygem-rspec-logsplit rubygem-celluloid-extras rubygem-celluloid-essentials rubygem-celluloid-fsm rubygem-celluloid-supervision \
+rubygem-mousetrap-rails \
+rubygem-unf rubygem-unf_ext \
+rubygem-omniauth-github rubygem-omniauth-oauth2 rubygem-oauth2 rubygem-faraday rubygem-multipart-post rubygem-jwt \
+rubygem-sprockets3 \
+rubygem-sprockets rubygem-hike rubygem-tilt1 \
+rubygem-sass32 \
+rubygem-activemodel41 \
+rubygem-uglifier rubygem-execjs node python27 python2 \
+rubygem-orm_adapter \
+rubygem-bcrypt \
+rubygem-warden \
+rubygem-rack-attack \
+rubygem-tinder rubygem-twitter-stream rubygem-http_parser.rb rubygem-simple_oauth rubygem-eventmachine rubygem-faraday_middleware \
+rubygem-redis-store \
+rubygem-redis-rack \
+rubygem-activerecord41 rubygem-arel \
+redis \
+rubygem-diffy \
+rubygem-omniauth-twitter \
+rubygem-request_store \
+rubygem-settingslogic \
+rubygem-gitlab-grack \
+rubygem-gitlab_omniauth-ldap rubygem-rubyntlm rubygem-pyu-ruby-sasl rubygem-net-ldap \
+rubygem-foreman \
+rubygem-attr_encrypted rubygem-encryptor \
+rubygem-octokit rubygem-sawyer rubygem-addressable \
+rubygem-browser \
+rubygem-pg postgresql93-client \
+rubygem-turbolinks-rails41 rubygem-coffee-rails41 rubygem-coffee-script rubygem-coffee-script-source \
+rubygem-haml rubygem-tilt \
+rubygem-html2haml rubygem-ruby_parser rubygem-sexp_processor \
+rubygem-httparty \
+rubygem-omniauth-google-oauth2 \
+rubygem-omniauth-shibboleth \
+rubygem-colored \
+rubygem-version_sorter \
+rubygem-unicorn-worker-killer rubygem-get_process_mem \
+rubygem-gitlab_meta \
+rubygem-select2-rails \
+rubygem-rqrcode-rails3 rubygem-rqrcode \
+rubygem-gemnasium-gitlab-service \
+rubygem-github-markup \
+rubygem-org-ruby rubygem-rubypants \
+rubygem-raphael-rails \
+rubygem-redcloth \
+rubygem-bootstrap-sass rubygem-autoprefixer-rails rubygem-sass \
+rubygem-sqlite3 sqlite3 \
+rubygem-jbuilder-rails41 \
+rubygem-rake \
+rubygem-spring \
+rubygem-actionmailer41 rubygem-mail \
+rubygem-sdoc \
+rubygem-hipchat rubygem-mimemagic \
+rubygem-rotp \
+rubygem-gollum-lib rubygem-gollum-grit_adapter rubygem-gitlab-grit rubygem-diff-lcs rubygem-posix-spawn rubygem-stringex rubygem-rouge \
+git expat p5-Error perl5 cvsps p5-Authen-SASL p5-Digest-HMAC p5-GSSAPI p5-Net-SMTP-SSL p5-IO-Socket-SSL p5-Net-SSLeay p5-IO-Socket-IP p5-Socket p5-Mozilla-CA \
+rubygem-wikicloth rubygem-builder rubygem-htmlentities rubygem-expression_parser rubygem-twitter-text \
+rubygem-slim rubygem-temple \
+rubygem-nprogress-rails \
+rubygem-slack-notifier \
+rubygem-omniauth-saml rubygem-ruby-saml rubygem-uuid rubygem-macaddr rubygem-systemu \
+rubygem-sinatra rubygem-rack-protection \
+rubygem-underscore-rails \
+rubygem-omniauth-gitlab \
+rubygem-gitlab-flowdock-git-hook rubygem-flowdock \
+rubygem-ace-rails-ap
+
+# for this script
+pkg install -y sudo
+
+
+echo 1.b Package
+
+if [ -e /var/ports/packages/All/gitlab-7.14.1.txz ]; then
+    if ! pkg add /var/ports/packages/All/gitlab-7.14.1.txz ; then
+        echo "ERROR: gitlab install failed"
+        exit 1
+    fi
+fi
+
+
+echo 2 postgresql
+
+pkg install -y postgresql93-server
+# different uid so shared memory of postgresql don't clash
+pw usermod -n pgsql -u 1110
+find / -user 70 -exec chown pgsql {} \;
+if [ ! -e /usr/local/bin/createuser ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
+sysrc postgresql_enable="YES"
+service postgresql initdb
+service postgresql start
+/usr/local/bin/createuser -U pgsql ${DBUSER}
+/usr/local/bin/createdb -E utf8 -U pgsql -O ${DBUSER} ${DB}
+/usr/local/bin/psql -U pgsql -d template1 -c "ALTER ROLE ${DBUSER} WITH password '${DBPASS}';"
+if [ ! -e /usr/local/pgsql/data/pg_hba.conf.dist ]; then
+    cp -a /usr/local/pgsql/data/pg_hba.conf /usr/local/pgsql/data/pg_hba.conf.dist
+fi
+cat >/usr/local/pgsql/data/pg_hba.conf <<EOF
+local   all             all                                     trust
+host    all             all             127.0.0.1/32            trust
+host    all             all             ::1/128                 trust
+hostnossl  ${DB}   ${DBUSER}    samehost                trust
+EOF
+service postgresql restart
+
+
+echo 3 redis
+
+if [ ! -e /usr/local/etc/redis.conf.orig ]; then
+    cp /usr/local/etc/redis.conf /usr/local/etc/redis.conf.orig
+fi
+sed 's/^port .*/port 0/' /usr/local/etc/redis.conf.orig >/usr/local/etc/redis.conf
+echo 'unixsocket /var/run/redis/redis.sock' >>/usr/local/etc/redis.conf
+echo 'unixsocketperm 770' >>/usr/local/etc/redis.conf
+mkdir -p /usr/local/var/run/redis
+chown redis:redis /usr/local/var/run/redis
+chmod 755 /usr/local/var/run/redis
+sysrc redis_enable="YES"
+service redis start
+# Add git user to redis group
+pw groupmod redis -m git
+
+
+echo 4 gitlab
+# Become git user
+#su git
+# Go to GitLab installation folder
+#cd /usr/local/www/gitlab
+# Update GitLab config file, follow the directions at top of file
+#The option host: should be set to your domain, e.g. "gitlab.mysite.com".
+if sysctl security.jail.jailed | grep 1 >/dev/null ; then
+    cat /usr/local/www/gitlab/config/gitlab.yml.sample \
+    | sed 's/# ssh_port: 22/ssh_port: 23/' \
+    | sed "s/host: localhost/host: ${FQDN}/" \
+    | sed 's/port: 80/port: 443/' \
+    | sed 's/https: false/https: true/' \
+    >/usr/local/www/gitlab/config/gitlab.yml
+#    | sed 's/# email_enabled: true/email_enabled: false/' \
+else
+    cat /usr/home/git/gitlab/config/gitlab.yml.sample \
+    | sed "s/host: localhost/host: ${FQDN}/" \
+    | sed 's/port: 80/port: 443/' \
+    | sed 's/https: false/https: true/' \
+    >/usr/local/www/gitlab/config/gitlab.yml
+#    | sed 's/# email_enabled: true/email_enabled: false/' \
+fi
+# Find number of cores
+#sysctl hw.ncpu
+# Enable cluster mode if you expect to have a high load instance
+# Ex. change amount of workers to 3 for 2GB RAM server
+# Set the number of workers to at least the number of cores
+cat /usr/local/www/gitlab/config/unicorn.rb.sample \
+| sed 's/worker_processes 3/worker_processes 1/' \
+>/usr/local/www/gitlab/config/unicorn.rb
+# Configure Git global settings for git user, used when editing via web editor
+sudo -u git -H git config --global core.autocrlf "input"
+# Change the Redis socket path if you are not using the default Debian / Ubuntu configuration
+# Configure Redis to use the modified socket path
+# Change 'production' line to 'unix:/usr/local/var/run/redis/redis.sock'
+cat /usr/local/www/gitlab/config/resque.yml.sample \
+>/usr/local/www/gitlab/config/resque.yml
+# Change 'secure password' with the value you have given to $password
+# You can keep the double quotes around the password
+cat /usr/local/www/gitlab/config/database.yml.postgresql \
+>/usr/local/www/gitlab/config/database.yml
+# Install gitlab-shell
+sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} rake gitlab:shell:install[v2.6.3] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+
+
+echo 8 Initialise Database
+
+yes yes | sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=${ROOTPASS}
+# Check Application Status
+sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} rake gitlab:env:info RAILS_ENV=production
+# Compile Assets
+sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} rake assets:precompile RAILS_ENV=production
+# Enable services
+sysrc gitlab_enable="YES"
+# Start Your GitLab Instance
+service gitlab start
+
+
+if sysctl security.jail.jailed | grep 0 >/dev/null ; then
+    echo Other services: openntpd
+    sysrc openntpd_enable="YES"
+    service openntpd start
+
+    echo Other services: nginx
+    pkg install -y nginx
+    sysrc nginx_enable="YES"
+fi
+
+
+echo Other services: SSH
+
+if sysctl security.jail.jailed | grep 1 >/dev/null ; then
+    cat /etc/ssh/sshd_config \
+    | sed 's/#Port 22/Port 23/' \
+    >/etc/ssh/sshd_config.tmp
+    cat /etc/ssh/sshd_config.tmp >/etc/ssh/sshd_config
+    rm /etc/ssh/sshd_config.tmp
+fi
+sysrc sshd_enable="YES"
+sysrc sshd_rsa1_enable="NO"
+sysrc sshd_dsa_enable="NO"
+sysrc sshd_ecdsa_enable="NO"
+service sshd start
+
+
+if sysctl security.jail.jailed | grep 1 >/dev/null ; then
+    echo Other services: MAIL
+    # to overwrite mailer.conf
+    yes y | pkg install -fy postfix
+
+    service sendmail onestop
+    sysrc sendmail_enable="NO"
+    sysrc sendmail_submit_enable="NO"
+    sysrc sendmail_outbound_enable="NO"
+    sysrc sendmail_msp_queue_enable="NO"
+
+    sysrc postfix_enable="YES"
+    sysrc -f /etc/periodic.conf daily_clean_hoststat_enable="NO"
+    sysrc -f /etc/periodic.conf daily_status_mail_rejects_enable="NO"
+    sysrc -f /etc/periodic.conf daily_status_include_submit_mailq="NO"
+    sysrc -f /etc/periodic.conf daily_submit_queuerun="NO"
+    service postfix start
+fi
+
+
+echo
+JAILIP=`ifconfig | grep inet | awk '{print $2}'`
+cat <<EOF
+Visit http://${JAILIP}/
+Login as root:${ROOTPASS}
+Repos to clone:
+    https://github.com/johnko/*
+    https://github.com/johnko/dtfc.git
+    https://github.com/qq99/echoplexus.git
+    https://gitlab.com/gitlab-org/gitlab-ce.git
+EOF
