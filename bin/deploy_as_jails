@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150820-081624
+SCRIPTVERSION=150929-161920
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
@@ -457,6 +457,9 @@ EOF
                 eza console -f -e "deploy ${name}" ${name}
                 ;;
             gitlab)
+                if [ -e /var/ports ]; then
+                    rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
+                fi
                 allowsysvipc ${name}
                 copysslselfcert ${name}
                 if ifconfig | grep ${WEBIPALIAS} >/dev/null ; then
