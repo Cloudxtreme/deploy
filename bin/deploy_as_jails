@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150929-161920
+SCRIPTVERSION=150929-163227
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
@@ -371,19 +371,11 @@ echo "$JAILNAMES" \
             eza console -f -e "env REPOSRC=${REPOSRC} fres" ${name}
             eza stop ${name}
             zfs snap tank/ezjail/${name}@created
-        else
-            echo "Updating: ${num} ${name}"
-            eza console -f -e "env REPOSRC=${REPOSRC} fres" ${name}
-            if [ "squid" != "${name}" ]; then
-                eza console -f -e "pkg update" ${name}
-                eza console -f -e "pkg upgrade -y" ${name}
-            fi
-        fi
-        # The following case can be in any order
-        case ${name} in
-            # GOOD JAILNAMES
-            squid)
-                # based on https://forums.freebsd.org/threads/transparent-proxy-in-jail-with-pf-in-host.42075/
+            # The following case can be in any order
+            case ${name} in
+                # GOOD JAILNAMES
+                squid)
+                    # based on https://forums.freebsd.org/threads/transparent-proxy-in-jail-with-pf-in-host.42075/
 #                cat >>/etc/devfs.rules <<EOF
 #[devfsrules_jail=4]
 #add include \$devfsrules_hide_all
@@ -392,15 +384,15 @@ echo "$JAILNAMES" \
 #add path zfs unhide
 #add path pf unhide mode 0640 group 100
 #EOF
-                if [ -e /var/ports ]; then
-                    rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
-                fi
-                eza console -f -e "deploy ${name}" ${name}
-                rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
-                # easydns-client here to reduce risk of lost/rollbacked config
-                eza console -f -e "deploy easydnsclient" ${name}
-                # 3127 for public.pem
-                cat >/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
+                    if [ -e /var/ports ]; then
+                        rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
+                    fi
+                    eza console -f -e "deploy ${name}" ${name}
+                    rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
+                    # easydns-client here to reduce risk of lost/rollbacked config
+                    eza console -f -e "deploy easydnsclient" ${name}
+                    # 3127 for public.pem
+                    cat >/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
 server {
     listen   ${IPNET}`jailip squid`:3127 default_server;
     server_name ${IPNET}`jailip squid`;
@@ -412,85 +404,85 @@ server {
     }
 }
 EOF
-                eza console -f -e "deploy nginx" ${name}
-                eza console -f -e sh ${name} <<EOF
+                    eza console -f -e "deploy nginx" ${name}
+                    eza console -f -e sh ${name} <<EOF
 su urep -c "/bin/mkdir -p /usr/home/urep/bin"
 cp -a /root/bin/fres /usr/home/urep/bin/fres
 chown urep /usr/home/urep/bin/fres
 su urep -c "/usr/home/urep/bin/fres"
 su urep -c "/usr/home/urep/bin/deploy easydnsclient"
 EOF
-                ;;
-            nginx)
-                setupnginxconfig ${name} ${FQDN}
-                eza console -f -e "deploy ${name}" ${name}
-                ;;
-            couch)
-                eza console -f -e "env FQDN=${FQDN} deploy ${name}db" ${name}
-                ;;
-            dtfc)
-                if [         -d /root/local/gitcache/johnko/dtfc ]; then
-                    mkdir -p                                      /usr/jails/${name}/root/local/gitcache/johnko/dtfc
-                    rsync -qalP /root/local/gitcache/johnko/dtfc/ /usr/jails/${name}/root/local/gitcache/johnko/dtfc/
-                fi
-                eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy ${name}" ${name}
-                ;;
-            piwik)
-                eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
-                ;;
-            owncloud)
-                if [         -d /root/local/owncloud ]; then
-                    mkdir -p                          /usr/jails/${name}/root/local/owncloud
-                    rsync -qalP /root/local/owncloud/ /usr/jails/${name}/root/local/owncloud/
-                fi
-                allowsysvipc ${name}
-                eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
-                rsync -qalP /usr/jails/${name}/root/local/owncloud/ /root/local/owncloud/
-                ;;
-            ejabberd)
-                eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
-                ;;
-            murmur)
-                eza console -f -e "deploy ${name}" ${name}
-                ;;
-            vnc)
-                eza console -f -e "deploy ${name}" ${name}
-                ;;
-            gitlab)
-                if [ -e /var/ports ]; then
-                    rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
-                fi
-                allowsysvipc ${name}
-                copysslselfcert ${name}
-                if ifconfig | grep ${WEBIPALIAS} >/dev/null ; then
-                    # Set jailip nginx as FQDN
-                    grep -v " ${FQDN}" /usr/jails/${name}/etc/hosts >/usr/jails/${name}/etc/hosts.tmp
-                    cat /usr/jails/${name}/etc/hosts.tmp >/usr/jails/${name}/etc/hosts
-                    echo "${IPNET}`jailip nginx` ${FQDN}" >>/usr/jails/${name}/etc/hosts
-                    rm  /usr/jails/${name}/etc/hosts.tmp
-                fi
-                eza console -f -e "env FQDN=${FQDN} HTTP_PROXY=http://${SQUID} deploy ${name}_config" ${name}
-                ;;
-            builder)
-                if [ -e /var/ports ]; then
-                    rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
-                fi
-                eza console -f -e "psnap" ${name}
-                zfs snap tank/ezjail/${name}@psnap
-                eza console -f -e "deploy ffmpeg" ${name}
-                rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
-                eza stop ${name}
-                zfs rollback tank/ezjail/${name}@psnap
-                eza console -f -e "deploy gitlab_ports" ${name}
-                rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
-                ;;
-            # DEV JAILNAMES
-            monit)
-                eza console -f -e "deploy ${name}" ${name}
-                ;;
-            zabbix)
-                eza console -f -e "deploy ${name}" ${name}
-                ;;
+                    ;;
+                nginx)
+                    setupnginxconfig ${name} ${FQDN}
+                    eza console -f -e "deploy ${name}" ${name}
+                    ;;
+                couch)
+                    eza console -f -e "env FQDN=${FQDN} deploy ${name}db" ${name}
+                    ;;
+                dtfc)
+                    if [         -d /root/local/gitcache/johnko/dtfc ]; then
+                        mkdir -p                                      /usr/jails/${name}/root/local/gitcache/johnko/dtfc
+                        rsync -qalP /root/local/gitcache/johnko/dtfc/ /usr/jails/${name}/root/local/gitcache/johnko/dtfc/
+                    fi
+                    eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy ${name}" ${name}
+                    ;;
+                piwik)
+                    eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                    ;;
+                owncloud)
+                    if [         -d /root/local/owncloud ]; then
+                        mkdir -p                          /usr/jails/${name}/root/local/owncloud
+                        rsync -qalP /root/local/owncloud/ /usr/jails/${name}/root/local/owncloud/
+                    fi
+                    allowsysvipc ${name}
+                    eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                    rsync -qalP /usr/jails/${name}/root/local/owncloud/ /root/local/owncloud/
+                    ;;
+                ejabberd)
+                    eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                    ;;
+                murmur)
+                    eza console -f -e "deploy ${name}" ${name}
+                    ;;
+                vnc)
+                    eza console -f -e "deploy ${name}" ${name}
+                    ;;
+                gitlab)
+                    if [ -e /var/ports ]; then
+                        rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
+                    fi
+                    allowsysvipc ${name}
+                    copysslselfcert ${name}
+                    if ifconfig | grep ${WEBIPALIAS} >/dev/null ; then
+                        # Set jailip nginx as FQDN
+                        grep -v " ${FQDN}" /usr/jails/${name}/etc/hosts >/usr/jails/${name}/etc/hosts.tmp
+                        cat /usr/jails/${name}/etc/hosts.tmp >/usr/jails/${name}/etc/hosts
+                        echo "${IPNET}`jailip nginx` ${FQDN}" >>/usr/jails/${name}/etc/hosts
+                        rm  /usr/jails/${name}/etc/hosts.tmp
+                    fi
+                    eza console -f -e "env FQDN=${FQDN} HTTP_PROXY=http://${SQUID} deploy ${name}_config" ${name}
+                    ;;
+                builder)
+                    if [ -e /var/ports ]; then
+                        rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
+                    fi
+                    eza console -f -e "psnap" ${name}
+                    zfs snap tank/ezjail/${name}@psnap
+                    eza console -f -e "deploy ffmpeg" ${name}
+                    rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
+                    eza stop ${name}
+                    zfs rollback tank/ezjail/${name}@psnap
+                    eza console -f -e "deploy gitlab_ports" ${name}
+                    rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
+                    ;;
+                # DEV JAILNAMES
+                monit)
+                    eza console -f -e "deploy ${name}" ${name}
+                    ;;
+                zabbix)
+                    eza console -f -e "deploy ${name}" ${name}
+                    ;;
 #            minidlna)
 #                if [ -e /var/ports ]; then
 #                    rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
@@ -501,43 +493,44 @@ EOF
 #            firefly)
 #                eza console -f -e "deploy ${name}" ${name}
 #                ;;
-            echoplexus)
-                if [         -d /root/local/gitcache/qq99/echoplexus ]; then
-                    mkdir -p                                          /usr/jails/${name}/root/local/gitcache/qq99/echoplexus
-                    rsync -qalP /root/local/gitcache/qq99/echoplexus/ /usr/jails/${name}/root/local/gitcache/qq99/echoplexus/
-                fi
-                eza console -f -e "env REPOSRC=${REPOSRC} deploy ${name}" ${name}
-                ;;
-            gitannex)
-                eza console -f -e "deploy ${name}" ${name}
-                ;;
-            gogs)
-                eza console -f -e "deploy ${name}_src" ${name}
-                ;;
-            phabricator)
-                eza console -f -e "deploy ${name}" ${name}
-                ;;
-            pydio)
-                eza console -f -e "deploy ${name}" ${name}
-                ;;
-            # BAD JAILNAMES
-            baikal)
-                eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
-                ;;
-            couchdtfc)
-                if [         -d /root/local/gitcache/johnko/dtfc ]; then
-                    mkdir -p                                      /usr/jails/${name}/root/local/gitcache/johnko/dtfc
-                    rsync -qalP /root/local/gitcache/johnko/dtfc/ /usr/jails/${name}/root/local/gitcache/johnko/dtfc/
-                fi
-                eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy couchdbdtfc" ${name}
-                ;;
-            horde)
-                allowsysvipc ${name}
-                eza console -f -e "env FQDN=${FQDN} deploy ${name}webmail" ${name}
-                ;;
-        esac
-        if [ "xsquid" != "x${name}" ]; then
-            eza stop ${name}
-        fi
+                echoplexus)
+                    if [         -d /root/local/gitcache/qq99/echoplexus ]; then
+                        mkdir -p                                          /usr/jails/${name}/root/local/gitcache/qq99/echoplexus
+                        rsync -qalP /root/local/gitcache/qq99/echoplexus/ /usr/jails/${name}/root/local/gitcache/qq99/echoplexus/
+                    fi
+                    eza console -f -e "env REPOSRC=${REPOSRC} deploy ${name}" ${name}
+                    ;;
+                gitannex)
+                    eza console -f -e "deploy ${name}" ${name}
+                    ;;
+                gogs)
+                    eza console -f -e "deploy ${name}_src" ${name}
+                    ;;
+                phabricator)
+                    eza console -f -e "deploy ${name}" ${name}
+                    ;;
+                pydio)
+                    eza console -f -e "deploy ${name}" ${name}
+                    ;;
+                # BAD JAILNAMES
+                baikal)
+                    eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                    ;;
+                couchdtfc)
+                    if [         -d /root/local/gitcache/johnko/dtfc ]; then
+                        mkdir -p                                      /usr/jails/${name}/root/local/gitcache/johnko/dtfc
+                        rsync -qalP /root/local/gitcache/johnko/dtfc/ /usr/jails/${name}/root/local/gitcache/johnko/dtfc/
+                    fi
+                    eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy couchdbdtfc" ${name}
+                    ;;
+                horde)
+                    allowsysvipc ${name}
+                    eza console -f -e "env FQDN=${FQDN} deploy ${name}webmail" ${name}
+                    ;;
+            esac
+            if [ "xsquid" != "x${name}" ]; then
+                eza stop ${name}
+            fi
+        fi # end of if not jail exists
     fi # end of if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
 done
