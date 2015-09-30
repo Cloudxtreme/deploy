@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-075838
+SCRIPTVERSION=150930-082137
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -171,7 +171,7 @@ sudo -u git -H mkdir /usr/local/www/gitlab-satellites
 sudo -u git -H chmod u+rwx,g=rx,o-rwx /usr/local/www/gitlab-satellites
 sudo -u git -H chmod -R u+rwX /usr/local/www/gitlab/tmp/pids/
 sudo -u git -H chmod -R u+rwX /usr/local/www/gitlab/tmp/sockets/
-sudo -u git -H chmod -R u+rwX /usr/local/www/gitlab/public/uploads/
+sudo -u git -H chmod 0750 /usr/local/www/gitlab/public/uploads/
 sudo -u git -H cp /usr/local/www/gitlab/config/unicorn.rb.example /usr/local/www/gitlab/config/unicorn.rb
 # Set the number of workers to at least the number of cores
 #sudo -u git -H vi config/unicorn.rb
