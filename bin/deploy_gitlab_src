@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-052657
+SCRIPTVERSION=150930-055744
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -16,7 +16,7 @@ DBUSER="git"
 DBPASS="password"
 ROOTPASS="password"
 BRANCH="7-8-stable"
-GITLABSHELLVERSION="v2.4.1"
+GITLABSHELLVERSION="v2.5.4"
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
 
 if [ "x" != "x${GITLABROOTPASS}" ]; then
@@ -90,7 +90,8 @@ sysrc postgresql_enable="YES"
 service postgresql initdb
 service postgresql start
 /usr/local/bin/createuser -U pgsql ${DBUSER}
-/usr/local/bin/createdb -E utf8 -U pgsql -O ${DBUSER} ${DB}
+# Don't create database now as it will be created by rake
+#/usr/local/bin/createdb -E utf8 -U pgsql -O ${DBUSER} ${DB}
 /usr/local/bin/psql -U pgsql -d template1 -c "ALTER ROLE ${DBUSER} WITH password '${DBPASS}';"
 if [ ! -e /usr/local/pgsql/data/pg_hba.conf.dist ]; then
     cp -a /usr/local/pgsql/data/pg_hba.conf /usr/local/pgsql/data/pg_hba.conf.dist
@@ -198,6 +199,10 @@ sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle install --deployment --withou
 
 echo "7 GitLab Shell"
 sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:shell:install[${GITLABSHELLVERSION}] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+# manually fix permisions so the checks will pass
+chown git:git /usr/local/www/repositories
+chmod ug+rwX,o-rwx /usr/local/www/repositories/
+chmod -R ug-s /usr/local/www/repositories/
 # Edit the gitlab-shell config
 # Change the 'socket' option to '/var/run/redis/redis.sock'
 # Change the 'gitlab_url' option to 'http://localhost:8080/'
