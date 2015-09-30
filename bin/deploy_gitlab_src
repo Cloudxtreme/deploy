@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-055744
+SCRIPTVERSION=150930-061456
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -90,8 +90,7 @@ sysrc postgresql_enable="YES"
 service postgresql initdb
 service postgresql start
 /usr/local/bin/createuser -U pgsql ${DBUSER}
-# Don't create database now as it will be created by rake
-#/usr/local/bin/createdb -E utf8 -U pgsql -O ${DBUSER} ${DB}
+/usr/local/bin/createdb -E utf8 -U pgsql -O ${DBUSER} ${DB}
 /usr/local/bin/psql -U pgsql -d template1 -c "ALTER ROLE ${DBUSER} WITH password '${DBPASS}';"
 if [ ! -e /usr/local/pgsql/data/pg_hba.conf.dist ]; then
     cp -a /usr/local/pgsql/data/pg_hba.conf /usr/local/pgsql/data/pg_hba.conf.dist
