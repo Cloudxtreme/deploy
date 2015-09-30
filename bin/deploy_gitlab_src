@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-032630
+SCRIPTVERSION=150930-033437
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -120,6 +120,8 @@ service redis start
 
 echo "6 gitlab"
 mkdir -p /usr/local/www
+# permission for git to create gitlab
+chown git /usr/local/www
 if [         -d /root/local/gitcache/gitlab-org/gitlab-ce.git ]; then
     rsync -qalP /root/local/gitcache/gitlab-org/gitlab-ce.git/ /usr/local/www/gitlab/
     chown -R git /usr/local/www/gitlab/
@@ -135,6 +137,8 @@ if [ ! -d /usr/local/www/gitlab ]; then
     echo "ERROR: couldn't clone gitlab"
     exit 1
 fi
+# permission back to normal
+chown root /usr/local/www
 chown -R git /usr/local/www/gitlab
 cd /usr/local/www/gitlab
 sudo -u git -H cp /usr/local/www/gitlab/config/gitlab.yml.example /usr/local/www/gitlab/config/gitlab.yml
