@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-070457
+SCRIPTVERSION=150930-074425
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -540,6 +540,7 @@ service gitlab start
 
 
 echo "12 nginx"
+mkdir -p /var/log/nginx
 #wget -O /usr/local/etc/nginx/sites-enabled/gitlab.conf https://gitlab.com/gitlab-org/gitlab-ce/raw/master/lib/support/nginx/gitlab-ssl
 #cp /usr/local/www/gitlab/lib/support/nginx/gitlab /usr/local/etc/nginx/sites-enabled/gitlab.conf
 #cat /usr/local/www/gitlab/lib/support/nginx/gitlab \
