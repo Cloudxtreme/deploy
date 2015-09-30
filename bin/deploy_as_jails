@@ -452,6 +452,10 @@ EOF
                     if [ -e /var/ports ]; then
                         rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
                     fi
+                    if [         -d /root/local/gitcache/gitlab-org/gitlab-ce.git ]; then
+                        mkdir -p                                                   /usr/jails/${name}/root/local/gitcache/gitlab-org/gitlab-ce.git
+                        rsync -qalP /root/local/gitcache/gitlab-org/gitlab-ce.git/ /usr/jails/${name}/root/local/gitcache/gitlab-org/gitlab-ce.git/
+                    fi
                     allowsysvipc ${name}
                     copysslselfcert ${name}
                     if ifconfig | grep ${WEBIPALIAS} >/dev/null ; then
