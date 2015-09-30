@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-063507
+SCRIPTVERSION=150930-064005
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -15,8 +15,7 @@ DB="gitlabhq_production"
 DBUSER="git"
 DBPASS="password"
 ROOTPASS="password"
-BRANCH="7-8-stable"
-GITLABSHELLVERSION="v2.5.4"
+BRANCH="7-14-stable"
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
 
 if [ "x" != "x${GITLABROOTPASS}" ]; then
@@ -197,7 +196,8 @@ sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle install --deployment --withou
 
 
 echo "7 GitLab Shell"
-sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:shell:install[${GITLABSHELLVERSION}] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+GITLAB_SHELL_VERSION=$(cat /usr/local/www/gitlab/GITLAB_SHELL_VERSION | tr -d '\n')
+sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:shell:install[v${GITLAB_SHELL_VERSION}] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
 # manually fix permisions so the checks will pass
 chown git:git /usr/local/www/repositories
 chmod ug+rwX,o-rwx /usr/local/www/repositories/
