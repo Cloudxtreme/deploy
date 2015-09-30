@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-061456
+SCRIPTVERSION=150930-063507
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -202,6 +202,7 @@ sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:shell:instal
 chown git:git /usr/local/www/repositories
 chmod ug+rwX,o-rwx /usr/local/www/repositories/
 chmod -R ug-s /usr/local/www/repositories/
+find /usr/local/www/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
 # Edit the gitlab-shell config
 # Change the 'socket' option to '/var/run/redis/redis.sock'
 # Change the 'gitlab_url' option to 'http://localhost:8080/'
