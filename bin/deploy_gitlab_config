@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Testing build
+# NOT READY, Installs but doesn't start
 
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
