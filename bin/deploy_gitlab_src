@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-033437
+SCRIPTVERSION=150930-052657
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -137,8 +137,6 @@ if [ ! -d /usr/local/www/gitlab ]; then
     echo "ERROR: couldn't clone gitlab"
     exit 1
 fi
-# permission back to normal
-chown root /usr/local/www
 chown -R git /usr/local/www/gitlab
 cd /usr/local/www/gitlab
 sudo -u git -H cp /usr/local/www/gitlab/config/gitlab.yml.example /usr/local/www/gitlab/config/gitlab.yml
@@ -206,6 +204,8 @@ sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:shell:instal
 # Don't bother configuring any SSL stuff in here because it's used internally
 #sudo -u git -H vi /usr/local/www/gitlab-shell/config.yml
 #TODO cat /usr/local/www/gitlab-shell/config.yml | sed 's;;;' | tee /usr/local/www/gitlab-shell/config.yml
+# permission back to normal
+chown root /usr/local/www
 
 
 echo "8 Initialise Database"
