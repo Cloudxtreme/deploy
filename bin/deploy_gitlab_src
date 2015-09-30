@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-074425
+SCRIPTVERSION=150930-075838
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -15,7 +15,7 @@ DB="gitlabhq_production"
 DBUSER="git"
 DBPASS="password"
 ROOTPASS="password"
-BRANCH="7-14-stable"
+BRANCH="8-0-stable" # 7-14-stable"
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
 
 if [ "x" != "x${GITLABROOTPASS}" ]; then
