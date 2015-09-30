@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-064005
+SCRIPTVERSION=150930-070457
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -67,7 +67,7 @@ echo "1 UTF-8"
 echo "2 Dependencies"
 # to overwrite mailer.conf
 yes y | pkg install -fy postfix
-pkg install -y sudo bash icu cmake pkgconf git nginx ruby ruby21-gems logrotate redis postgresql94-server krb5
+pkg install -y sudo bash icu cmake pkgconf git nginx ruby ruby21-gems logrotate redis postgresql94-server krb5 node
 if [ ! -e /usr/local/bin/createuser ]; then
     echo "ERROR: postgresql install failed"
     exit 1
