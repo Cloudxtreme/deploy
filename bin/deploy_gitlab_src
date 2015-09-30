@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-025418
+SCRIPTVERSION=150930-032630
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -77,7 +77,7 @@ gem install bundler --no-ri --no-rdoc
 
 
 echo "3 git user"
-echo "git:211:211::::gitosis user:/usr/local/git:/bin/sh:" | adduser -w no -f -
+echo "git:211:::::gitosis user:/usr/local/git:/bin/sh:" | adduser -w no -f -
 # Add git user to redis group
 pw groupmod redis -m git
 
