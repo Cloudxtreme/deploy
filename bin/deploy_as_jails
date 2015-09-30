@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150929-163227
+SCRIPTVERSION=150930-025418
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
@@ -458,10 +458,10 @@ EOF
                         # Set jailip nginx as FQDN
                         grep -v " ${FQDN}" /usr/jails/${name}/etc/hosts >/usr/jails/${name}/etc/hosts.tmp
                         cat /usr/jails/${name}/etc/hosts.tmp >/usr/jails/${name}/etc/hosts
-                        echo "${IPNET}`jailip nginx` ${FQDN}" >>/usr/jails/${name}/etc/hosts
+                        echo "${IPNET}`jailip gitlab` ${FQDN}" >>/usr/jails/${name}/etc/hosts
                         rm  /usr/jails/${name}/etc/hosts.tmp
                     fi
-                    eza console -f -e "env FQDN=${FQDN} HTTP_PROXY=http://${SQUID} deploy ${name}_config" ${name}
+                    eza console -f -e "env FQDN=${FQDN} HTTP_PROXY=http://${SQUID} deploy ${name}_src" ${name}
                     ;;
                 builder)
                     if [ -e /var/ports ]; then
@@ -471,10 +471,10 @@ EOF
                     zfs snap tank/ezjail/${name}@psnap
                     eza console -f -e "deploy ffmpeg" ${name}
                     rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
-                    eza stop ${name}
-                    zfs rollback tank/ezjail/${name}@psnap
-                    eza console -f -e "deploy gitlab_ports" ${name}
-                    rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
+#                    eza stop ${name}
+#                    zfs rollback tank/ezjail/${name}@psnap
+#                    eza console -f -e "deploy gitlab_ports" ${name}
+#                    rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
                     ;;
                 # DEV JAILNAMES
                 monit)
