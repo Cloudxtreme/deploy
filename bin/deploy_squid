@@ -5,9 +5,11 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150927-183123
+SCRIPTVERSION=151001-135100
 
 SQUIDPKG=/var/ports/packages/All/squid-3.5.9.txz
+
+export BATCH=yes
 
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
