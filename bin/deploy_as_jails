@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150930-025418
+SCRIPTVERSION=151001-011259
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
@@ -216,7 +216,7 @@ setupnginxconfig() {
         server ${IPNET}`jailip owncloud`:443;
     }
     upstream gitlabsources {
-        server ${IPNET}`jailip gitlab`:8080;
+        server ${IPNET}`jailip gitlab`:443;
     }
     upstream zabbixsources {
         server ${IPNET}`jailip zabbix`:443;
