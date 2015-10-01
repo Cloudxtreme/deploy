@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150622-022644
+SCRIPTVERSION=151001-013053
 
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
@@ -28,7 +28,7 @@ fi
 echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
 
 cd /usr/home/dtfc
-sudo -u ${MYUSER} -i -- git clone ${REPOSRC}johnko/dtfc.git /usr/home/dtfc/src
+sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}johnko/dtfc.git /usr/home/dtfc/src
 
 cd /usr/home/dtfc/src
 sh scripts/install.sh

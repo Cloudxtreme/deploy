@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150628-141427
+SCRIPTVERSION=151001-013053
 
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
@@ -30,7 +30,7 @@ if [         -d /root/local/gitcache/johnko/dtfc ]; then
     sudo -u ${MYUSER} -i -- git pull
 fi
 if [ ! -d /usr/home/dtfc/src ]; then
-    sudo -u ${MYUSER} -i -- git clone ${REPOSRC}johnko/dtfc.git /usr/home/dtfc/src
+    sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}johnko/dtfc.git /usr/home/dtfc/src
 fi
 
 cd /usr/home/dtfc/src

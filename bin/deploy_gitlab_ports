@@ -5,14 +5,14 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150928-193911
+SCRIPTVERSION=151001-013053
 
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
 fi
 
 if [ ! -d ${HOME}/gitlabports ]; then
-    git clone ${REPOSRC}johnko/freebsd-ports-test.git -b gitlab-7.14.1 ${HOME}/gitlabports
+    git clone --depth 1 ${REPOSRC}johnko/freebsd-ports-test.git -b gitlab-7.14.1 ${HOME}/gitlabports
 fi
 
 rsync -virthP --exclude .git  ${HOME}/gitlabports/  /usr/ports/

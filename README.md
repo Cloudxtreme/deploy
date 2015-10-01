@@ -50,9 +50,6 @@ Pulls from github.com and gitlab.com. May be slow.
 ## Optional
 mkdir -p /root/local/gitcache/johnko
 mkdir -p /root/local/gitcache/gitlab-org
-git clone https://github.com/johnko/dtfc.git /root/local/gitcache/johnko/dtfc
-git clone https://github.com/johnko/echoplexus.git /root/local/gitcache/johnko/echoplexus
-git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-8-stable /root/local/gitcache/gitlab-org/gitlab-ce.git
 
 pg pkg || fres
 setenv FQDN virtual.local
