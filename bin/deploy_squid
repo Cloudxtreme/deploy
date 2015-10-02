@@ -5,9 +5,9 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151001-135100
+SCRIPTVERSION=151002-042420
 
-SQUIDPKG=/var/ports/packages/All/squid-3.5.9.txz
+SQUIDPKG=/var/ports/packages/All/squid-3.5.9_1.txz
 
 export BATCH=yes
 
