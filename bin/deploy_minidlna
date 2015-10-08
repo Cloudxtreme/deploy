@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150820-150735
+SCRIPTVERSION=151008-041955
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Multicast udp 1900 has issues reaching a jail"
@@ -30,22 +30,7 @@ install -d -m 755 /tank/data/movies
 install -d -m 755 /tank/data/music
 install -d -m 755 /tank/data/photos
 
-cat > /usr/local/etc/minidlna.conf <<EOF
-port=8200
-network_interface=lagg0
-log_level=debug
-media_dir=A,/tank/data/music
-media_dir=V,/tank/data/movies
-media_dir=P,/tank/data/photos
-friendly_name=MEDIASERVER
-album_art_names=Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg/AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg/Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg
-inotify=yes
-enable_tivo=no
-strict_dlna=no
-notify_interval=900
-serial=12345678
-model_number=1
-EOF
+install -m 644 /root/git/deploy/usr/local/etc/minidlna.conf /usr/local/etc/minidlna.conf
 
 
 crontabbed
