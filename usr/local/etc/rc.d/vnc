@@ -1,0 +1,28 @@
+#!/bin/sh
+# Copyright (c) 2015, John Ko
+# PROVIDE: vnc
+# REQUIRE: FILESYSTEMS LOGIN NETWORKING dbus
+. /etc/rc.subr
+
+name="vnc"
+start_cmd="my_start"
+stop_cmd="my_stop"
+my_start()
+{
+    /usr/local/bin/vncserver -depth 24 -geometry 1280x800 -nolisten tcp :1 &
+}
+my_stop()
+{
+    # TODO need a more elegant solution than loop to kill
+    local LOOP=1
+    while [ $LOOP -eq 1 ]; do
+        if  /bin/pgrep -lf vncserver > /dev/null 2> /dev/null ; then
+            /bin/pkill -lf vncserver > /dev/null 2> /dev/null
+        else
+            local LOOP=0
+        fi
+        sleep 1
+    done
+}
+load_rc_config $name
+run_rc_command "$1"
