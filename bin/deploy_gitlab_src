@@ -248,7 +248,7 @@ mkdir -p /var/log/nginx
 #cat /usr/local/www/gitlab/lib/support/nginx/gitlab \
 #| sed 's/gzip_static on;/#gzip_static on;/' \
 cat /root/git/deploy/usr/local/etc/nginx/sites-available/gitlab.conf \
-| sed "s/127.0.0.1/${JAILIP}/" \
+| sed "s/0.0.0.0/${JAILIP}/" \
 | sed "s/localhost.localdomain/${FQDN}/" \
 >/usr/local/etc/nginx/sites-enabled/gitlab.conf
 chmod 644 /usr/local/etc/nginx/sites-enabled/gitlab.conf
