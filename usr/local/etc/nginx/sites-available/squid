@@ -1,0 +1,10 @@
+server {
+    listen   0.0.0.0:3127 default_server;
+    server_name 0.0.0.0;
+    location =/public.pem {
+        alias /usr/local/etc/squid/public.pem;
+    }
+    location =/public.pac {
+        alias /usr/local/etc/squid/public.pac;
+    }
+}

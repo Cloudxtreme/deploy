@@ -392,18 +392,10 @@ echo "$JAILNAMES" \
                     # easydns-client here to reduce risk of lost/rollbacked config
                     eza console -f -e "deploy easydnsclient" ${name}
                     # 3127 for public.pem
-                    cat >/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name} <<EOF
-server {
-    listen   ${IPNET}`jailip squid`:3127 default_server;
-    server_name ${IPNET}`jailip squid`;
-    location =/public.pem {
-        alias /usr/local/etc/squid/public.pem;
-    }
-    location =/public.pac {
-        alias /usr/local/etc/squid/public.pac;
-    }
-}
-EOF
+                    SQUIDJAILIP=${IPNET}`jailip squid`
+                    cat /root/git/deploy/usr/local/etc/nginx/sites-available/squid \
+                        | sed "s/0.0.0.0/${SQUIDJAILIP}/" \
+                        >/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name}
                     eza console -f -e "deploy nginx" ${name}
                     eza console -f -e sh ${name} <<EOF
 su urep -c "/bin/mkdir -p /usr/home/urep/bin"
