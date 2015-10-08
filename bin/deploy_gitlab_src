@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151001-011237
+SCRIPTVERSION=151008-024530
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -67,7 +67,7 @@ echo "1 UTF-8"
 echo "2 Dependencies"
 # to overwrite mailer.conf
 yes y | pkg install -fy postfix
-pkg install -y sudo bash icu cmake pkgconf git nginx ruby ruby21-gems logrotate redis postgresql94-server krb5 node
+pkg install -y sudo bash icu cmake pkgconf git nginx ruby ruby21-gems logrotate redis postgresql94-server krb5 node lang/go
 if [ ! -e /usr/local/bin/createuser ]; then
     echo "ERROR: postgresql install failed"
     exit 1
@@ -176,7 +176,7 @@ sudo -u git -H cp /usr/local/www/gitlab/config/unicorn.rb.example /usr/local/www
 # Set the number of workers to at least the number of cores
 #sudo -u git -H vi config/unicorn.rb
 cat /usr/local/www/gitlab/config/unicorn.rb.example \
-| sed 's/worker_processes 2/worker_processes 1/' \
+| sed 's/worker_processes 3/worker_processes 2/' \
 | sed 's;\"/home/git/gitlab;\"/usr/local/www/gitlab;g' \
 >/usr/local/www/gitlab/config/unicorn.rb
 sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
@@ -209,8 +209,6 @@ find /usr/local/www/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
 # Don't bother configuring any SSL stuff in here because it's used internally
 #sudo -u git -H vi /usr/local/www/gitlab-shell/config.yml
 #TODO cat /usr/local/www/gitlab-shell/config.yml | sed 's;;;' | tee /usr/local/www/gitlab-shell/config.yml
-# permission back to normal
-chown root /usr/local/www
 
 
 echo "8 Initialise Database"
@@ -219,312 +217,7 @@ yes yes | sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:se
 
 echo "9 Init script"
 #wget -O /usr/local/etc/rc.d/gitlab https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/init/init/freebsd/gitlab-unicorn
-cat >/usr/local/etc/rc.d/gitlab <<EOF
-#!/bin/sh
-
-# \$FreeBSD\$
-
-# Maintainer: Torsten Zuehlsdorff <ports@toco-domains.de>
-# Based on work of: @charlienewey, rovanion.luckey@gmail.com, @randx
-
-# PROVIDE: gitlab
-# REQUIRE: LOGIN
-# KEYWORD: shutdown
-#
-# Add the following line to /etc/rc.conf to enable GitLab:
-#
-#  gitlab_enable="YES"
-
-PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
-
-. /etc/rc.subr
-
-name=gitlab
-rcvar=gitlab_enable
-extra_commands=status
-
-status_cmd="print_status"
-start_cmd="start_gitlab"
-stop_cmd="stop_gitlab"
-restart_cmd="restart_gitlab"
-
-gitlab_enable=\${gitlab_enable:-"NO"}
-
-load_rc_config \$name
-
-### Environment variables
-RAILS_ENV="production"
-
-# Script variable names should be lower-case not to conflict with
-# internal /bin/sh variables such as PATH, EDITOR or SHELL.
-app_user="git"
-app_root="/usr/local/www/gitlab"
-pid_path="\$app_root/tmp/pids"
-socket_path="\$app_root/tmp/sockets"
-web_server_pid_path="\$pid_path/unicorn.pid"
-sidekiq_pid_path="\$pid_path/sidekiq.pid"
-
-# Switch to the app_user if it is not he/she who is running the script.
-if [ "\$USER" != "\$app_user" ]; then
-  eval su - "\$app_user" -c \$(echo \")\$0 "\$@"\$(echo \"); exit;
-fi
-
-# Switch to the gitlab path, exit on failure.
-if ! cd "\$app_root" ; then
- echo "Failed to cd into \$app_root, exiting!";  exit 1
-fi
-
-### Init Script functions
-
-## Gets the pids from the files
-check_pids(){
-  if ! mkdir -p "\$pid_path"; then
-    echo "Could not create the path \$pid_path needed to store the pids."
-    exit 1
-  fi
-  # If there exists a file which should hold the value of the Unicorn pid: read it.
-  if [ -f "\$web_server_pid_path" ]; then
-    wpid=\$(cat "\$web_server_pid_path")
-  else
-    wpid=0
-  fi
-  if [ -f "\$sidekiq_pid_path" ]; then
-    spid=\$(cat "\$sidekiq_pid_path")
-  else
-    spid=0
-  fi
-}
-
-## Called when we have started the two processes and are waiting for their pid files.
-wait_for_pids(){
-  # We are sleeping a bit here mostly because sidekiq is slow at writing it's pid
-  i=0;
-  while [ ! -f \$web_server_pid_path -o ! -f \$sidekiq_pid_path ]; do
-    sleep 0.1;
-    i=\$((i+1))
-    if [ \$((i%10)) = 0 ]; then
-      echo -n "."
-    elif [ \$((i)) = 301 ]; then
-      echo "Waited 30s for the processes to write their pids, something probably went wrong."
-      exit 1;
-    fi
-  done
-  echo
-}
-
-# We use the pids in so many parts of the script it makes sense to always check them.
-# Only after start() is run should the pids change. Sidekiq sets it's own pid.
-check_pids
-
-
-## Checks whether the different parts of the service are already running or not.
-check_status(){
-  check_pids
-  # If the web server is running kill -0 \$wpid returns true, or rather 0.
-  # Checks of *_status should only check for == 0 or != 0, never anything else.
-  if [ \$wpid -ne 0 ]; then
-    kill -0 "\$wpid" 2>/dev/null
-    web_status="\$?"
-  else
-    web_status="-1"
-  fi
-  if [ \$spid -ne 0 ]; then
-    kill -0 "\$spid" 2>/dev/null
-    sidekiq_status="\$?"
-  else
-    sidekiq_status="-1"
-  fi
-  if [ \$web_status = 0 -a \$sidekiq_status = 0 ]; then
-    gitlab_status=0
-  else
-    # http://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
-    # code 3 means 'program is not running'
-    gitlab_status=3
-  fi
-}
-
-## Check for stale pids and remove them if necessary.
-check_stale_pids(){
-  check_status
-  # If there is a pid it is something else than 0, the service is running if
-  # *_status is == 0.
-  if [ "\$wpid" != "0" -a "\$web_status" != "0" ]; then
-    echo "Removing stale Unicorn web server pid. This is most likely caused by the web server crashing the last time it ran."
-    if ! rm "\$web_server_pid_path"; then
-      echo "Unable to remove stale pid, exiting."
-      exit 1
-    fi
-  fi
-  if [ "\$spid" != "0" -a "\$sidekiq_status" != "0" ]; then
-    echo "Removing stale Sidekiq job dispatcher pid. This is most likely caused by Sidekiq crashing the last time it ran."
-    if ! rm "\$sidekiq_pid_path"; then
-      echo "Unable to remove stale pid, exiting"
-      exit 1
-    fi
-  fi
-}
-
-## If no parts of the service is running, bail out.
-exit_if_not_running(){
-  check_stale_pids
-  if [ "\$web_status" != "0" -a "\$sidekiq_status" != "0" ]; then
-    echo "GitLab is not running."
-    exit
-  fi
-}
-
-## Starts Unicorn and Sidekiq if they're not running.
-start_gitlab() {
-  check_stale_pids
-
-  if [ "\$web_status" != "0" -a "\$sidekiq_status" != "0" ]; then
-    echo -n "Starting both the GitLab Unicorn and Sidekiq"
-  elif [ "\$web_status" != "0" ]; then
-    echo -n "Starting GitLab Unicorn"
-  elif [ "\$sidekiq_status" != "0" ]; then
-    echo -n "Starting GitLab Sidekiq"
-  fi
-
-  # Then check if the service is running. If it is: don't start again.
-  if [ "\$web_status" = "0" ]; then
-    echo "The Unicorn web server already running with pid \$wpid, not restarting."
-  else
-    # Remove old socket if it exists
-    rm -f "\$socket_path"/gitlab.socket 2>/dev/null
-    # Start the web server
-    RAILS_ENV=\$RAILS_ENV bin/web start
-  fi
-
-  # If sidekiq is already running, don't start it again.
-  if [ "\$sidekiq_status" = "0" ]; then
-    echo "The Sidekiq job dispatcher is already running with pid \$spid, not restarting"
-  else
-    RAILS_ENV=\$RAILS_ENV bin/background_jobs start &
-  fi
-
-  # Wait for the pids to be planted
-  wait_for_pids
-  # Finally check the status to tell wether or not GitLab is running
-  print_status
-}
-
-## Asks the Unicorn and the Sidekiq if they would be so kind as to stop, if not kills them.
-stop_gitlab() {
-  exit_if_not_running
-
-  if [ "\$web_status" = "0" -a "\$sidekiq_status" = "0" ]; then
-    echo -n "Shutting down both Unicorn and Sidekiq"
-  elif [ "\$web_status" = "0" ]; then
-    echo -n "Shutting down Unicorn"
-  elif [ "\$sidekiq_status" = "0" ]; then
-    echo -n "Shutting down Sidekiq"
-  fi
-
-  # If the Unicorn web server is running, tell it to stop;
-  if [ "\$web_status" = "0" ]; then
-     RAILS_ENV=\$RAILS_ENV bin/web stop
-  fi
-  # And do the same thing for the Sidekiq.
-  if [ "\$sidekiq_status" = "0" ]; then
-    RAILS_ENV=\$RAILS_ENV bin/background_jobs stop
-  fi
-
-  # If something needs to be stopped, lets wait for it to stop. Never use SIGKILL in a script.
-  while [ "\$web_status" = "0" -o "\$sidekiq_status" = "0" ]; do
-    sleep 1
-    check_status
-    printf "."
-    if [ "\$web_status" != "0" -a "\$sidekiq_status" != "0" ]; then
-      printf "\n"
-      break
-    fi
-  done
-
-  sleep 1
-  # Cleaning up unused pids
-  rm "\$web_server_pid_path" 2>/dev/null
-  # rm "\$sidekiq_pid_path" # Sidekiq seems to be cleaning up it's own pid.
-
-  print_status
-}
-
-## Prints the status of GitLab and it's components.
-print_status() {
-  check_status
-  if [ "\$web_status" != "0" -a "\$sidekiq_status" != "0" ]; then
-    echo "GitLab is not running."
-    return
-  fi
-  if [ "\$web_status" = "0" ]; then
-      echo "The GitLab Unicorn web server with pid \$wpid is running."
-  else
-      printf "The GitLab Unicorn web server is \033[31mnot running\033[0m.\n"
-  fi
-  if [ "\$sidekiq_status" = "0" ]; then
-      echo "The GitLab Sidekiq job dispatcher with pid \$spid is running."
-  else
-      printf "The GitLab Sidekiq job dispatcher is \033[31mnot running\033[0m.\n"
-  fi
-  if [ "\$web_status" = "0" -a "\$sidekiq_status" = "0" ]; then
-    printf "GitLab and all its components are \033[32mup and running\033[0m.\n"
-  fi
-}
-
-## Tells unicorn to reload it's config and Sidekiq to restart
-reload_gitlab(){
-  exit_if_not_running
-  if [ "\$wpid" = "0" ];then
-    echo "The GitLab Unicorn Web server is not running thus its configuration can't be reloaded."
-    exit 1
-  fi
-  printf "Reloading GitLab Unicorn configuration... "
-  RAILS_ENV=\$RAILS_ENV bin/web reload
-  echo "Done."
-  echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."
-  RAILS_ENV=\$RAILS_ENV bin/background_jobs restart
-
-  wait_for_pids
-  print_status
-}
-
-## Restarts Sidekiq and Unicorn.
-restart_gitlab(){
-  check_status
-  if [ "\$web_status" = "0" -o "\$sidekiq_status" = "0" ]; then
-    stop_gitlab
-  fi
-  start_gitlab
-}
-
-
-### Finally the input handling.
-
-case "\$1" in
-  start)
-        start_gitlab
-        ;;
-  stop)
-        stop_gitlab
-        ;;
-  restart)
-        restart_gitlab
-        ;;
-  reload|force-reload)
-	reload_gitlab
-        ;;
-  status)
-        print_status
-        exit \$gitlab_status
-        ;;
-  *)
-        echo "Usage: service gitlab {start|stop|restart|reload|status}"
-        exit 1
-        ;;
-esac
-
-exit
-EOF
-chmod a+x /usr/local/etc/rc.d/gitlab
+install -m 755 -o root -g wheel /root/git/deploy/usr/local/etc/rc.d/gitlab /usr/local/etc/rc.d/gitlab
 
 
 echo "10 compile"
@@ -534,91 +227,37 @@ sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake assets:precompile R
 sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 
-echo "11 start"
+echo "11 gitlab-git-http-server"
+cd /usr/local/www
+sudo -u git -H git clone --depth 1 https://gitlab.com/gitlab-org/gitlab-git-http-server.git gitlab-git-http-server
+cd /usr/local/www/gitlab-git-http-server
+sudo -u git -H make
+# permission back to normal
+chown root /usr/local/www
+
+
+echo "12 start"
 sysrc gitlab_enable="YES"
 service gitlab start
 
 
-echo "12 nginx"
+echo "13 nginx"
 mkdir -p /var/log/nginx
 #wget -O /usr/local/etc/nginx/sites-enabled/gitlab.conf https://gitlab.com/gitlab-org/gitlab-ce/raw/master/lib/support/nginx/gitlab-ssl
 #cp /usr/local/www/gitlab/lib/support/nginx/gitlab /usr/local/etc/nginx/sites-enabled/gitlab.conf
 #cat /usr/local/www/gitlab/lib/support/nginx/gitlab \
 #| sed 's/gzip_static on;/#gzip_static on;/' \
-cat >/usr/local/etc/nginx/sites-enabled/gitlab.conf <<EOF
-upstream gitlab {
-  server unix:/usr/local/www/gitlab/tmp/sockets/gitlab.socket fail_timeout=0;
-}
-## Redirects all HTTP traffic to the HTTPS host
-server {
-    listen   ${JAILIP}:80 default_server;
-    server_name ${FQDN};
-    server_name ${JAILIP};
-    return 302 https://\$host\$request_uri;
-    access_log  /var/log/nginx/gitlab_access.log;
-    error_log   /var/log/nginx/gitlab_error.log;
-}
-## HTTPS host
-server {
-    listen 443 ssl;
-    server_name ${FQDN};
-    ssl_certificate ssl/ssl.crt;
-    ssl_certificate_key ssl/ssl.key;
-    include /usr/local/etc/nginx/tls.conf;
-    root /usr/local/www/gitlab/public;
-    access_log  /var/log/nginx/gitlab_access_ssl.log;
-    error_log   /var/log/nginx/gitlab_error_ssl.log;
-    location / {
-        ## Serve static files from defined root folder.
-        ## @gitlab is a named location for the upstream fallback, see below.
-        try_files \$uri \$uri/index.html \$uri.html @gitlab;
-    }
-    ## We route uploads through GitLab to prevent XSS and enforce access control.
-    location /uploads/ {
-        ## If you use HTTPS make sure you disable gzip compression
-        ## to be safe against BREACH attack.
-        gzip off;
-        ## https://github.com/gitlabhq/gitlabhq/issues/694
-        ## Some requests take more than 30 seconds.
-        proxy_read_timeout      300;
-        proxy_connect_timeout   300;
-        proxy_redirect          off;
-        proxy_set_header    Host                \$host;
-        proxy_set_header    X-Real-IP           \$remote_addr;
-        proxy_set_header    X-Forwarded-Ssl     on;
-        proxy_set_header    X-Forwarded-For     \$proxy_add_x_forwarded_for;
-        proxy_set_header    X-Forwarded-Proto   \$scheme;
-        proxy_set_header    X-Frame-Options     SAMEORIGIN;
-        proxy_pass http://gitlab;
-    }
-    ## If a file, which is not found in the root folder is requested,
-    ## then the proxy passes the request to the upsteam (gitlab unicorn).
-    location @gitlab {
-        ## If you use HTTPS make sure you disable gzip compression
-        ## to be safe against BREACH attack.
-        gzip off;
-        ## https://github.com/gitlabhq/gitlabhq/issues/694
-        ## Some requests take more than 30 seconds.
-        proxy_read_timeout      300;
-        proxy_connect_timeout   300;
-        proxy_redirect          off;
-        proxy_set_header    Host                \$host;
-        proxy_set_header    X-Real-IP           \$remote_addr;
-        proxy_set_header    X-Forwarded-Ssl     on;
-        proxy_set_header    X-Forwarded-For     \$proxy_add_x_forwarded_for;
-        proxy_set_header    X-Forwarded-Proto   \$scheme;
-        proxy_set_header    X-Frame-Options     SAMEORIGIN;
-        proxy_pass http://gitlab;
-    }
-    error_page 502 /502.html;
-}
-EOF
+cat /root/git/deploy/usr/local/etc/nginx/sites-available/gitlab.conf \
+| sed "s/127.0.0.1/${JAILIP}/" \
+| sed "s/localhost.localdomain/${FQDN}/" \
+>/usr/local/etc/nginx/sites-enabled/gitlab.conf
+chmod 644 /usr/local/etc/nginx/sites-enabled/gitlab.conf
 #pw user mod www -G git
 sysrc nginx_enable="YES"
 service nginx start
 
 
-echo "Other services: SSH"
+echo "14 Other services: SSH"
 if sysctl security.jail.jailed | grep 1 >/dev/null ; then
     cat /etc/ssh/sshd_config \
     | sed 's/#Port 22/Port 23/' \
@@ -633,7 +272,7 @@ sysrc sshd_ecdsa_enable="NO"
 service sshd start
 
 
-echo "Other services: mail"
+echo "15 Other services: mail"
 service sendmail onestop
 sysrc postfix_enable="YES"
 sysrc sendmail_enable="NO"
