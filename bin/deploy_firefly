@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150820-150735
+SCRIPTVERSION=151008-041809
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Multicast udp 5353 has issues reaching a jail"
@@ -31,31 +31,7 @@ install -d -m 755 /tank/data/music
 install -d -m 755 /tank/data/photos
 
 
-cat > /usr/local/etc/firefly/mt-daapd.conf <<EOF
-[general]
-web_root = /usr/local/share/mt-daapd/admin-root
-port = 3689
-admin_pw = password
-db_type = sqlite3
-db_parms = /var/db/firefly
-mp3_dir = /tank/data/music
-servername = MUSICSERVER
-runas = daapd
-extensions = .mp3,.m4a,.m4p,.ogg,.flac
-ssc_codectypes = ogg,flac,alac
-ssc_prog = /usr/local/bin/mt-daapd-ssc.sh
-logfile = /var/log/mt-daapd.log
-debuglevel = 5
-rescan_interval = 900
-scan_type = 0
-compress = 1
-[plugins]
-plugin_dir = /usr/local/lib/mt-daapd/plugins
-[scanning]
-process_playlists = 1
-process_itunes = 1
-process_m3u = 1
-EOF
+install -m 644 /root/git/deploy/usr/local/etc/firefly/mt-daapd.conf /usr/local/etc/firefly/mt-daapd.conf
 
 crontabbed
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
