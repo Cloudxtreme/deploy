@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151001-013053
+SCRIPTVERSION=151008-043645
 
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
@@ -21,12 +21,6 @@ pw user mod ${MYUSER} -G redis
 pkg install -y www/node www/npm sudo git nginx ruby ruby21-gems redis
 
 cd /usr/home/echoplexus
-if [         -d /root/local/gitcache/qq99/echoplexus ]; then
-    rsync -qalP /root/local/gitcache/qq99/echoplexus/ /usr/home/echoplexus/echoplexus/
-    chown -R ${MYUSER} /usr/home/echoplexus/echoplexus/
-    cd /usr/home/echoplexus/echoplexus
-    sudo -u ${MYUSER} -i -- git pull
-fi
 if [ ! -d /usr/home/echoplexus/echoplexus ]; then
     sudo -u ${MYUSER} -H git clone --depth 1 ${REPOSRC}qq99/echoplexus.git /usr/home/echoplexus/echoplexus
 fi

@@ -47,10 +47,6 @@ Install the packages:
 Pulls from github.com and gitlab.com. May be slow.
 
 ```
-## Optional
-mkdir -p /root/local/gitcache/johnko
-mkdir -p /root/local/gitcache/gitlab-org
-
 pg pkg || fres
 setenv FQDN virtual.local
 cat ~/perm/deploy.a.good | sed "s;virtual.local;${FQDN};g" > ~/local/deploy.${FQDN}.good

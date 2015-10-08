@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151008-041418
+SCRIPTVERSION=151008-043645
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -121,13 +121,6 @@ echo "6 gitlab"
 mkdir -p /usr/local/www
 # permission for git to create gitlab
 chown git /usr/local/www
-if [         -d /root/local/gitcache/gitlab-org/gitlab-ce.git ]; then
-    rsync -qalP /root/local/gitcache/gitlab-org/gitlab-ce.git/ /usr/local/www/gitlab/
-    chown -R git /usr/local/www/gitlab/
-    cd /usr/local/www/gitlab/
-    sudo -u git -i -- git checkout -t origin/${BRANCH} || sudo -u git -i -- git checkout ${BRANCH}
-    sudo -u git -i -- git pull origin ${BRANCH}
-fi
 if [ ! -d /usr/local/www/gitlab ]; then
     cd /usr/local/www
     sudo -u git -H git clone --depth 1 ${GITLABSRC}gitlab-org/gitlab-ce.git -b ${BRANCH} gitlab

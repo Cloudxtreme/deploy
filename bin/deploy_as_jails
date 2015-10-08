@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151008-041418
+SCRIPTVERSION=151008-043645
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
@@ -302,10 +302,6 @@ EOF
                     eza console -f -e "env FQDN=${FQDN} deploy ${name}db" ${name}
                     ;;
                 dtfc)
-                    if [         -d /root/local/gitcache/johnko/dtfc ]; then
-                        mkdir -p                                      /usr/jails/${name}/root/local/gitcache/johnko/dtfc
-                        rsync -qalP /root/local/gitcache/johnko/dtfc/ /usr/jails/${name}/root/local/gitcache/johnko/dtfc/
-                    fi
                     eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy ${name}" ${name}
                     ;;
                 piwik)
@@ -332,10 +328,6 @@ EOF
                 gitlab)
                     if [ -e /var/ports ]; then
                         rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
-                    fi
-                    if [         -d /root/local/gitcache/gitlab-org/gitlab-ce.git ]; then
-                        mkdir -p                                                   /usr/jails/${name}/root/local/gitcache/gitlab-org/gitlab-ce.git
-                        rsync -qalP /root/local/gitcache/gitlab-org/gitlab-ce.git/ /usr/jails/${name}/root/local/gitcache/gitlab-org/gitlab-ce.git/
                     fi
                     allowsysvipc ${name}
                     copysslselfcert ${name}
@@ -379,10 +371,6 @@ EOF
 #                eza console -f -e "deploy ${name}" ${name}
 #                ;;
                 echoplexus)
-                    if [         -d /root/local/gitcache/qq99/echoplexus ]; then
-                        mkdir -p                                          /usr/jails/${name}/root/local/gitcache/qq99/echoplexus
-                        rsync -qalP /root/local/gitcache/qq99/echoplexus/ /usr/jails/${name}/root/local/gitcache/qq99/echoplexus/
-                    fi
                     eza console -f -e "env REPOSRC=${REPOSRC} deploy ${name}" ${name}
                     ;;
                 gitannex)
@@ -402,10 +390,6 @@ EOF
                     eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
                     ;;
                 couchdtfc)
-                    if [         -d /root/local/gitcache/johnko/dtfc ]; then
-                        mkdir -p                                      /usr/jails/${name}/root/local/gitcache/johnko/dtfc
-                        rsync -qalP /root/local/gitcache/johnko/dtfc/ /usr/jails/${name}/root/local/gitcache/johnko/dtfc/
-                    fi
                     eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy couchdbdtfc" ${name}
                     ;;
                 horde)
