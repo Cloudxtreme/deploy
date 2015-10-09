@@ -5,15 +5,22 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151009-095237
+SCRIPTVERSION=151009-103009
 
 pkg install -y py27-pip sudo
+
+# install the gitosis app and user
+pkg install -y py27-gitosis
+# remove the gitosis app, but keep the user
+pkg remove -y py27-gitosis
 
 pip install waitress klaus markdown watchdog
 
 mkdir -p /var/run/klaus && chown www:www /var/run/klaus
 
 cat /root/git/deploy/usr/local/lib/python2.7/site-packages/klauswsgireload.py \
+| sed "s;unrelenting.technology;${FQDN};" \
+| sed "s;/home/freebsd/src/github.com/myfreeweb;/usr/local/git;" \
 >/usr/local/lib/python2.7/site-packages/klauswsgireload.py
 
 sudo -u www -H /usr/local/bin/python2.7 -m klauswsgireload
