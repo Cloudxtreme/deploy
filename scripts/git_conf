@@ -66,15 +66,9 @@ PROJECTS="
     zsnapple                    ${REPOSRC}johnko/zsnapple.git
     gitlab-ce                   ${GITLABSRC}gitlab-org/gitlab-ce.git
 "
-# ${REPOSRC}johnko/btfc.git
+
 # ${REPOSRC}johnko/couchdbtodomvc.git
-# ${REPOSRC}johnko/dillinger.git
-# ${REPOSRC}johnko/freebsd-ports-test.git
 # ${REPOSRC}johnko/johnko.github.io.git
-# ${REPOSRC}johnko/kurz.go.git
-# ${REPOSRC}johnko/mac-dev-playbook.git
 # ${REPOSRC}johnko/mac-dotfiles.git
-# ${REPOSRC}johnko/Pico.git
-# ${REPOSRC}johnko/textwrangler-bbedit-solarized.git
 
 export PROJECTS
