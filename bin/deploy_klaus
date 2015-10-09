@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151009-212000
+SCRIPTVERSION=151009-213256
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -30,7 +30,7 @@ install -o git -g git -m 600 /root/.ssh/authorized_keys /usr/local/git/.ssh/auth
 install -d -o git -g git -m 755 /usr/local/git/repos
 
 . /root/git/deploy/scripts/git_conf
-echo ${PROJECTS} \
+echo "${PROJECTS}" \
 | while read name url ; do
     if [ "x" != "x${name}" ]; then
         sudo -u git -H mkdir /usr/local/git/repos/${name}
