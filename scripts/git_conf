@@ -68,6 +68,7 @@ PROJECTS="
 "
 
 # ${REPOSRC}johnko/couchdbtodomvc.git
+# ${REPOSRC}johnko/couchdb-fuse.git
 # ${REPOSRC}johnko/johnko.github.io.git
 # ${REPOSRC}johnko/mac-dotfiles.git
 
