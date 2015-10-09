@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151009-121904
+SCRIPTVERSION=151009-212000
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -28,9 +28,16 @@ install -d -o git -g git -m 700 /usr/local/git/.ssh
 install -o git -g git -m 600 /root/.ssh/authorized_keys /usr/local/git/.ssh/authorized_keys
 
 install -d -o git -g git -m 755 /usr/local/git/repos
-sudo -u git -H mkdir /usr/local/git/repos/test_repo
-cd /usr/local/git/repos/test_repo
-sudo -u git -H git init --bare
+
+. /root/git/deploy/scripts/git_conf
+echo ${PROJECTS} \
+| while read name url ; do
+    if [ "x" != "x${name}" ]; then
+        sudo -u git -H mkdir /usr/local/git/repos/${name}
+        cd /usr/local/git/repos/${name}
+        sudo -u git -H git init --bare
+    fi
+done
 
 cat /root/git/deploy/usr/local/etc/nginx/sites-available/klaus \
 | sed "s/127.0.0.1/${JAILIP}/" \
