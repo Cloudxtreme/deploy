@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151009-105153
+SCRIPTVERSION=151009-113718
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -25,7 +25,7 @@ pip install waitress klaus markdown watchdog
 mkdir -p /var/run/klaus && chown www:www /var/run/klaus
 
 cat /root/git/deploy/usr/local/etc/nginx/sites-available/klaus \
-| sed "s/0.0.0.0/${JAILIP}/" \
+| sed "s/127.0.0.1/${JAILIP}/" \
 | sed "s/localhost.localdomain/${FQDN}/" \
 >/usr/local/etc/nginx/sites-enabled/klaus
 chmod 644 /usr/local/etc/nginx/sites-enabled/klaus
@@ -33,6 +33,7 @@ sysrc nginx_enable="YES"
 service nginx start
 
 cat /root/git/deploy/usr/local/lib/python2.7/site-packages/klauswsgireload.py \
+| sed "s/0.0.0.0/${JAILIP}/" \
 | sed "s;unrelenting.technology;${FQDN};" \
 | sed "s;/home/freebsd/src/github.com/myfreeweb;/usr/local/git;" \
 >/usr/local/lib/python2.7/site-packages/klauswsgireload.py
