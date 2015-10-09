@@ -112,6 +112,16 @@
             include /usr/local/etc/nginx/proxypass.conf;
             proxy_pass https://gitlabsources;
         }
+        location  ~^/ci/ {
+            rewrite /ci/(.*) /ci/$1 break;
+            include /usr/local/etc/nginx/proxypass.conf;
+            proxy_pass https://gitlabsources;
+        }
+        location  ~^/ci$ {
+            rewrite /ci /ci break;
+            include /usr/local/etc/nginx/proxypass.conf;
+            proxy_pass https://gitlabsources;
+        }
         location  ~^/dashboard/ {
             rewrite /dashboard/(.*) /dashboard/$1 break;
             include /usr/local/etc/nginx/proxypass.conf;
@@ -199,6 +209,11 @@
         }
         location  ~^/snippets$ {
             rewrite /snippets /snippets break;
+            include /usr/local/etc/nginx/proxypass.conf;
+            proxy_pass https://gitlabsources;
+        }
+        location  ~^/static.css$ {
+            rewrite /static.css /static.css break;
             include /usr/local/etc/nginx/proxypass.conf;
             proxy_pass https://gitlabsources;
         }
