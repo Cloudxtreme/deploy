@@ -1,0 +1,28 @@
+upstream klaus {
+  server unix:/var/run/klaus/klaus.sock fail_timeout=0;
+}
+## Redirects all HTTP traffic to the HTTPS host
+server {
+    listen   0.0.0.0:80 default_server;
+    server_name localhost.localdomain;
+    return 302 https://$host$request_uri;
+    access_log  /var/log/nginx_klaus_access.log;
+    error_log   /var/log/nginx_klaus_error.log;
+}
+## HTTPS host
+server {
+    listen 443 ssl;
+    server_name localhost.localdomain;
+    ssl_certificate ssl/ssl.crt;
+    ssl_certificate_key ssl/ssl.key;
+    include /usr/local/etc/nginx/tls.conf;
+    access_log  /var/log/nginx_klaus_access_ssl.log;
+    error_log   /var/log/nginx_klaus_error_ssl.log;
+    location / {
+        try_files $uri $uri/ @klaus;
+    }
+    location @klaus {
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass http://klaus;
+    }
+}

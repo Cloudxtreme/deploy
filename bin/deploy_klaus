@@ -5,9 +5,15 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151009-103009
+SCRIPTVERSION=151009-105153
 
-pkg install -y py27-pip sudo
+if [ "x" == "x${FQDN}" ]; then
+    echo "Please set or export variable FQDN"
+    exit 1
+fi
+JAILIP=`ifconfig | grep inet | awk '{print $2}'`
+
+pkg install -y py27-pip sudo nginx
 
 # install the gitosis app and user
 pkg install -y py27-gitosis
@@ -17,6 +23,14 @@ pkg remove -y py27-gitosis
 pip install waitress klaus markdown watchdog
 
 mkdir -p /var/run/klaus && chown www:www /var/run/klaus
+
+cat /root/git/deploy/usr/local/etc/nginx/sites-available/klaus \
+| sed "s/0.0.0.0/${JAILIP}/" \
+| sed "s/localhost.localdomain/${FQDN}/" \
+>/usr/local/etc/nginx/sites-enabled/klaus
+chmod 644 /usr/local/etc/nginx/sites-enabled/klaus
+sysrc nginx_enable="YES"
+service nginx start
 
 cat /root/git/deploy/usr/local/lib/python2.7/site-packages/klauswsgireload.py \
 | sed "s;unrelenting.technology;${FQDN};" \

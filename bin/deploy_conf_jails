@@ -17,7 +17,7 @@ GOOD="
       6  dtfc
       7  piwik
       8  owncloud
-      9  gitlab
+     13  klaus
      10  ejabberd
      11  murmur
      12  vnc
@@ -29,6 +29,7 @@ DEV="
     16  zabbix
     22  echoplexus
     24  gitannex
+     9  gitlab
     26  gogs
     28  phabricator
     30  pydio

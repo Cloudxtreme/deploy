@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151008-043645
+SCRIPTVERSION=151009-105153
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
@@ -110,7 +110,7 @@ EOF
     squid     ${SQUIDIPALIAS}     3128    3128  .
     nginx     ${WEBIPALIAS}         80      80  u
     nginx     ${WEBIPALIAS}        443     443  .
-    gitlab    ${WEBIPALIAS}         23      23  .
+    klaus     ${WEBIPALIAS}         23      23  .
     postfix   ${POSTFIXIPALIAS}    587     587  u
     dovecot   ${DOVECOTIPALIAS}    993     993  u
     ejabberd  ${XMPPIPALIAS}      5222    5222  u
@@ -324,6 +324,9 @@ EOF
                     ;;
                 vnc)
                     eza console -f -e "deploy ${name}" ${name}
+                    ;;
+                klaus)
+                    eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
                     ;;
                 gitlab)
                     if [ -e /var/ports ]; then
