@@ -18,7 +18,7 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 
 ```
 fres
-rm /var/ports/packages/All/squid-3.5.9_1.txz
+rm /var/ports/packages/All/squid-*.txz
 fzg -r mirror -d ada0 -d ada1 -d ada2 -z 2g -m -n -D -H `hostname-by-ptr-dns`
 copy-network-conf-to-mnt
 reboot
@@ -123,7 +123,6 @@ Visit https://virtual.local/profile/account and get your `Private token`
 Then start importing:
 
 ```
-# env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/gitlab_import
 env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone
 env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone create
 env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone home
@@ -133,7 +132,8 @@ env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone home
 
 ```
 cat perm/cshpkglist | sed 's/^# //' > local/cshpkglist
-vi /root/local/cshpkglist
+fres
+cat perm/cshpkglist | sed 's/^# //' | sed 's/^## //' > local/cshpkglist
 fres ; fres -b
 deploy minidlna
 ```
@@ -186,3 +186,17 @@ sh ~/local/deploy.${FQDN}.good
 Outbound email is not enabled yet.
 
 If running multiple PostgreSQL jails, they each need to have different UIDs in order to not crash each other.
+
+
+## Updating squid
+
+The files that should be edited are:
+
+- deploy/bin/deploy_squid
+- rad/bin/rad_files_conf
+
+## Updating ffmpeg
+
+- deploy/bin/deploy_ffmpeg
+- skel/fres
+- rad/bin/rad_files_conf
