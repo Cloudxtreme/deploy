@@ -1,0 +1,28 @@
+#!/bin/sh
+# Copyright (c) 2015, John Ko
+# PROVIDE: klaus
+# REQUIRE: FILESYSTEMS LOGIN NETWORKING
+. /etc/rc.subr
+
+name="klaus"
+start_cmd="my_start"
+stop_cmd="my_stop"
+my_start()
+{
+    /usr/local/bin/sudo -u www -H /usr/local/bin/python2.7 -m klauswsgireload &
+}
+my_stop()
+{
+    # TODO need a more elegant solution than loop to kill
+    local LOOP=1
+    while [ $LOOP -eq 1 ]; do
+        if  /bin/pgrep -lf klauswsgireload > /dev/null 2> /dev/null ; then
+            /bin/pkill -lf klauswsgireload > /dev/null 2> /dev/null
+        else
+            local LOOP=0
+        fi
+        sleep 1
+    done
+}
+load_rc_config $name
+run_rc_command "$1"

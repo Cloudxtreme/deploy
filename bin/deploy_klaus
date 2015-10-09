@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151009-113718
+SCRIPTVERSION=151009-115713
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -38,4 +38,17 @@ cat /root/git/deploy/usr/local/lib/python2.7/site-packages/klauswsgireload.py \
 | sed "s;/home/freebsd/src/github.com/myfreeweb;/usr/local/git;" \
 >/usr/local/lib/python2.7/site-packages/klauswsgireload.py
 
-sudo -u www -H /usr/local/bin/python2.7 -m klauswsgireload
+install -m 755 /root/git/deploy/usr/local/etc/rc.d/klaus /usr/local/etc/rc.d/klaus
+
+if sysctl security.jail.jailed | grep 1 >/dev/null ; then
+    cat /etc/ssh/sshd_config \
+    | sed 's/#Port 22/Port 23/' \
+    >/etc/ssh/sshd_config.tmp
+    cat /etc/ssh/sshd_config.tmp >/etc/ssh/sshd_config
+    rm /etc/ssh/sshd_config.tmp
+fi
+sysrc sshd_enable="YES"
+sysrc sshd_rsa1_enable="NO"
+sysrc sshd_dsa_enable="NO"
+sysrc sshd_ecdsa_enable="NO"
+service sshd start
