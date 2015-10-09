@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151009-115713
+SCRIPTVERSION=151009-121904
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -24,6 +24,14 @@ pip install waitress klaus markdown watchdog
 
 mkdir -p /var/run/klaus && chown www:www /var/run/klaus
 
+install -d -o git -g git -m 700 /usr/local/git/.ssh
+install -o git -g git -m 600 /root/.ssh/authorized_keys /usr/local/git/.ssh/authorized_keys
+
+install -d -o git -g git -m 755 /usr/local/git/repos
+sudo -u git -H mkdir /usr/local/git/repos/test_repo
+cd /usr/local/git/repos/test_repo
+sudo -u git -H git init --bare
+
 cat /root/git/deploy/usr/local/etc/nginx/sites-available/klaus \
 | sed "s/127.0.0.1/${JAILIP}/" \
 | sed "s/localhost.localdomain/${FQDN}/" \
@@ -35,7 +43,7 @@ service nginx start
 cat /root/git/deploy/usr/local/lib/python2.7/site-packages/klauswsgireload.py \
 | sed "s/0.0.0.0/${JAILIP}/" \
 | sed "s;unrelenting.technology;${FQDN};" \
-| sed "s;/home/freebsd/src/github.com/myfreeweb;/usr/local/git;" \
+| sed "s;/home/freebsd/src/github.com/myfreeweb;/usr/local/git/repos;" \
 >/usr/local/lib/python2.7/site-packages/klauswsgireload.py
 
 install -m 755 /root/git/deploy/usr/local/etc/rc.d/klaus /usr/local/etc/rc.d/klaus
