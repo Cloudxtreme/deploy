@@ -1,256 +1,101 @@
-    client_max_body_size 0;
-    upstream couchsources {
-        server 10.7.7.5:5984;
-    }
-    upstream dtfcsources {
-        server 10.7.7.6:8080;
-    }
-    upstream piwiksources {
-        server 10.7.7.7:443;
-    }
-    upstream owncloudsources {
-        server 10.7.7.8:443;
-    }
-    upstream gitlabsources {
-        server 10.7.7.9:443;
-    }
-    upstream zabbixsources {
-        server 10.7.7.16:443;
-    }
-    map $uri $redirect_uri {
-        ~^/$           https://localhost.localdomain/explore;
-        ~^/couch$      https://localhost.localdomain/couch/;
-        ~^/dtfc$       https://localhost.localdomain/dtfc/;
-        ~^/movies$     https://localhost.localdomain/movies/;
-        ~^/music$      https://localhost.localdomain/music/;
-        ~^/owncloud$   https://localhost.localdomain/owncloud/;
-        ~^/piwik$      https://localhost.localdomain/piwik/;
-        ~^/wiki$       https://localhost.localdomain/wiki/;
-        ~^/zabbix$     https://localhost.localdomain/zabbix/;
-    }
-    server {
-        listen   0.0.0.0:80 default_server;
-        server_name localhost.localdomain;
-        return 302 https://$host$request_uri;
-    }
-    server {
-        listen 443 ssl;
-        server_name localhost.localdomain;
-        ssl_certificate ssl/ssl.crt;
-        ssl_certificate_key ssl/ssl.key;
-        include /usr/local/etc/nginx/tls.conf;
-        location ~^/(_session|_replicate|_users) {
-            rewrite  /(.*) /$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass http://couchsources;
-        }
-        location ~^/couch/ {
-            rewrite  /couch/(.*) /$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass http://couchsources;
-        }
-        location  ~^/movies/ {
-            rewrite /movies/(.*) /movies/_design/movies/_rewrite/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass http://couchsources;
-        }
-        location  ~^/music/ {
-            rewrite /music/(.*) /music/_design/music/_rewrite/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass http://couchsources;
-        }
-        location  ~^/wiki/ {
-            rewrite /wiki/(.*) /wiki/_design/wiki/_rewrite/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass http://couchsources;
-        }
-        location  ~^/dtfc/ {
-            rewrite /dtfc/(.*) /$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass http://dtfcsources;
-        }
-        location  ~^/piwik/ {
-            rewrite /piwik/(.*) /piwik/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://piwiksources;
-        }
-        location  ~^/owncloud/ {
-            rewrite /owncloud/(.*) /owncloud/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://owncloudsources;
-        }
-        location  ~^/zabbix/ {
-            rewrite /zabbix/(.*) /zabbix/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://zabbixsources;
-        }
-        location / {
-            try_files $uri $uri/ @redirect-map;
-        }
-        location @redirect-map {
-            if ($redirect_uri) {
-                return 302 $redirect_uri;
-            }
-        }
-        location  ~^/admin/ {
-            rewrite /admin/(.*) /admin/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/admin$ {
-            rewrite /admin /admin break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/assets/ {
-            rewrite /assets/(.*) /assets/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/assets$ {
-            rewrite /assets /assets break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/ci/ {
-            rewrite /ci/(.*) /ci/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/ci$ {
-            rewrite /ci /ci break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/dashboard/ {
-            rewrite /dashboard/(.*) /dashboard/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/dashboard$ {
-            rewrite /dashboard /dashboard break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/explore/ {
-            rewrite /explore/(.*) /explore/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/explore$ {
-            rewrite /explore /explore break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/groups/ {
-            rewrite /groups/(.*) /groups/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/groups$ {
-            rewrite /groups /groups break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/help/ {
-            rewrite /help/(.*) /help/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/help$ {
-            rewrite /help /help break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/profile/ {
-            rewrite /profile/(.*) /profile/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/profile$ {
-            rewrite /profile /profile break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/projects/ {
-            rewrite /projects/(.*) /projects/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/projects$ {
-            rewrite /projects /projects break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/s/ {
-            rewrite /s/(.*) /s/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/s$ {
-            rewrite /s /s break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/search/ {
-            rewrite /search/(.*) /search/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/search$ {
-            rewrite /search /search break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/snippets/ {
-            rewrite /snippets/(.*) /snippets/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/snippets$ {
-            rewrite /snippets /snippets break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/static.css$ {
-            rewrite /static.css /static.css break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/u/ {
-            rewrite /u/(.*) /u/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/u$ {
-            rewrite /u /u break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/uploads$ {
-            rewrite /uploads /uploads break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/uploads$ {
-            rewrite /uploads /uploads break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/users/ {
-            rewrite /users/(.*) /users/$1 break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-        location  ~^/users$ {
-            rewrite /users /users break;
-            include /usr/local/etc/nginx/proxypass.conf;
-            proxy_pass https://gitlabsources;
-        }
-    #letfover slashes or more to gitlab
-    location  ~^/(.*)/(.*) {
-        rewrite /(.*)/(.*) /$1/$2 break;
+client_max_body_size 0;
+upstream couchsources {
+    server 10.7.7.5:5984;
+}
+upstream dtfcsources {
+    server 10.7.7.6:8080;
+}
+upstream piwiksources {
+    server 10.7.7.7:443;
+}
+upstream owncloudsources {
+    server 10.7.7.8:443;
+}
+upstream klaussources {
+    server 10.7.7.13:443;
+}
+upstream zabbixsources {
+    server 10.7.7.16:443;
+}
+map $uri $redirect_uri {
+    ~^/$           https://localhost.localdomain/explore;
+    ~^/couch$      https://localhost.localdomain/couch/;
+    ~^/dtfc$       https://localhost.localdomain/dtfc/;
+    ~^/git$        https://localhost.localdomain/git/;
+    ~^/movies$     https://localhost.localdomain/movies/;
+    ~^/music$      https://localhost.localdomain/music/;
+    ~^/owncloud$   https://localhost.localdomain/owncloud/;
+    ~^/piwik$      https://localhost.localdomain/piwik/;
+    ~^/wiki$       https://localhost.localdomain/wiki/;
+    ~^/zabbix$     https://localhost.localdomain/zabbix/;
+}
+server {
+    listen   0.0.0.0:80 default_server;
+    server_name localhost.localdomain;
+    return 302 https://$host$request_uri;
+}
+server {
+    listen 443 ssl;
+    server_name localhost.localdomain;
+    ssl_certificate ssl/ssl.crt;
+    ssl_certificate_key ssl/ssl.key;
+    include /usr/local/etc/nginx/tls.conf;
+    location ~^/(_session|_replicate|_users) {
+        rewrite  /(.*) /$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
-        proxy_pass https://gitlabsources;
+        proxy_pass http://couchsources;
+    }
+    location ~^/couch/ {
+        rewrite  /couch/(.*) /$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass http://couchsources;
+    }
+    location  ~^/movies/ {
+        rewrite /movies/(.*) /movies/_design/movies/_rewrite/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass http://couchsources;
+    }
+    location  ~^/music/ {
+        rewrite /music/(.*) /music/_design/music/_rewrite/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass http://couchsources;
+    }
+    location  ~^/wiki/ {
+        rewrite /wiki/(.*) /wiki/_design/wiki/_rewrite/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass http://couchsources;
+    }
+    location  ~^/dtfc/ {
+        rewrite /dtfc/(.*) /$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass http://dtfcsources;
+    }
+    location  ~^/piwik/ {
+        rewrite /piwik/(.*) /piwik/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass https://piwiksources;
+    }
+    location  ~^/owncloud/ {
+        rewrite /owncloud/(.*) /owncloud/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass https://owncloudsources;
+    }
+    location  ~^/zabbix/ {
+        rewrite /zabbix/(.*) /zabbix/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass https://zabbixsources;
+    }
+    location  ~^/git/ {
+        rewrite /git/(.*) /git/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass https://klaussources;
+    }
+    location / {
+        try_files $uri $uri/ @redirect-map;
+    }
+    location @redirect-map {
+        if ($redirect_uri) {
+            return 302 $redirect_uri;
+        }
     }
 }
