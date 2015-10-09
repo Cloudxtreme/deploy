@@ -7,7 +7,7 @@
 ######################################################################
 SCRIPTVERSION=151008-042422
 
-SQUIDPKG=/var/ports/packages/All/squid-3.5.9_1.txz
+SQUIDPKG=/var/ports/packages/All/squid-3.5.10.txz
 
 export BATCH=yes
 
