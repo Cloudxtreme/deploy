@@ -25,6 +25,8 @@ server {
         include /usr/local/etc/nginx/proxypass.conf;
         # https://github.com/jonashaag/klaus/blob/master/klaus/utils.py#L25
         proxy_set_header X-Scheme $scheme;
+        ## Don't use Script-Name because it breaks repos that start with git...
+        ## proxy_set_header X-Script-Name '/git';
         proxy_pass http://klaus;
     }
 }
