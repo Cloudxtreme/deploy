@@ -93,6 +93,7 @@ echo "${PROJECTS}" \
             cd "${FOLDER}/${novgroupname}/${name}"
 #            git remote remove home
             if ! git remote -v | grep "^home" > /dev/null ; then
+                #git remote add home ssh://git@${FQDN}:23/v.${urlpath}
                 git remote add home ssh://git@${FQDN}:23/usr/local/git/repos/${name}
             elif ! git remote -v | grep "^home" | grep "usr/local/git/repos" > /dev/null ; then
                 git remote set-url home ssh://git@${FQDN}:23/usr/local/git/repos/${name}
