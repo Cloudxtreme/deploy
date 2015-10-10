@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150904-022717
+SCRIPTVERSION=151010-013530
 
 PROJECTS="
     apache-config-freebsd       ${REPOSRC}johnko/apache-config-freebsd.git
@@ -60,6 +60,7 @@ PROJECTS="
     skel                        ${REPOSRC}johnko/skel.git
     ssh-multi                   ${REPOSRC}johnko/ssh-multi.git
     ssh-tools                   ${REPOSRC}johnko/ssh-tools.git
+    tf2-config                  ${REPOSRC}johnko/tf2-config.git
     vmrc                        ${REPOSRC}johnko/vmrc.git
     windows-setup               ${REPOSRC}johnko/windows-setup.git
     wtfc                        ${REPOSRC}johnko/wtfc.git
