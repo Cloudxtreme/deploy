@@ -3,7 +3,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=150904-035119
+SCRIPTVERSION=151010-010017
 
 # Usage: $0 [create|github|home]
 
@@ -107,7 +107,7 @@ echo "${PROJECTS}" \
         fi
         if [ "xhome" == "x${ACTION}" ]; then
             cd "${FOLDER}/${novgroupname}/${name}"
-            if git remote -v | grep "git@${FQDN}:23/v.${novgroupname}" ; then
+            if git remote -v | grep "git@${FQDN}:23/usr/local/git/repos/${name}" ; then
                 git push --mirror home
             fi
         fi
