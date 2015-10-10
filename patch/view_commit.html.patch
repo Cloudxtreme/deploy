@@ -1,0 +1,11 @@
+--- view_commit.html.orig	2015-10-10 06:13:35.000000000 +0000
++++ view_commit.html	2015-10-10 15:18:19.230792172 +0000
+@@ -33,7 +33,7 @@
+       and <span class=deletions>{{ summary.ndeletions }} deletion(s)</span>.
+     </span>
+     <span>
+-      <a href="{{ request.path.rstrip('/') }}.diff">Raw diff</a>
++      <a href="//{{ SITE_NAME }}{{ request.path.rstrip('/') }}.diff">Raw diff</a>
+     </span>
+     <span>
+       <a href=# onclick="toggler.collapseAll('.file'); return false">Collapse all</a>

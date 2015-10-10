@@ -5,7 +5,7 @@
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151009-213256
+SCRIPTVERSION=151010-152205
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -52,6 +52,9 @@ cat /root/git/deploy/usr/local/lib/python2.7/site-packages/klauswsgireload.py \
 | sed "s;unrelenting.technology;${FQDN};" \
 | sed "s;/home/freebsd/src/github.com/myfreeweb;/usr/local/git/repos;" \
 >/usr/local/lib/python2.7/site-packages/klauswsgireload.py
+
+cd /usr/local/lib/python2.7/site-packages/klaus/templates
+patch </root/git/deploy/patch/view_commit.html.patch
 
 install -m 755 /root/git/deploy/usr/local/etc/rc.d/klaus /usr/local/etc/rc.d/klaus
 
