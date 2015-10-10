@@ -15,10 +15,10 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
-if [ "x" == "x${TOKEN}" ]; then
-    echo "Please set or export variable TOKEN"
-    exit 1
-fi
+#if [ "x" == "x${TOKEN}" ]; then
+#    echo "Please set or export variable TOKEN"
+#    exit 1
+#fi
 
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
