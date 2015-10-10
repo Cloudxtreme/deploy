@@ -23,6 +23,8 @@ server {
     }
     location @klaus {
         include /usr/local/etc/nginx/proxypass.conf;
+        # https://github.com/jonashaag/klaus/blob/master/klaus/utils.py#L25
+        proxy_set_header X-Scheme $scheme;
         proxy_pass http://klaus;
     }
 }
