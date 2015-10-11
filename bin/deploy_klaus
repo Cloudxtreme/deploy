@@ -1,11 +1,11 @@
 #!/bin/sh
 
-# TODO
+# Ready
 
 ######################################################################
 # Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
 ######################################################################
-SCRIPTVERSION=151010-152205
+SCRIPTVERSION=151011-080908
 
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
@@ -65,8 +65,5 @@ if sysctl security.jail.jailed | grep 1 >/dev/null ; then
     cat /etc/ssh/sshd_config.tmp >/etc/ssh/sshd_config
     rm /etc/ssh/sshd_config.tmp
 fi
-sysrc sshd_enable="YES"
-sysrc sshd_rsa1_enable="NO"
-sysrc sshd_dsa_enable="NO"
-sysrc sshd_ecdsa_enable="NO"
+sshd-config
 service sshd start
