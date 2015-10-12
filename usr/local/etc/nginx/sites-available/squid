@@ -1,6 +1,8 @@
 server {
     listen   0.0.0.0:3127 default_server;
     server_name 0.0.0.0;
+    access_log  /var/log/nginx-access.log combined;
+    error_log   /var/log/nginx-error.log  combined;
     location =/public.pem {
         alias /usr/local/etc/squid/public.pem;
     }

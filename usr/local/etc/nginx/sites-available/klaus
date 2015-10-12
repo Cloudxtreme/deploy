@@ -6,8 +6,6 @@ server {
     listen   127.0.0.1:80 default_server;
     server_name localhost.localdomain;
     return 302 https://$host$request_uri;
-    access_log  /var/log/nginx_klaus_access.log;
-    error_log   /var/log/nginx_klaus_error.log;
 }
 ## HTTPS host
 server {
@@ -16,8 +14,8 @@ server {
     ssl_certificate ssl/ssl.crt;
     ssl_certificate_key ssl/ssl.key;
     include /usr/local/etc/nginx/tls.conf;
-    access_log  /var/log/nginx_klaus_access_ssl.log;
-    error_log   /var/log/nginx_klaus_error_ssl.log;
+    access_log  /var/log/nginx-ssl-access.log combined;
+    error_log   /var/log/nginx-ssl-error.log  combined;
     location / {
         try_files $uri $uri/ @klaus;
     }

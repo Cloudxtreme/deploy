@@ -2,11 +2,6 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=150618-013505
-
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN" 2>&1
     exit 1
@@ -20,7 +15,9 @@ if [ ! -e /usr/local/etc/rc.d/couchdb ]; then
 fi
 
 nginx-config-sites-enabled
-cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/dtfc
+cat /root/git/deploy/usr/local/etc/nginx/sites-available/couchdb \
+| sed "s/localhost.my.domain/${FQDN}/" \
+>/usr/local/etc/nginx/sites-enabled/couchdb
 
 sysrc couchdb_enable="YES"
 sysrc nginx_enable="YES"

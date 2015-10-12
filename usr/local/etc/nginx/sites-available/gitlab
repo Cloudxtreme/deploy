@@ -9,8 +9,6 @@ server {
     listen   0.0.0.0:80 default_server;
     server_name localhost.localdomain;
     return 302 https://$host$request_uri;
-    access_log  /var/log/nginx/gitlab_access.log;
-    error_log   /var/log/nginx/gitlab_error.log;
 }
 ## HTTPS host
 server {
@@ -20,8 +18,8 @@ server {
     ssl_certificate_key ssl/ssl.key;
     include /usr/local/etc/nginx/tls.conf;
     root /usr/local/www/gitlab/public;
-    access_log  /var/log/nginx/gitlab_access_ssl.log;
-    error_log   /var/log/nginx/gitlab_error_ssl.log;
+    access_log  /var/log/nginx-ssl-access.log combined;
+    error_log   /var/log/nginx-ssl-error.log  combined;
     location / {
         ## Serve static files from defined root folder.
         ## @gitlab is a named location for the upstream fallback, see below.

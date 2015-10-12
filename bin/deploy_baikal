@@ -3,11 +3,6 @@
 # READY
 # Probably will not use because no web ui for calendar, shared calendars or busy lookups
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=150618-013505
-
 if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
     exit 1
@@ -23,7 +18,9 @@ if [ ! -e /usr/local/www/baikal/Specific ]; then
 fi
 
 nginx-config-sites-enabled
-cat /usr/local/etc/nginx/sites-available/example-baikal | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/baikal
+cat /root/git/deploy/usr/local/etc/nginx/sites-available/baikal \
+| sed "s/localhost.my.domain/${FQDN}/" \
+>/usr/local/etc/nginx/sites-enabled/baikal
 
 touch /usr/local/www/baikal/Specific/ENABLE_INSTALL
 chown -R www /usr/local/www/baikal/Specific
