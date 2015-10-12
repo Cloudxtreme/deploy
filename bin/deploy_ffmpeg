@@ -2,14 +2,9 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=150930-030506
-
 LAMEPKG=/var/ports/packages/All/lame-3.99.5_2.txz
 LIBAACPLUSPKG=/var/ports/packages/All/libaacplus-2.0.2_8.txz
-FFMPEGPKG=/var/ports/packages/All/ffmpeg-2.8,1.txz
+FFMPEGPKG=/var/ports/packages/All/ffmpeg-2.8_1,1.txz
 
 export BATCH=yes
 
