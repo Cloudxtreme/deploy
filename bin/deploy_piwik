@@ -2,11 +2,6 @@
 
 # TODO
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=150702-090932
-
 DB="piwik"
 DBUSER="piwik"
 DBPASS="password"
@@ -34,7 +29,9 @@ fi
 
 apache-config-freebsd
 pkg install -fy www/mod_php56
-cat /usr/local/etc/apache24/extra/example-piwik.conf | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/apache24/Includes/piwik.conf
+cat /root/git/deploy/usr/local/etc/apache24/extra/piwik.conf \
+| sed "s/localhost.my.domain/${FQDN}/" \
+>/usr/local/etc/apache24/Includes/piwik.conf
 
 # To pass the piwik system check
 cat /usr/local/etc/php.ini-production | sed 's/;always_populate_raw_post_data = -1/always_populate_raw_post_data = -1/' >/usr/local/etc/php.ini

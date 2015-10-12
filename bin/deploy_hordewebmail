@@ -3,11 +3,6 @@
 # READY
 # Probably will not use because web calendar timezone is stuck on UTC
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=150702-072047
-
 DB="horde"
 DBUSER="horde"
 DBPASS="password"
@@ -50,7 +45,9 @@ fi
 
 apache-config-freebsd
 pkg install -fy www/mod_php56
-cat /usr/local/etc/apache24/extra/example-horde.conf | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/apache24/Includes/horde.conf
+cat /root/git/deploy/usr/local/etc/apache24/extra/horde.conf \
+| sed "s/localhost.my.domain/${FQDN}/" \
+>/usr/local/etc/apache24/Includes/horde.conf
 
 if [ ! -e /usr/local/www/horde/config/conf.php ]; then
     cp -a /usr/local/www/horde/config/conf.php.dist /usr/local/www/horde/config/conf.php
