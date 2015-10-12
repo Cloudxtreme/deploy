@@ -2,13 +2,8 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=150705-225840
-
 for i in $( service -l | grep '^ucarp' ) ; do
-    service ${i} stop
+    service ${i} onestop
     if [ -e /etc/rc.conf.d/${i} ]; then
         sysrc -f /etc/rc.conf.d/${i} ${i}_enable="NO"
     fi
