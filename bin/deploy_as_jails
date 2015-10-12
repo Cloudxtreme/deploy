@@ -2,11 +2,6 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=151009-105153
-
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
     exit 1
@@ -71,7 +66,7 @@ if [ "x" == "x${count}" ]; then
     count=0
 fi
 
-. ~/bin/deploy_conf_jails
+. ~/bin/deploy_as_conf
 
 
 
