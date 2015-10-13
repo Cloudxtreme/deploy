@@ -19,7 +19,7 @@ server {
     include /usr/local/etc/nginx/tls.conf;
     root /usr/local/www/gitlab/public;
     access_log  /var/log/nginx-ssl-access.log realip;
-    error_log   /var/log/nginx-ssl-error.log  realip;
+    error_log   /var/log/nginx-ssl-error.log;
     location / {
         ## Serve static files from defined root folder.
         ## @gitlab is a named location for the upstream fallback, see below.
