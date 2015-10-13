@@ -45,7 +45,7 @@ fi
 
 apache-config-freebsd
 pkg install -fy www/mod_php56
-cat /root/git/deploy/usr/local/etc/apache24/extra/horde.conf \
+cat ~/git/deploy/usr/local/etc/apache24/extra/horde.conf \
 | sed "s/localhost.my.domain/${FQDN}/" \
 >/usr/local/etc/apache24/Includes/horde.conf
 

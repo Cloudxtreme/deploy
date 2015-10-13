@@ -2,11 +2,6 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=151008-041809
-
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Multicast udp 5353 has issues reaching a jail"
     echo "ERROR: Clients will not detect this in a jail"
@@ -31,7 +26,7 @@ install -d -m 755 /tank/data/music
 install -d -m 755 /tank/data/photos
 
 
-install -m 644 /root/git/deploy/usr/local/etc/firefly/mt-daapd.conf /usr/local/etc/firefly/mt-daapd.conf
+install -m 644 ~/git/deploy/usr/local/etc/firefly/mt-daapd.conf /usr/local/etc/firefly/mt-daapd.conf
 
 crontabbed
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then

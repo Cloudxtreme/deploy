@@ -2,11 +2,6 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=151008-042422
-
 SQUIDPKG=/var/ports/packages/All/squid-3.5.10.txz
 
 export BATCH=yes
@@ -51,7 +46,7 @@ if [ "xYES" == "x${NEWINSTALL}" ]; then
     fi
 fi
 
-install -m 644 /root/git/deploy/usr/local/etc/squid/squid.conf /usr/local/etc/squid/squid.conf
+install -m 644 ~/git/deploy/usr/local/etc/squid/squid.conf /usr/local/etc/squid/squid.conf
 
 if [ ! -e /usr/local/etc/squid/public.pem ]; then
     yes '' | openssl req -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -keyout /usr/local/etc/squid/private.pem -out /usr/local/etc/squid/public.pem
@@ -60,7 +55,7 @@ chown squid:squid /usr/local/etc/squid/*.pem
 chmod 644 /usr/local/etc/squid/public.pem
 chmod 600 /usr/local/etc/squid/private.pem
 
-install -m 644 /root/git/deploy/usr/local/etc/squid/public.pac /usr/local/etc/squid/public.pac
+install -m 644 ~/git/deploy/usr/local/etc/squid/public.pac /usr/local/etc/squid/public.pac
 
 sysrc squid_enable="YES"
 
@@ -85,3 +80,10 @@ fi
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
 echo "Squid is setup, eza-unlink-basejail will setup PKG_ENV to ${JAILIP}:3128"
+
+# 3127 for public.pem
+deploy nginx
+cat ~/git/deploy/usr/local/etc/nginx/sites-available/squid \
+    | sed "s/0.0.0.0/${JAILIP}/" \
+    >/usr/local/etc/nginx/sites-enabled/squid
+chmod 644 /usr/local/etc/nginx/sites-enabled/squid

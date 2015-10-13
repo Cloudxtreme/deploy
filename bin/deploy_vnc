@@ -2,11 +2,6 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=151008-042905
-
 ROOTPASS="password"
 
 pkg install -y x11/xorg x11-wm/xfce4-wm \
@@ -38,10 +33,10 @@ EOF
     chmod +x ~/.vnc/xstartup
 fi
 
-install -m 755 /root/git/deploy/usr/local/etc/rc.d/vnc /usr/local/etc/rc.d/vnc
+install -m 755 ~/git/deploy/usr/local/etc/rc.d/vnc /usr/local/etc/rc.d/vnc
 
 cd /usr/local/bin
-patch </root/git/deploy/patch/vncserver.patch
+patch < ~/git/deploy/patch/vncserver.patch
 
 sysrc dbus_enable="YES"
 

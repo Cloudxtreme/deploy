@@ -114,10 +114,6 @@ EOF
     zabbix    ${ZABBIXIPALIAS}   10050   10050  u
     zabbix    ${ZABBIXIPALIAS}   10051   10051  .
 "
-# minidlna  ${MINIDLNAIPALIAS}  1900    1900  u
-# minidlna  239.255.255.250     1900    1900  .
-# minidlna  ${MINIDLNAIPALIAS}  8200    8200  .
-# firefly   ${FIREFLYIPALIAS}   3689    3689  u
     echo "$ALIASES" \
     | while read name ipalias pubport realport doucarp ; do
         #echo "debug ${name} ${ipalias} ${pubport} ${realport}"
@@ -192,7 +188,7 @@ setupnginxconfig() {
     local name=${1}
     local FQDN=${2}
     local NGINXJAILIP=${IPNET}`jailip nginx`
-    cat /root/git/deploy/usr/local/etc/nginx/sites-available/nginx-all \
+    cat ~/git/deploy/usr/local/etc/nginx/sites-available/nginx-all \
         | sed "s/0.0.0.0/${NGINXJAILIP}/" \
         | sed "s/localhost.localdomain/${FQDN}/" \
         >/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name}
@@ -274,13 +270,6 @@ echo "$JAILNAMES" \
                     rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
                     # easydns-client here to reduce risk of lost/rollbacked config
                     eza console -f -e "deploy easydnsclient" ${name}
-                    # 3127 for public.pem
-                    SQUIDJAILIP=${IPNET}`jailip squid`
-                    cat /root/git/deploy/usr/local/etc/nginx/sites-available/squid \
-                        | sed "s/0.0.0.0/${SQUIDJAILIP}/" \
-                        >/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name}
-                    chmod 644 /usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name}
-                    eza console -f -e "deploy nginx" ${name}
                     eza console -f -e sh ${name} <<EOF
 su urep -c "/bin/mkdir -p /usr/home/urep/bin"
 cp -a /root/bin/fres /usr/home/urep/bin/fres
@@ -358,16 +347,6 @@ EOF
                 zabbix)
                     eza console -f -e "deploy ${name}" ${name}
                     ;;
-#            minidlna)
-#                if [ -e /var/ports ]; then
-#                    rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
-#                fi
-#                eza console -f -e "deploy ${name}" ${name}
-#                rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
-#                ;;
-#            firefly)
-#                eza console -f -e "deploy ${name}" ${name}
-#                ;;
                 echoplexus)
                     eza console -f -e "env REPOSRC=${REPOSRC} deploy ${name}" ${name}
                     ;;

@@ -1,11 +1,6 @@
 #!/bin/sh
 
-# READY, kinda
-
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=151009-103224
+# TODO, doens't allow psuh
 
 if [ "x" == "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
@@ -210,7 +205,7 @@ yes yes | sudo -u git -H env HTTP_PROXY=${HTTP_PROXY} bundle exec rake gitlab:se
 
 echo "9 Init script"
 #wget -O /usr/local/etc/rc.d/gitlab https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/init/init/freebsd/gitlab-unicorn
-install -m 755 -o root -g wheel /root/git/deploy/usr/local/etc/rc.d/gitlab /usr/local/etc/rc.d/gitlab
+install -m 755 -o root -g wheel ~/git/deploy/usr/local/etc/rc.d/gitlab /usr/local/etc/rc.d/gitlab
 
 
 echo "10 compile"
@@ -240,7 +235,7 @@ mkdir -p /var/log/nginx
 #cp /usr/local/www/gitlab/lib/support/nginx/gitlab /usr/local/etc/nginx/sites-enabled/gitlab.conf
 #cat /usr/local/www/gitlab/lib/support/nginx/gitlab \
 #| sed 's/gzip_static on;/#gzip_static on;/' \
-cat /root/git/deploy/usr/local/etc/nginx/sites-available/gitlab \
+cat ~/git/deploy/usr/local/etc/nginx/sites-available/gitlab \
 | sed "s/0.0.0.0/${JAILIP}/" \
 | sed "s/localhost.localdomain/${FQDN}/" \
 >/usr/local/etc/nginx/sites-enabled/gitlab

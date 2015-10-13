@@ -31,7 +31,7 @@ cd /usr/home/dtfc/src
 sh scripts/install.sh
 
 nginx-config-sites-enabled
-cat /root/git/deploy/usr/local/etc/nginx/sites-available/couchdb \
+cat ~/git/deploy/usr/local/etc/nginx/sites-available/couchdb \
 | sed "s/localhost.my.domain/${FQDN}/" \
 >/usr/local/etc/nginx/sites-enabled/couchdbdtfc
 

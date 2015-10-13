@@ -15,7 +15,7 @@ if [ ! -e /usr/local/etc/rc.d/couchdb ]; then
 fi
 
 nginx-config-sites-enabled
-cat /root/git/deploy/usr/local/etc/nginx/sites-available/couchdb \
+cat ~/git/deploy/usr/local/etc/nginx/sites-available/couchdb \
 | sed "s/localhost.my.domain/${FQDN}/" \
 >/usr/local/etc/nginx/sites-enabled/couchdb
 
