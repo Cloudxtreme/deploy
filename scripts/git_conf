@@ -2,11 +2,6 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=151010-013530
-
 PROJECTS="
     apache-config-freebsd       ${REPOSRC}johnko/apache-config-freebsd.git
     btfc                        ${REPOSRC}johnko/btfc.git
@@ -64,6 +59,7 @@ PROJECTS="
     vmrc                        ${REPOSRC}johnko/vmrc.git
     windows-setup               ${REPOSRC}johnko/windows-setup.git
     wtfc                        ${REPOSRC}johnko/wtfc.git
+    zfs-tools                   ${REPOSRC}johnko/zfs-tools.git
     zsnapple                    ${REPOSRC}johnko/zsnapple.git
     gitlab-ce                   ${GITLABSRC}gitlab-org/gitlab-ce.git
 "
