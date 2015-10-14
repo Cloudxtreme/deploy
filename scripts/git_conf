@@ -43,6 +43,7 @@ PROJECTS="
     mixxx-novation-launchpad    ${REPOSRC}johnko/mixxx-novation-launchpad.git
     mount_iso                   ${REPOSRC}johnko/mount_iso.git
     netconn                     ${REPOSRC}johnko/netconn.git
+    newsyslog.conf.d            ${REPOSRC}johnko/newsyslog.conf.d.git
     nginx-config-sites-enabled  ${REPOSRC}johnko/nginx-config-sites-enabled.git
     Pico                        ${REPOSRC}johnko/Pico.git
     psnap                       ${REPOSRC}johnko/psnap.git
