@@ -19,7 +19,7 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 ```
 fres
 rm /var/ports/packages/All/squid-*.txz
-fzg -r mirror -d ada0 -d ada1 -d ada2 -z 2g -m -n -D -H `hostname-by-ptr-dns`
+fzg -r mirror -d ada0 -d ada1 -d ada2 -z 2g -n -H `hostname-by-ptr-dns`
 copy-network-conf-to-mnt
 reboot
 ```
@@ -28,8 +28,8 @@ reboot
 
 ```
 fzg-random-key
-fzg -i -D
-fres ; fres -b
+fzg -i
+fres
 ```
 
 ### pfsense on bhyve

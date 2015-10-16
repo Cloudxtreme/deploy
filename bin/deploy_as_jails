@@ -45,7 +45,7 @@ if [ "x" == "x${HOSTNIC}" ]; then
 fi
 
 if ! zfs list tank >/dev/null ; then
-    fzg -i -D
+    fzg -i
 fi
 
 if ! zfs list tank/ezjail >/dev/null ; then
