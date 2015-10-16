@@ -134,7 +134,7 @@ env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone home
 cat perm/cshpkglist | sed 's/^# //' > local/cshpkglist
 fres
 cat perm/cshpkglist | sed 's/^# //' | sed 's/^## //' > local/cshpkglist
-fres ; fres -b
+fres
 deploy minidlna
 ```
 
@@ -148,8 +148,7 @@ Put files in /tank/data/...
 env SQUID=192.168.255.201:3128 setproxy
 setenv FQDN virtual.local
 env REPOSRC=https://${FQDN}/v. fres
-env REPOSRC=https://${FQDN}/v. fres -b
-fzg -d ada0 -d ada2 -z 2g -m -n -D -H `hostname-by-ptr-dns`
+fzg -d ada0 -d ada2 -z 2g -n -H `hostname-by-ptr-dns`
 copy-network-conf-to-mnt
 reboot
 ```
@@ -158,10 +157,9 @@ reboot
 
 ```
 fzg-random-key
-fzg -i -D
+fzg -i
 setenv FQDN virtual.local
 env REPOSRC=https://${FQDN}/v. fres
-env REPOSRC=https://${FQDN}/v. fres -b
 ```
 
 ### EZJails
