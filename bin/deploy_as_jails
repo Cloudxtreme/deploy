@@ -119,7 +119,8 @@ EOF
         #echo "debug ${name} ${ipalias} ${pubport} ${realport}"
         if [ "x0" != "x${ipalias}" ] && [ "x" != "x${ipalias}" ] \
         && [ "x" != "x${name}" ] && [ "x" != "x${pubport}" ] \
-        && [ "x" != "x${realport}" ] && [ "x" != "x${doucarp}" ]; then
+        && [ "x" != "x${realport}" ] && [ "x" != "x${doucarp}" ] \
+        && [ "x" != "x`jailip ${name}`" ]; then
             if  ! cat /etc/pf/jails.anchor | grep "rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${HOSTIP} port = ${pubport} " >/dev/null ; then
                 cat >>/etc/pf/jails.anchor <<EOF
 rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${HOSTIP} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
