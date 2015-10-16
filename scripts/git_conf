@@ -35,6 +35,7 @@ freebsd-system-info         ${REPOSRC}johnko/freebsd-system-info.git
 github-backup               ${REPOSRC}johnko/github-backup.git
                 gtfc                        ${REPOSRC}johnko/gtfc.git
 hddid                       ${REPOSRC}johnko/hddid.git
+iocage-tools                ${REPOSRC}johnko/iocage-tools.git
         kanso-chat                  ${REPOSRC}johnko/kanso-chat.git
         kanso-example               ${REPOSRC}johnko/kanso-example.git
         kanso-focus                 ${REPOSRC}johnko/kanso-focus.git
