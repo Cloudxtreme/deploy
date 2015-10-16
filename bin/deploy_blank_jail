@@ -36,11 +36,15 @@ if [ "x" == "x${GITLABSRC}" ]; then
 fi
 
 if ! zfs list tank >/dev/null ; then
-    fzg -i -D
+    fzg -i
 fi
 
 if ! zfs list tank/ezjail >/dev/null ; then
     eza install -h file:///boot/../10.1-RELEASE
+    if ! zfs list tank/ezjail >/dev/null ; then
+        echo "ERROR: tank/ezjail doesn't exist, something went wrong"
+        exit 1
+    fi
     eza-update
 fi
 
