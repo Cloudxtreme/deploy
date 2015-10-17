@@ -131,9 +131,9 @@ env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone home
 ### miniDLNA
 
 ```
-cat perm/cshpkglist | sed 's/^# //' > local/cshpkglist
+cat perm/pkglist | sed 's/^# //' > local/pkglist
 fres
-cat perm/cshpkglist | sed 's/^# //' | sed 's/^## //' > local/cshpkglist
+cat perm/pkglist | sed 's/^# //' | sed 's/^## //' > local/pkglist
 fres
 deploy minidlna
 ```
