@@ -18,6 +18,7 @@ if [ ! -e /usr/local/www/baikal/Specific ]; then
 fi
 
 nginx-config-sites-enabled
+nginx-openssl-generate
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/baikal \
 | sed "s/localhost.my.domain/${FQDN}/" \
 >/usr/local/etc/nginx/sites-enabled/baikal

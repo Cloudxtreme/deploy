@@ -31,6 +31,7 @@ cd /usr/home/dtfc/src
 sh scripts/install.sh
 
 nginx-config-sites-enabled
+nginx-openssl-generate
 cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/dtfc
 
 if [ ! -d /usr/home/dtfc/config ]; then

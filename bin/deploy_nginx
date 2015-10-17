@@ -10,6 +10,7 @@ if [ ! -e /usr/local/etc/nginx/nginx.conf-dist ]; then
 fi
 
 nginx-config-sites-enabled
+nginx-openssl-generate
 
 sysrc nginx_enable="YES"
 

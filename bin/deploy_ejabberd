@@ -30,6 +30,7 @@ if [ ! -f /usr/local/etc/ejabberd/ejabberd.yml ]; then
     if [ -f /usr/local/etc/ejabberd/ejabberd.yml.example ]; then
 
         nginx-config-sites-enabled
+        nginx-openssl-generate
         SSLPEM=/usr/local/etc/ejabberd/ssl.pem
         touch ${SSLPEM}
         chown ejabberd ${SSLPEM}
