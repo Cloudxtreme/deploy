@@ -2,9 +2,18 @@
 
 # READY
 
-LAMEPKG=/var/ports/packages/All/lame-3.99.5_2.txz
-LIBAACPLUSPKG=/var/ports/packages/All/libaacplus-2.0.2_8.txz
-FFMPEGPKG=/var/ports/packages/All/ffmpeg-2.8_1,1.txz
+if [ "x" == "x${LAMEPKG}" ]; then
+    echo "ERROR: LAMEPKG not defined."
+    exit 1
+fi
+if [ "x" == "x${LIBAACPLUSPKG}" ]; then
+    echo "ERROR: LIBAACPLUSPKG not defined."
+    exit 1
+fi
+if [ "x" == "x${FFMPEGPKG}" ]; then
+    echo "ERROR: FFMPEGPKG not defined."
+    exit 1
+fi
 
 export BATCH=yes
 
