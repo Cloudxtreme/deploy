@@ -146,7 +146,7 @@ echo "$JAILNAMES" \
             echo "Creating: ${num} ${name}"
             eza create ${name}        "${NIC}|${IPNET}${num}"
             env SQUID=${SQUID} REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
-            # this extra fres for cshpkglist
+            # this extra fres for pkglist
             eza console -f -e "env REPOSRC=${REPOSRC} fres" ${name}
             eza stop ${name}
             zfs snap tank/ezjail/${name}@created
