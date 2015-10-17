@@ -2,7 +2,10 @@
 
 # READY
 
-SQUIDPKG=/var/ports/packages/All/squid-3.5.10.txz
+if [ "x" == "x${SQUIDPKG}" ]; then
+    echo "ERROR: SQUIDPKG not defined."
+    exit 1
+fi
 
 export BATCH=yes
 
