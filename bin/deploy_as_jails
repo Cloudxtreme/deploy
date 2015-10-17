@@ -37,15 +37,11 @@ if [ "x" == "x${IPNET}" ]; then
 fi
 
 if [ "x" == "x${HOSTIP}" ]; then
-    HOSTIP=`ifconfig | grep -v 0xffffffff | grep -v 127.0.0.1 | egrep -o 'inet *([0-9]{1,3}\.){1,3}[0-9]{1,3}' | awk '{print $2}'`
+    HOSTIP="$( net-ip )"
 fi
 
 if [ "x" == "x${HOSTNIC}" ]; then
-    HOSTNIC=`netstat -nr | grep default | awk '{print $NF}'`
-fi
-
-if ! zfs list tank >/dev/null ; then
-    fzg -i
+    HOSTNIC="$( net-nic )"
 fi
 
 if ! zfs list tank/ezjail >/dev/null ; then
@@ -57,7 +53,7 @@ if ! zfs list tank/ezjail >/dev/null ; then
     eza-update
 fi
 
-if [ "x" == "x${STARTCOUNT}" ]; then
+if [ "x" != "x${STARTCOUNT}" ]; then
     # remove anything that's not a digit
     count=`echo ${STARTCOUNT} | sed 's/[^[:digit:]]//g'`
 fi
@@ -69,103 +65,6 @@ fi
 . ~/bin/deploy_as_conf
 
 
-
-setuppf() {
-    local name
-    cat >/etc/pf/jails.anchor <<EOF
-    nat pass on ${HOSTNIC} inet from ${IPNET}0/24 to any -> ${HOSTIP}
-EOF
-    if [ "x" == "x${SQUIDIPALIAS}" ]; then
-        SQUIDIPALIAS=0
-    fi
-    if [ "x" == "x${WEBIPALIAS}" ]; then
-        WEBIPALIAS=0
-    fi
-    if [ "x" == "x${POSTFIXIPALIAS}" ]; then
-        POSTFIXIPALIAS=0
-    fi
-    if [ "x" == "x${DOVECOTIPALIAS}" ]; then
-        DOVECOTIPALIAS=0
-    fi
-    if [ "x" == "x${XMPPIPALIAS}" ]; then
-        XMPPIPALIAS=0
-    fi
-    if [ "x" == "x${MURMURIPALIAS}" ]; then
-        MURMURIPALIAS=0
-    fi
-    if [ "x" == "x${MONITIPALIAS}" ]; then
-        MONITIPALIAS=0
-    fi
-    if [ "x" == "x${ZABBIXIPALIAS}" ]; then
-        ZABBIXIPALIAS=0
-    fi
-    # name alias pubport realport ucarp
-    ALIASES="
-    squid     ${SQUIDIPALIAS}     3127    3127  u
-    squid     ${SQUIDIPALIAS}     3128    3128  .
-    nginx     ${WEBIPALIAS}         80      80  u
-    nginx     ${WEBIPALIAS}        443     443  .
-    klaus     ${WEBIPALIAS}         23      23  .
-    postfix   ${POSTFIXIPALIAS}    587     587  u
-    dovecot   ${DOVECOTIPALIAS}    993     993  u
-    ejabberd  ${XMPPIPALIAS}      5222    5222  u
-    murmur    ${MURMURIPALIAS}   64738   64738  u
-    monit     ${MONITIPALIAS}     2812    2812  u
-    zabbix    ${ZABBIXIPALIAS}   10050   10050  u
-    zabbix    ${ZABBIXIPALIAS}   10051   10051  .
-"
-    echo "$ALIASES" \
-    | while read name ipalias pubport realport doucarp ; do
-        #echo "debug ${name} ${ipalias} ${pubport} ${realport}"
-        if [ "x0" != "x${ipalias}" ] && [ "x" != "x${ipalias}" ] \
-        && [ "x" != "x${name}" ] && [ "x" != "x${pubport}" ] \
-        && [ "x" != "x${realport}" ] && [ "x" != "x${doucarp}" ] \
-        && [ "x" != "x`jailip ${name}`" ]; then
-            if  ! cat /etc/pf/jails.anchor | grep "rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${HOSTIP} port = ${pubport} " >/dev/null ; then
-                cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${HOSTIP} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
-EOF
-            fi
-            if  ! cat /etc/pf/jails.anchor | grep "rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${ipalias} port = ${pubport} " >/dev/null ; then
-                cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${ipalias} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
-EOF
-            fi
-            if [ "xu" == "x${doucarp}" ]; then
-                if [ ! -e /usr/local/etc/rc.d/ucarp${name} ]; then
-                    cat /usr/local/etc/rc.d/ucarp \
-                    | sed "s;ucarp;ucarp${name};g" >/usr/local/etc/rc.d/ucarp${name}
-                    chmod 755 /usr/local/etc/rc.d/ucarp${name}
-                fi
-                if [ ! -e /usr/local/sbin/ucarp${name} ]; then
-                    ln /usr/local/sbin/ucarp /usr/local/sbin/ucarp${name}
-                fi
-                if [ ! -e /etc/rc.conf.d/ucarp${name} ]; then
-                    cat >/etc/rc.conf.d/ucarp${name}.tmp <<EOF
-ucarp_enable="YES"
-ucarp_addr="${ipalias}"
-ucarp_if="${HOSTNIC}"
-ucarp_src="${HOSTIP}"
-ucarp_upscript="/usr/local/sbin/ucarp-up"
-ucarp_downscript="/usr/local/sbin/ucarp-down"
-ucarp_pass="${name}"
-# ucarp_passfile="/usr/local/etc/ucarp${name}password"
-# primary   ucarp_preempt="YES"
-# primary   ucarp_advskew="100"
-# secondary ucarp_advskew="200"
-EOF
-                    sed "s/ucarp_/ucarp${name}_/g" /etc/rc.conf.d/ucarp${name}.tmp >/etc/rc.conf.d/ucarp${name}
-                    rm /etc/rc.conf.d/ucarp${name}.tmp
-                fi
-                service ucarp${name} onestatus >/dev/null 2>/dev/null || service ucarp${name} start
-            fi
-        fi
-        #echo "debug after if name ${name}"
-    done
-    gdf
-    pf-anchor clear jails
-    pf-anchor load jails
-}
 
 jailip() {
     local name
@@ -207,7 +106,7 @@ case ${1} in
         JAILNAMES="${DEV}"
         ;;
     nginx)
-        setuppf
+        env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" deploy_pfjails_ucarp
         setupnginxconfig nginx ${FQDN}
         exit
         ;;
@@ -238,7 +137,7 @@ copysslselfcert() {
 
 
 
-setuppf
+env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" deploy_pfjails_ucarp
 
 echo "$JAILNAMES" \
     | while read num name ; do
