@@ -12,11 +12,6 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
-if [ "x" == "x${SQUID}" ]; then
-    echo "Please set or export variable SQUID to a LAN IP. Default is 10.7.7.1:3128"
-    exit 1
-fi
-
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
 fi
@@ -144,7 +139,7 @@ echo "$JAILNAMES" \
         if [ ! -e /usr/jails/${name} ]; then
             echo "Creating: ${num} ${name}"
             eza create ${name}        "${NIC}|${IPNET}${num}"
-            env SQUID=${SQUID} REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
+            env HTTP_PROXY=${HTTP_PROXY} REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
             # this extra fres for pkglist
             eza console -f -e "env REPOSRC=${REPOSRC} fres" ${name}
             eza stop ${name}
@@ -224,7 +219,7 @@ EOF
                         echo "${IPNET}`jailip gitlab` ${FQDN}" >>/usr/jails/${name}/etc/hosts
                         rm  /usr/jails/${name}/etc/hosts.tmp
                     fi
-                    eza console -f -e "env FQDN=${FQDN} HTTP_PROXY=http://${SQUID} deploy ${name}_src" ${name}
+                    eza console -f -e "env FQDN=${FQDN} HTTP_PROXY=${HTTP_PROXY} deploy ${name}_src" ${name}
                     ;;
                 builder)
                     if [ -e /var/ports ]; then
