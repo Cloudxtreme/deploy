@@ -7,7 +7,7 @@
 ######################################################################
 SCRIPTVERSION=150724-233035
 
-# Usage: env SQUID=10.7.7.1:3128 $0 name "lo1|10.7.7.253"
+# Usage: env HTTP_PROXY=http://10.7.7.1:3128 $0 name "lo1|10.7.7.253"
 
 name="$1"
 nicip="$2"
@@ -58,9 +58,7 @@ if [ ! -e /usr/jails/${name} ]; then
     echo "Creating: ${name}  ${nicip}"
     eza create      ${name} "${nicip}"
     if [ "x" != "x${HTTP_PROXY}" ]; then
-        SQUID=`echo ${HTTP_PROXY} | sed 's;http://;;'`
-        echo SQUID=${SQUID}
-        env SQUID=${SQUID} REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
+        env HTTP_PROXY=${HTTP_PROXY} REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
     else
         env REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
     fi
