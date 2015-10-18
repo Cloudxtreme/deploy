@@ -24,12 +24,22 @@ copy-network-conf-to-mnt
 reboot
 ```
 
+### First run
+
+```
+pg pkg || fres
+cp ~/perm/cshvars ~/local/cshvars
+vi local/cshvars
+source local/cshvars
+setproxy
+```
+
 ### Create zpool tank
 
 ```
 fzg-random-key
-fzg -i
-fres
+fzg -i -d ada0 -d ada1 -d ada2 -z 925 -p tank
+fzg-unlock-on-boot
 ```
 
 ### pfsense on bhyve
@@ -47,10 +57,6 @@ Install the packages:
 Pulls from github.com and gitlab.com.
 
 ```
-pg pkg || fres
-cp ~/perm/cshvars ~/local/cshvars
-vi local/cshvars
-source local/cshvars
 sh ~/perm/deploy.a.good
 
 ## Optional
@@ -156,13 +162,23 @@ copy-network-conf-to-mnt
 reboot
 ```
 
+### First run
+
+```
+setenv FQDN virtual.local
+pg pkg || env REPOSRC=https://${FQDN}/v. fres
+cp ~/perm/cshvars ~/local/cshvars
+vi local/cshvars
+source local/cshvars
+setproxy
+```
+
 ### Create zpool tank
 
 ```
 fzg-random-key
-fzg -i
-setenv FQDN virtual.local
-env REPOSRC=https://${FQDN}/v. fres
+fzg -i -d ada0 -d ada1 -d ada2 -z 925 -p tank
+fzg-unlock-on-boot
 ```
 
 ### EZJails
@@ -170,11 +186,6 @@ env REPOSRC=https://${FQDN}/v. fres
 Pulls from alpha.local. Fast for local network.
 
 ```
-cp ~/perm/cshvars ~/local/cshvars
-vi local/cshvars
-source local/cshvars
-setproxy
-pg pkg || env REPOSRC=https://${FQDN}/v. fres
 rsync -viaP --exclude work alpha:/var/ports/ /var/ports/
 sh ~/perm/deploy.a.good
 
