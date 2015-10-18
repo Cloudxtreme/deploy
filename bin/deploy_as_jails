@@ -69,8 +69,7 @@ fi
 jailip() {
     local name
     local num
-    # omit ${BAD}
-    JAILDATASET="${GOOD} ${DEV} ${BAD}"
+    JAILDATASET="${JAILSGOOD} ${JAILSDEV} ${JAILSBAD}"
     echo "$JAILDATASET" \
         | while read num name ; do
             if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
@@ -97,13 +96,13 @@ setupnginxconfig() {
 
 case ${1} in
     good)
-        JAILNAMES="${GOOD}"
+        JAILNAMES="${JAILSGOOD}"
         ;;
     bad)
-        JAILNAMES="${BAD}"
+        JAILNAMES="${JAILSBAD}"
         ;;
     dev)
-        JAILNAMES="${DEV}"
+        JAILNAMES="${JAILSDEV}"
         ;;
     nginx)
         env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" deploy_pfjails_ucarp

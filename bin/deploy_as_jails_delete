@@ -9,7 +9,7 @@ fi
 
 . ~/bin/deploy_as_conf
 
-JAILNAMES="${GOOD} ${BAD} ${DEV}"
+JAILNAMES="${JAILSGOOD} ${JAILSBAD} ${JAILSDEV}"
 
 eza stop
 

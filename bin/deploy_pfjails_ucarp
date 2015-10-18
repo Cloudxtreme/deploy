@@ -19,6 +19,15 @@ if [ "x" == "x${HOSTNIC}" ]; then
     HOSTNIC="$( net-nic )"
 fi
 
+if [ "x" != "x${STARTCOUNT}" ]; then
+    # remove anything that's not a digit
+    count=`echo ${STARTCOUNT} | sed 's/[^[:digit:]]//g'`
+fi
+
+if [ "x" == "x${count}" ]; then
+    count=0
+fi
+
 . ~/bin/deploy_as_conf
 
 setuppf() {
@@ -120,8 +129,7 @@ EOF
 jailip() {
     local name
     local num
-    # omit ${BAD}
-    JAILDATASET="${GOOD} ${DEV} ${BAD}"
+    JAILDATASET="${JAILSGOOD} ${JAILSDEV} ${JAILSBAD}"
     echo "$JAILDATASET" \
         | while read num name ; do
             if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then

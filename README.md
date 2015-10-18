@@ -44,14 +44,14 @@ Install the packages:
 
 ### EZJails
 
-Pulls from github.com and gitlab.com. May be slow.
+Pulls from github.com and gitlab.com.
 
 ```
 pg pkg || fres
-setenv FQDN virtual.local
-cat ~/perm/deploy.a.good | sed "s;virtual.local;${FQDN};g" > ~/local/deploy.${FQDN}.good
-cat ~/local/deploy.${FQDN}.good | sed 's;good;nginx;g' > ~/local/deploy.${FQDN}.nginx
-sh ~/local/deploy.${FQDN}.good
+cp ~/perm/cshvars ~/local/cshvars
+vi local/cshvars
+source local/cshvars
+sh ~/perm/deploy.a.good
 
 ## Optional
 # vi /etc/rc.conf.d/ucarp*
@@ -110,22 +110,25 @@ Then login to https://virtual.local/owncloud/index.php/apps/rainloop/app/?admin 
 
 Then https://virtual.local/owncloud/index.php/settings/admin and set the outgoing Email Server.
 
-### GitLab
+### Klaus
 
-You may want to visit https://virtual.local/admin/application_settings and turn off:
+You may want to visit https://virtual.local/git/ :
 
-- Sign Up
-- Gravatar
-- Twitter
+You should add your ssh public key to `/usr/local/git/.ssh/authorized_keys2`
 
-Visit https://virtual.local/profile/account and get your `Private token`
-
-Then start importing:
+And create bare repos in the jail:
 
 ```
-env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone
-env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone create
-env TOKEN=... FQDN=virtual.local sh git/deploy/scripts/git_clone home
+mkdir -p /usr/local/git/repos/repo_name
+cd /usr/local/git/repos/repo_name
+git init --bare
+```
+
+Then on a remote client you can set the git remotes to:
+
+```
+git remote add home ssh://git@virtual.local:23/usr/local/git/repos/repo_name
+git push home master
 ```
 
 ### miniDLNA
@@ -167,13 +170,13 @@ env REPOSRC=https://${FQDN}/v. fres
 Pulls from alpha.local. Fast for local network.
 
 ```
-env SQUID=192.168.255.201:3128 setproxy
-setenv FQDN virtual.local
+cp ~/perm/cshvars ~/local/cshvars
+vi local/cshvars
+source local/cshvars
+setproxy
 pg pkg || env REPOSRC=https://${FQDN}/v. fres
 rsync -viaP --exclude work alpha:/var/ports/ /var/ports/
-cat ~/perm/deploy.s.good | sed "s;virtual.local;${FQDN};g" > ~/local/deploy.${FQDN}.good
-cat ~/local/deploy.${FQDN}.good | sed 's;good;nginx;g' > ~/local/deploy.${FQDN}.nginx
-sh ~/local/deploy.${FQDN}.good
+sh ~/perm/deploy.a.good
 
 ## Optional
 # vi /etc/rc.conf.d/ucarp*
@@ -190,11 +193,10 @@ If running multiple PostgreSQL jails, they each need to have different UIDs in o
 
 The files that should be edited are:
 
-- deploy/bin/deploy_squid
+- skel/perm/cshvars
 - rad/bin/rad_files_conf
 
 ## Updating ffmpeg
 
-- deploy/bin/deploy_ffmpeg
-- skel/fres
+- skel/perm/cshvars
 - rad/bin/rad_files_conf
