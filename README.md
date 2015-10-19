@@ -38,7 +38,7 @@ setproxy
 
 ```
 fzg-random-key
-fzg -i -d ada0 -d ada1 -d ada2 -z 925 -p tank
+fzg -i -z 925 -p tank -d ada0 -d ada1 -d ada2
 fzg-unlock-on-boot
 ```
 
@@ -177,7 +177,7 @@ setproxy
 
 ```
 fzg-random-key
-fzg -i -d ada0 -d ada1 -d ada2 -z 925 -p tank
+fzg -i -z 925 -p tank -d ada0 -d ada1 -d ada2
 fzg-unlock-on-boot
 ```
 
