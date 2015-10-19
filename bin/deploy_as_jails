@@ -39,13 +39,20 @@ if [ "x" == "x${HOSTNIC}" ]; then
     HOSTNIC="$( net-nic )"
 fi
 
-if ! zfs list tank/ezjail >/dev/null ; then
-    eza install -h file:///boot/../10.1-RELEASE
-    if ! zfs list tank/ezjail >/dev/null ; then
-        echo "ERROR: tank/ezjail doesn't exist, something went wrong"
+if ! iocage list -r | grep 'RELEASE' >/dev/null 2>/dev/null ; then
+    ioc-setup
+    if ! iocage list -r | grep 'RELEASE' >/dev/null 2>/dev/null ; then
+        echo "ERROR: iocage release doesn't exist, something went wrong."
         exit 1
     fi
-    eza-update
+fi
+
+if ! iocage list -t | grep 'common' >/dev/null 2>/dev/null ; then
+    ioc-newtemplate common 'lo1|10.7.7.100/32'
+    if ! iocage list -t | grep 'common' >/dev/null 2>/dev/null ; then
+        echo "ERROR: iocage common template doesn't exist, something went wrong."
+        exit 1
+    fi
 fi
 
 if [ "x" != "x${STARTCOUNT}" ]; then
@@ -56,8 +63,6 @@ fi
 if [ "x" == "x${count}" ]; then
     count=0
 fi
-
-. ~/bin/deploy_as_conf
 
 
 
@@ -85,8 +90,8 @@ setupnginxconfig() {
     cat ~/git/deploy/usr/local/etc/nginx/sites-available/nginx-all \
         | sed "s/0.0.0.0/${NGINXJAILIP}/" \
         | sed "s/localhost.localdomain/${FQDN}/" \
-        >/usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name}
-    chmod 644 /usr/jails/${name}/usr/local/etc/nginx/sites-enabled/${name}
+        >$( ioc-pathof ${name} )/usr/local/etc/nginx/sites-enabled/${name}
+    chmod 644 $( ioc-pathof ${name} )/usr/local/etc/nginx/sites-enabled/${name}
 }
 
 case ${1} in
@@ -119,13 +124,13 @@ allowsysvipc() {
 copysslselfcert() {
     if [ "x" != "x${SQUIDIPALIAS}" ]; then
         if ifconfig | grep ${SQUIDIPALIAS} >/dev/null ; then
-            cat /usr/jails/squid/usr/local/etc/squid/public.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
+            cat $( ioc-pathof squid )/usr/local/etc/squid/public.pem >>$( ioc-pathof ${1} )/usr/local/share/certs/ca-root-nss.crt
         else
-            curl --output /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem http://${SQUIDIPALIAS}:3127/public.pem
-            cat           /usr/jails/${1}/root/public-${SQUIDIPALIAS}.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
+            curl --output $( ioc-pathof ${1} )/root/public-${SQUIDIPALIAS}.pem http://${SQUIDIPALIAS}:3127/public.pem
+            cat           $( ioc-pathof ${1} )/root/public-${SQUIDIPALIAS}.pem >>$( ioc-pathof ${1} )/usr/local/share/certs/ca-root-nss.crt
         fi
     else
-        cat /usr/jails/squid/usr/local/etc/squid/public.pem >>/usr/jails/${1}/usr/local/share/certs/ca-root-nss.crt
+        cat $( ioc-pathof squid )/usr/local/etc/squid/public.pem >>$( ioc-pathof ${1} )/usr/local/share/certs/ca-root-nss.crt
     fi
 }
 
@@ -136,14 +141,9 @@ env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" deploy_pfjails_ucar
 echo "$JAILNAMES" \
     | while read num name ; do
     if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
-        if [ ! -e /usr/jails/${name} ]; then
+        if ! iocage list | grep "${JAILNAME}$" >/dev/null 2>/dev/null; then
             echo "Creating: ${num} ${name}"
-            eza create ${name}        "${NIC}|${IPNET}${num}"
-            env HTTP_PROXY=${HTTP_PROXY} REPOSRC=${REPOSRC} eza-unlink-basejail ${name}
-            # this extra fres for pkglist
-            eza console -f -e "env REPOSRC=${REPOSRC} fres" ${name}
-            eza stop ${name}
-            zfs snap tank/ezjail/${name}@created
+            ioc-newjail common ${name} "${NIC}|${IPNET}${num}"
             # The following case can be in any order
             case ${name} in
                 # GOOD JAILNAMES
@@ -158,10 +158,10 @@ echo "$JAILNAMES" \
 #add path pf unhide mode 0640 group 100
 #EOF
                     if [ -e /var/ports ]; then
-                        rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
+                        rsync -viaP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
                     eza console -f -e "deploy ${name}" ${name}
-                    rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
+                    rsync -viaP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
                     # easydns-client here to reduce risk of lost/rollbacked config
                     eza console -f -e "deploy easydnsclient" ${name}
                     eza console -f -e sh ${name} <<EOF
@@ -187,12 +187,12 @@ EOF
                     ;;
                 owncloud)
                     if [         -d /root/local/owncloud ]; then
-                        mkdir -p                          /usr/jails/${name}/root/local/owncloud
-                        rsync -qalP /root/local/owncloud/ /usr/jails/${name}/root/local/owncloud/
+                        mkdir -p                          $( ioc-pathof ${name} )/root/local/owncloud
+                        rsync -qalP /root/local/owncloud/ $( ioc-pathof ${name} )/root/local/owncloud/
                     fi
                     allowsysvipc ${name}
                     eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
-                    rsync -qalP /usr/jails/${name}/root/local/owncloud/ /root/local/owncloud/
+                    rsync -qalP $( ioc-pathof ${name} )/root/local/owncloud/ /root/local/owncloud/
                     ;;
                 ejabberd)
                     eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
@@ -208,31 +208,31 @@ EOF
                     ;;
                 gitlab)
                     if [ -e /var/ports ]; then
-                        rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
+                        rsync -viaP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
                     allowsysvipc ${name}
                     copysslselfcert ${name}
                     if ifconfig | grep ${WEBIPALIAS} >/dev/null ; then
                         # Set jailip nginx as FQDN
-                        grep -v " ${FQDN}" /usr/jails/${name}/etc/hosts >/usr/jails/${name}/etc/hosts.tmp
-                        cat /usr/jails/${name}/etc/hosts.tmp >/usr/jails/${name}/etc/hosts
-                        echo "${IPNET}`jailip gitlab` ${FQDN}" >>/usr/jails/${name}/etc/hosts
-                        rm  /usr/jails/${name}/etc/hosts.tmp
+                        grep -v " ${FQDN}" $( ioc-pathof ${name} )/etc/hosts >$( ioc-pathof ${name} )/etc/hosts.tmp
+                        cat $( ioc-pathof ${name} )/etc/hosts.tmp >$( ioc-pathof ${name} )/etc/hosts
+                        echo "${IPNET}`jailip gitlab` ${FQDN}" >>$( ioc-pathof ${name} )/etc/hosts
+                        rm  $( ioc-pathof ${name} )/etc/hosts.tmp
                     fi
                     eza console -f -e "env FQDN=${FQDN} HTTP_PROXY=${HTTP_PROXY} deploy ${name}_src" ${name}
                     ;;
                 builder)
                     if [ -e /var/ports ]; then
-                        rsync -viaP --exclude work /var/ports/ /usr/jails/${name}/var/ports/
+                        rsync -viaP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
                     eza console -f -e "psnap" ${name}
                     zfs snap tank/ezjail/${name}@psnap
                     eza console -f -e "deploy ffmpeg" ${name}
-                    rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
+                    rsync -viaP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
 #                    eza stop ${name}
 #                    zfs rollback tank/ezjail/${name}@psnap
 #                    eza console -f -e "deploy gitlab_ports" ${name}
-#                    rsync -viaP --exclude work /usr/jails/${name}/var/ports/ /var/ports/
+#                    rsync -viaP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
                     ;;
                 # DEV JAILNAMES
                 monit)
