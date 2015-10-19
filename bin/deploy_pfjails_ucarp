@@ -28,8 +28,6 @@ if [ "x" == "x${count}" ]; then
     count=0
 fi
 
-. ~/bin/deploy_as_conf
-
 setuppf() {
     local name
     cat >/etc/pf/jails.anchor <<EOF

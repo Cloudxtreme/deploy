@@ -17,6 +17,9 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 ### Install
 
 ```
+## Optional
+# env SQUID=192.168.255.201:3128 setproxy
+
 fres
 rm /var/ports/packages/All/squid-*.txz
 fzg -r mirror -d ada0 -d ada1 -d ada2 -z 2g -n -H `hostname-by-ptr-dns`
@@ -27,11 +30,13 @@ reboot
 ### First run
 
 ```
+## Optional
+# env SQUID=192.168.255.201:3128 setproxy
+
 pg pkg || fres
 cp ~/perm/cshvars ~/local/cshvars
 vi local/cshvars
 source local/cshvars
-setproxy
 ```
 
 ### Create zpool tank
@@ -165,12 +170,12 @@ reboot
 ### First run
 
 ```
+env SQUID=192.168.255.201:3128 setproxy
 setenv FQDN virtual.local
 pg pkg || env REPOSRC=https://${FQDN}/v. fres
 cp ~/perm/cshvars ~/local/cshvars
 vi local/cshvars
 source local/cshvars
-setproxy
 ```
 
 ### Create zpool tank

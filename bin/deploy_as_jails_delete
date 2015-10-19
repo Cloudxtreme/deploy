@@ -7,23 +7,13 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     exit 1
 fi
 
-. ~/bin/deploy_as_conf
-
 JAILNAMES="${JAILSGOOD} ${JAILSBAD} ${JAILSDEV}"
-
-eza stop
 
 echo "$JAILNAMES" \
 | while read num name ; do
     if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
         if [ "xsquid" != "x${name}" ]; then
-            if zfs list -H tank/ezjail/${name} 2>/dev/null ; then
-                eza delete ${name}
-                zfs destroy -fr tank/ezjail/${name}
-            fi
-            if [ -d /usr/jails/${name} ]; then
-                rmdir /usr/jails/${name}
-            fi
+            iocage destroy -f ${name}
         fi
     fi
 done
