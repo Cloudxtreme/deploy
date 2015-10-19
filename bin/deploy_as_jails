@@ -105,7 +105,7 @@ case ${1} in
         JAILNAMES="${JAILSDEV}"
         ;;
     nginx)
-        env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" deploy_pfjails_ucarp
+        env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" setup_pfjails_ucarp
         setupnginxconfig nginx ${FQDN}
         exit
         ;;
@@ -136,7 +136,7 @@ copysslselfcert() {
 
 
 
-env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" deploy_pfjails_ucarp
+env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" setup_pfjails_ucarp
 
 echo "$JAILNAMES" \
     | while read num name ; do
