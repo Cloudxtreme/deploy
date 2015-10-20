@@ -156,11 +156,11 @@ echo "$JAILNAMES" \
 #add path pf unhide mode 0640 group 100
 #EOF
                     if [ -e /var/ports ]; then
-                        rsync -viaP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
+                        rsync -qalmP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
                     iocage start ${name}
-                    rsync -viaP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
+                    rsync -qalmP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
                     ;;
                 easydnsclient)
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
@@ -190,13 +190,13 @@ echo "$JAILNAMES" \
                 owncloud)
                     if [         -d /root/local/owncloud ]; then
                         mkdir -p                          $( ioc-pathof ${name} )/root/local/owncloud
-                        rsync -qalP /root/local/owncloud/ $( ioc-pathof ${name} )/root/local/owncloud/
+                        rsync -qalmP /root/local/owncloud/ $( ioc-pathof ${name} )/root/local/owncloud/
                     fi
                     allowsysvipc ${name}
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
                     iocage start ${name}
-                    rsync -qalP $( ioc-pathof ${name} )/root/local/owncloud/ /root/local/owncloud/
+                    rsync -qalmP $( ioc-pathof ${name} )/root/local/owncloud/ /root/local/owncloud/
                     ;;
                 ejabberd)
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
@@ -218,7 +218,7 @@ echo "$JAILNAMES" \
                     ;;
                 gitlab)
                     if [ -e /var/ports ]; then
-                        rsync -viaP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
+                        rsync -qalmP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
                     allowsysvipc ${name}
                     copysslselfcert ${name}
@@ -235,11 +235,11 @@ echo "$JAILNAMES" \
                     ;;
                 builder)
                     if [ -e /var/ports ]; then
-                        rsync -viaP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
+                        rsync -qalmP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=ffmpeg
                     iocage start ${name}
-                    rsync -viaP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
+                    rsync -qalmP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
                     ;;
                 # DEV JAILNAMES
                 monit)
