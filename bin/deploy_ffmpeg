@@ -28,7 +28,7 @@ else
     mkdir -p /var/ports/packages/All
     cd /usr/ports/${PORTNAME}
     make && make install && make package \
-    && cp /var/ports/usr/ports/${PORTNAME}/work/pkg/*.txz /var/ports/packages/All/
+    && cp /var/ports/usr/ports/${PORTNAME}/work/pkg/*.txz /var/ports/packages/All/ \
     && make clean
     ## see /var/ports/packages/All/
 fi
@@ -46,7 +46,7 @@ else
     mkdir -p /var/ports/packages/All
     cd /usr/ports/${PORTNAME}
     make && make install && make package \
-    && cp /var/ports/usr/ports/${PORTNAME}/work/pkg/*.txz /var/ports/packages/All/
+    && cp /var/ports/usr/ports/${PORTNAME}/work/pkg/*.txz /var/ports/packages/All/ \
     && make clean
     ## see /var/ports/packages/All/
 fi
@@ -82,7 +82,7 @@ else
     mkdir -p /var/ports/packages/All
     cd /usr/ports/${PORTNAME}
     make && make install && make package \
-    && cp /var/ports/usr/ports/${PORTNAME}/work/pkg/*.txz /var/ports/packages/All/
+    && cp /var/ports/usr/ports/${PORTNAME}/work/pkg/*.txz /var/ports/packages/All/ \
     && make clean
     ## see /var/ports/packages/All/
 fi
