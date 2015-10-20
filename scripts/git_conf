@@ -25,7 +25,7 @@ deploy                      ${REPOSRC}johnko/deploy.git
         dwm                         ${REPOSRC}johnko/dwm.git
         dwmsd                       ${REPOSRC}johnko/dwmsd.git
     echoplexus                  ${REPOSRC}johnko/echoplexus.git
-eza                         ${REPOSRC}johnko/eza.git
+                eza                         ${REPOSRC}johnko/eza.git
 ffmpeg-tools                ${REPOSRC}johnko/ffmpeg-tools.git
 freebsd-install-script      ${REPOSRC}johnko/freebsd-install-script.git
 freebsd-pf-script           ${REPOSRC}johnko/freebsd-pf-script.git
