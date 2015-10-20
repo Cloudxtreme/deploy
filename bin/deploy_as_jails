@@ -139,7 +139,7 @@ env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" setup_pfjails_ucarp
 echo "$JAILNAMES" \
     | while read num name ; do
     if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
-        if ! iocage list | grep "${JAILNAME}$" >/dev/null 2>/dev/null; then
+        if ! iocage list | grep "${name}$" >/dev/null 2>/dev/null; then
             echo "Creating: ${num} ${name}"
             ioc-newjail common ${name} "${NIC}|${IPNET}${num}"
             # The following case can be in any order
