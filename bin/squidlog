@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if ! ioc-pathof squid >/dev/null 2>&1 ; then
+    echo "ERROR: squid not found"
+    exit 1
+fi
+
 if [ -e     $( ioc-pathof squid )/var/log/squid/access.log ]; then
     tail -f $( ioc-pathof squid )/var/log/squid/access.log ;
 fi ;
