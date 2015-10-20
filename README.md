@@ -57,7 +57,7 @@ sh -c "while [ 0 -eq 0 ] ; do deploy pfsense ; echo "Sleeping..." ; sleep 5 ; do
 Install the packages:
 - OpenVPN Client Export Utility
 
-### EZJails
+### Jails
 
 Pulls from github.com and gitlab.com.
 
@@ -68,18 +68,18 @@ sh ~/perm/deploy.a.good
 # vi /etc/rc.conf.d/ucarp*
 ```
 
-Setup a valid FQDN SSL certficate and key (in this example: `virtual.local`) in `/usr/jails/nginx/usr/local/etc/nginx/ssl/ssl{.crt,.key}`
+Setup a valid FQDN SSL certficate and key (in this example: `virtual.local`) in `$( ioc-pathof nginx )/usr/local/etc/nginx/ssl/ssl{.crt,.key}`
 
 You may need to make a bundle:
 
 ```
-cat server.crt intermediate.pem root.pem > /usr/jails/nginx/usr/local/etc/nginx/ssl/ssl.crt
+cat server.crt intermediate.pem root.pem > $( ioc-pathof nginx )/usr/local/etc/nginx/ssl/ssl.crt
 ```
 
 Then start jails:
 
 ```
-eza stop ; eza start
+service iocage start
 ```
 
 ### Dynamic DNS with EasyDNS
@@ -87,7 +87,6 @@ eza stop ; eza start
 Maybe setup scheduled dynamic easydns as user urep:
 
 ```
-eza console squid
 su -l urep
 crontabbed
 echo >crontabbed/zsnapple_bootpool_hourly
@@ -186,9 +185,9 @@ fzg -i -z 925 -p tank -r mirror -d ada0 -d ada1 -d ada2
 fzg-unlock-on-boot
 ```
 
-### EZJails
+### Jails
 
-Pulls from alpha.local. Fast for local network.
+Pulls from alpha.local.
 
 ```
 rsync -viaP --exclude work alpha:/var/ports/ /var/ports/
