@@ -48,7 +48,7 @@ if ! iocage list -r | grep 'RELEASE' >/dev/null 2>/dev/null ; then
 fi
 
 if ! iocage list -t | grep 'common' >/dev/null 2>/dev/null ; then
-    ioc-newtemplate common 'lo1|10.7.7.100/32'
+    ioc-newtemplate common 'lo1|10.7.7.253/32'
     if ! iocage list -t | grep 'common' >/dev/null 2>/dev/null ; then
         echo "ERROR: iocage common template doesn't exist, something went wrong."
         exit 1
