@@ -116,9 +116,7 @@ case ${1} in
 esac
 
 allowsysvipc() {
-    if ! grep 'allow.sysvipc=1' /usr/local/etc/ezjail/${1} >/dev/null ; then
-        echo "export jail_${1}_parameters=\"allow.sysvipc=1\"" >>/usr/local/etc/ezjail/${1}
-    fi
+    iocage set allow_sysvipc=1 ${1}
 }
 
 copysslselfcert() {
@@ -194,7 +192,7 @@ echo "$JAILNAMES" \
                         mkdir -p                          $( ioc-pathof ${name} )/root/local/owncloud
                         rsync -qalP /root/local/owncloud/ $( ioc-pathof ${name} )/root/local/owncloud/
                     fi
-                    #allowsysvipc ${name}
+                    allowsysvipc ${name}
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
                     iocage start ${name}
@@ -222,7 +220,7 @@ echo "$JAILNAMES" \
                     if [ -e /var/ports ]; then
                         rsync -viaP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
-                    #allowsysvipc ${name}
+                    allowsysvipc ${name}
                     copysslselfcert ${name}
                     if ifconfig | grep ${WEBIPALIAS} >/dev/null ; then
                         # Set jailip nginx as FQDN
@@ -286,7 +284,7 @@ echo "$JAILNAMES" \
                     iocage start ${name}
                     ;;
                 horde)
-                    #allowsysvipc ${name}
+                    allowsysvipc ${name}
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}webmail
                     iocage start ${name}
