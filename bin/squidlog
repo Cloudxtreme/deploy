@@ -1,0 +1,5 @@
+#!/bin/sh
+
+if [ -e     $( ioc-path squid )/var/log/squid/access.log ]; then
+    tail -f $( ioc-path squid )/var/log/squid/access.log ;
+fi ;
