@@ -160,57 +160,69 @@ echo "$JAILNAMES" \
                     if [ -e /var/ports ]; then
                         rsync -viaP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
-                    eza console -f -e "deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     rsync -viaP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
-                    # easydns-client here to reduce risk of lost/rollbacked config
-                    eza console -f -e "deploy easydnsclient" ${name}
-                    eza console -f -e sh ${name} <<EOF
-su urep -c "/bin/mkdir -p /usr/home/urep/bin"
-cp -a /root/bin/fres /usr/home/urep/bin/fres
-chown urep /usr/home/urep/bin/fres
-su urep -c "/usr/home/urep/bin/fres"
-su urep -c "/usr/home/urep/bin/deploy easydnsclient"
-EOF
+                    ;;
+                easydnsclient)
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 nginx)
                     setupnginxconfig ${name} ${FQDN}
-                    eza console -f -e "deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 couch)
-                    eza console -f -e "env FQDN=${FQDN} deploy ${name}db" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}db
+                    iocage start ${name}
                     ;;
                 dtfc)
-                    eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_reposrc=${REPOSRC}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 piwik)
-                    eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 owncloud)
                     if [         -d /root/local/owncloud ]; then
                         mkdir -p                          $( ioc-pathof ${name} )/root/local/owncloud
                         rsync -qalP /root/local/owncloud/ $( ioc-pathof ${name} )/root/local/owncloud/
                     fi
-                    allowsysvipc ${name}
-                    eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                    #allowsysvipc ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     rsync -qalP $( ioc-pathof ${name} )/root/local/owncloud/ /root/local/owncloud/
                     ;;
                 ejabberd)
-                    eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 murmur)
-                    eza console -f -e "deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 vnc)
-                    eza console -f -e "deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 klaus)
-                    eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 gitlab)
                     if [ -e /var/ports ]; then
                         rsync -viaP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
-                    allowsysvipc ${name}
+                    #allowsysvipc ${name}
                     copysslselfcert ${name}
                     if ifconfig | grep ${WEBIPALIAS} >/dev/null ; then
                         # Set jailip nginx as FQDN
@@ -219,57 +231,69 @@ EOF
                         echo "${IPNET}`jailip gitlab` ${FQDN}" >>$( ioc-pathof ${name} )/etc/hosts
                         rm  $( ioc-pathof ${name} )/etc/hosts.tmp
                     fi
-                    eza console -f -e "env FQDN=${FQDN} HTTP_PROXY=${HTTP_PROXY} deploy ${name}_src" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}_src
+                    iocage start ${name}
                     ;;
                 builder)
                     if [ -e /var/ports ]; then
                         rsync -viaP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
-                    eza console -f -e "psnap" ${name}
-                    zfs snap tank/ezjail/${name}@psnap
-                    eza console -f -e "deploy ffmpeg" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=ffmpeg
+                    iocage start ${name}
                     rsync -viaP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
-#                    eza stop ${name}
-#                    zfs rollback tank/ezjail/${name}@psnap
-#                    eza console -f -e "deploy gitlab_ports" ${name}
-#                    rsync -viaP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
                     ;;
                 # DEV JAILNAMES
                 monit)
-                    eza console -f -e "deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 zabbix)
-                    eza console -f -e "deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 echoplexus)
-                    eza console -f -e "env REPOSRC=${REPOSRC} deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_reposrc=${REPOSRC}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 gitannex)
-                    eza console -f -e "deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 gogs)
-                    eza console -f -e "deploy ${name}_src" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}_src
+                    iocage start ${name}
                     ;;
                 phabricator)
-                    eza console -f -e "deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 pydio)
-                    eza console -f -e "deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 # BAD JAILNAMES
                 baikal)
-                    eza console -f -e "env FQDN=${FQDN} deploy ${name}" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
+                    iocage start ${name}
                     ;;
                 couchdtfc)
-                    eza console -f -e "env FQDN=${FQDN} REPOSRC=${REPOSRC} deploy couchdbdtfc" ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_reposrc=${REPOSRC}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=couchdbdtfc
+                    iocage start ${name}
                     ;;
                 horde)
-                    allowsysvipc ${name}
-                    eza console -f -e "env FQDN=${FQDN} deploy ${name}webmail" ${name}
+                    #allowsysvipc ${name}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
+                    sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}webmail
+                    iocage start ${name}
                     ;;
             esac
             if [ "xsquid" != "x${name}" ]; then
-                eza stop ${name}
+                iocage stop ${name}
             fi
         fi # end of if not jail exists
     fi # end of if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
