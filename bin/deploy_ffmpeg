@@ -22,7 +22,8 @@ if [ -e ${LAMEPKG} ]; then
 else
     PORTNAME="audio/lame"
     ## install dependencies
-    pkg install -y devel/gmake #converters/libiconv
+    pkg install -y devel/gmake
+    pkg remove -y converters/libiconv
     # psnap
 
     mkdir -p /var/ports/packages/All
@@ -65,7 +66,7 @@ else
         x11-fonts/fontconfig print/freetype2 graphics/opencv-core \
         multimedia/schroedinger multimedia/libtheora audio/libvorbis \
         multimedia/libvpx multimedia/libx264 multimedia/xvid security/gnutls
-        #converters/libiconv
+    pkg remove -y converters/libiconv
     # psnap
 
     ## we want custom options
