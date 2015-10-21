@@ -15,15 +15,15 @@ if ! which mt-daapd ; then
     exit 1
 fi
 
-zfs list tank/data || zfs create tank/data
-if ! zfs list tank/data > /dev/null ; then
-    echo "ERROR: missing tank/data"
+zfs list priv/data || zfs create priv/data
+if ! zfs list priv/data > /dev/null ; then
+    echo "ERROR: missing priv/data"
     exit 1
 fi
 
-install -d -m 755 /tank/data/movies
-install -d -m 755 /tank/data/music
-install -d -m 755 /tank/data/photos
+install -d -m 755 /priv/data/movies
+install -d -m 755 /priv/data/music
+install -d -m 755 /priv/data/photos
 
 
 install -m 644 ~/git/deploy/usr/local/etc/firefly/mt-daapd.conf /usr/local/etc/firefly/mt-daapd.conf
