@@ -3,7 +3,7 @@
 # TODO: THIS IS A WORK IN PROGRESS
 
 if [ "x" == "x${REPOSRC}" ]; then
-    REPOSRC=https://github.com/
+    REPOSRC=https://github.com/qq99
 fi
 
 MYUSER="echoplexus"
@@ -17,7 +17,7 @@ pkg install -y www/node www/npm sudo git nginx ruby ruby21-gems redis
 
 cd /usr/home/echoplexus
 if [ ! -d /usr/home/echoplexus/echoplexus ]; then
-    sudo -u ${MYUSER} -H git clone --depth 1 ${REPOSRC}qq99/echoplexus.git /usr/home/echoplexus/echoplexus
+    sudo -u ${MYUSER} -H git clone --depth 1 ${REPOSRC}/echoplexus.git /usr/home/echoplexus/echoplexus
 fi
 
 sudo -u ${MYUSER} -H npm install

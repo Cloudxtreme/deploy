@@ -3,7 +3,7 @@
 # READY
 
 if [ "x" == "x${REPOSRC}" ]; then
-    REPOSRC=https://github.com/
+    REPOSRC=https://github.com/johnko
 fi
 
 if [ "x" == "x${FQDN}" ]; then
@@ -21,7 +21,7 @@ echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
 
 cd /usr/home/dtfc
 if [ ! -d /usr/home/dtfc/src ]; then
-    sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}johnko/dtfc.git /usr/home/dtfc/src
+    sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}/dtfc.git /usr/home/dtfc/src
 fi
 
 cd /usr/home/dtfc/src

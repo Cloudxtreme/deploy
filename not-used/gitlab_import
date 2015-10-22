@@ -18,7 +18,7 @@ if [ "x" == "x${TOKEN}" ]; then
 fi
 
 if [ "x" == "x${REPOSRC}" ]; then
-    REPOSRC=https://github.com/
+    REPOSRC=https://github.com/johnko
 fi
 
 if [ "x" == "x${GITLABSRC}" ]; then

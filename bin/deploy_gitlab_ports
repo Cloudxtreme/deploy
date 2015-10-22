@@ -8,11 +8,11 @@
 SCRIPTVERSION=151001-013053
 
 if [ "x" == "x${REPOSRC}" ]; then
-    REPOSRC=https://github.com/
+    REPOSRC=https://github.com/johnko
 fi
 
 if [ ! -d ${HOME}/gitlabports ]; then
-    git clone --depth 1 ${REPOSRC}johnko/freebsd-ports-test.git -b gitlab-7.14.1 ${HOME}/gitlabports
+    git clone --depth 1 ${REPOSRC}/freebsd-ports-test.git -b gitlab-7.14.1 ${HOME}/gitlabports
 fi
 
 rsync -virthP --exclude .git  ${HOME}/gitlabports/  /usr/ports/

@@ -156,7 +156,7 @@ Put files in /priv/data/...
 ```
 env SQUID=192.168.255.201:3128 setproxy
 setenv FQDN virtual.local
-env REPOSRC=https://${FQDN}/v. fres
+env REPOSRC=https://${FQDN}/git fres
 fzg -d ada0 -d ada2 -z 5g -n -H `hostname-by-ptr-dns`
 copy-network-conf-to-mnt
 reboot
@@ -167,7 +167,7 @@ reboot
 ```
 env SQUID=192.168.255.201:3128 setproxy
 setenv FQDN virtual.local
-pg pkg || env REPOSRC=https://${FQDN}/v. fres
+pg pkg || env REPOSRC=https://${FQDN}/git fres
 cp ~/perm/cshvars ~/local/cshvars
 vi local/cshvars
 source local/cshvars

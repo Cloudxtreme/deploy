@@ -30,7 +30,7 @@ while [ "x" == "x${REPOSRC}" ]; do
     echo -n "REPOSRC [https://github.com/]:"
     read REPOSRC
     if [ "x" == "x${REPOSRC}" ]; then
-        REPOSRC=https://github.com/
+        REPOSRC=https://github.com/johnko
     fi
 done
 OUTPUT="${OUTPUT} REPOSRC=${REPOSRC}"
