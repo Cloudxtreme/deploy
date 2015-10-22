@@ -39,17 +39,19 @@ APPS="
     rainloop    http://repository.rainloop.net/v2/other/owncloud/rainloop.zip
 "
 
-echo "${APPS}" \
-| while read appname appurl ; do
-    if [ "x" != "x${appname}" ] && [ "x" != "x${appurl}" ]; then
-        if [ ! -e /root/local/owncloud/${appurl##*/} ]; then
-            wget -P /root/local/owncloud "${appurl}"
+if [ "x" = "xgetapps" ]; then
+    echo "${APPS}" \
+    | while read appname appurl ; do
+        if [ "x" != "x${appname}" ] && [ "x" != "x${appurl}" ]; then
+            if [ ! -e /root/local/owncloud/${appurl##*/} ]; then
+                wget -P /root/local/owncloud "${appurl}"
+            fi
+            if [ ! -d /usr/local/www/owncloud/apps/${appname} ] ; then
+                tar x -C /usr/local/www/owncloud/apps -f /root/local/owncloud/${appurl##*/}
+            fi
         fi
-        if [ ! -d /usr/local/www/owncloud/apps/${appname} ] ; then
-            tar x -C /usr/local/www/owncloud/apps -f /root/local/owncloud/${appurl##*/}
-        fi
-    fi
-done
+    done
+fi
 
 cat ~/git/deploy/usr/local/etc/apache24/extra/owncloud.conf \
 | sed "s/localhost.my.domain/${FQDN}/" \
