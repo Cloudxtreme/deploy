@@ -144,10 +144,6 @@ git push home master
 ### miniDLNA
 
 ```
-cat perm/pkglist | sed 's/^# //' > local/pkglist
-fres
-cat perm/pkglist | sed 's/^# //' | sed 's/^## //' > local/pkglist
-fres
 deploy minidlna
 ```
 
