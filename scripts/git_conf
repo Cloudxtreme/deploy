@@ -45,8 +45,8 @@ iocage-tools                ${REPOSRC}johnko/iocage-tools.git
     kanso-photos                ${REPOSRC}johnko/kanso-photos.git
     kanso-wiki                  ${REPOSRC}johnko/kanso-wiki.git
     kanso-wtfc                  ${REPOSRC}johnko/kanso-wtfc.git
-                                                                            kurz.go                     ${REPOSRC}johnko/kurz.go.git
     klaus                       ${REPOSRC}johnko/klaus.git
+                                                                            kurz.go                     ${REPOSRC}johnko/kurz.go.git
                                                                             mfsbsd                      ${REPOSRC}johnko/mfsbsd.git
         mixxx-novation-launchpad    ${REPOSRC}johnko/mixxx-novation-launchpad.git
 mount_iso                   ${REPOSRC}johnko/mount_iso.git
