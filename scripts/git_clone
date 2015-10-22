@@ -1,10 +1,5 @@
 #!/bin/sh
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=151010-010017
-
 # Usage: $0 [create|github|home]
 
 FOLDER="${HOME}/git"
