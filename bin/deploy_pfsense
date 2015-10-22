@@ -12,6 +12,8 @@ if ! zfs list tank ; then
     exit 1
 fi
 
+sysctl net.inet.ip.fastforwarding=1
+
 cd ~/git/vmrc
 sh install-vmrc.sh
 if ! ls /vmrc/vm/ | grep pfsense ; then
