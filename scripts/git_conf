@@ -9,76 +9,76 @@
 #               Abandoned
 
 PROJECTS="
-apache-config-freebsd       ${REPOSRC}/apache-config-freebsd.git
-                                                                            btfc                        ${REPOSRC}/btfc.git
-                                                                            btfc2                       ${REPOSRC}/btfc2.git
-btfs                        ${REPOSRC}/btfs.git
-                                                                            checkmail-ahk               ${REPOSRC}/checkmail-ahk.git
-crontabbed                  ${REPOSRC}/crontabbed.git
-        crossdj-mappings            ${REPOSRC}/crossdj-mappings.git
-delugefs                    ${REPOSRC}/delugefs.git
-deploy                      ${REPOSRC}/deploy.git
-    dillinger                   ${REPOSRC}/dillinger.git
-                                                                            dmenu                       ${REPOSRC}/dmenu.git
-        doc                         ${REPOSRC}/doc.git
-    dtfc                        ${REPOSRC}/dtfc.git
-                                                                            dwm                         ${REPOSRC}/dwm.git
-                                                                            dwmsd                       ${REPOSRC}/dwmsd.git
-    echoplexus                  ${REPOSRC}/echoplexus.git
-                                                                            eza                         ${REPOSRC}/eza.git
-ffmpeg-tools                ${REPOSRC}/ffmpeg-tools.git
-freebsd-install-script      ${REPOSRC}/freebsd-install-script.git
-freebsd-pf-script           ${REPOSRC}/freebsd-pf-script.git
-freebsd-ports-test          ${REPOSRC}/freebsd-ports-test.git
-freebsd-sortconf            ${REPOSRC}/freebsd-sortconf.git
-freebsd-system-info         ${REPOSRC}/freebsd-system-info.git
-github-backup               ${REPOSRC}/github-backup.git
-                                                                            gtfc                        ${REPOSRC}/gtfc.git
-    h5ai                        ${REPOSRC}/h5ai.git
-hddid                       ${REPOSRC}/hddid.git
-iocage-tools                ${REPOSRC}/iocage-tools.git
-    kanso-chat                  ${REPOSRC}/kanso-chat.git
-    kanso-example               ${REPOSRC}/kanso-example.git
-    kanso-focus                 ${REPOSRC}/kanso-focus.git
-    kanso-manage-couchdb        ${REPOSRC}/kanso-manage-couchdb.git
-    kanso-movies                ${REPOSRC}/kanso-movies.git
-    kanso-music                 ${REPOSRC}/kanso-music.git
-    kanso-photos                ${REPOSRC}/kanso-photos.git
-    kanso-wiki                  ${REPOSRC}/kanso-wiki.git
-    kanso-wtfc                  ${REPOSRC}/kanso-wtfc.git
-    klaus                       ${REPOSRC}/klaus.git
-                                                                            kurz.go                     ${REPOSRC}/kurz.go.git
-    mdwiki                      ${REPOSRC}/mdwiki.git
-                                                                            mfsbsd                      ${REPOSRC}/mfsbsd.git
-        mixxx-novation-launchpad    ${REPOSRC}/mixxx-novation-launchpad.git
-mount_iso                   ${REPOSRC}/mount_iso.git
-netconn                     ${REPOSRC}/netconn.git
-newsyslog.conf.d            ${REPOSRC}/newsyslog.conf.d.git
-nginx-config-sites-enabled  ${REPOSRC}/nginx-config-sites-enabled.git
-                                                                            Pico                        ${REPOSRC}/Pico.git
-psnap                       ${REPOSRC}/psnap.git
-pwgen                       ${REPOSRC}/pwgen.git
-        python-rtmidi               ${REPOSRC}/python-rtmidi.git
-rad                         ${REPOSRC}/rad.git
-randomword                  ${REPOSRC}/randomword.git
-rsync-tools                 ${REPOSRC}/rsync-tools.git
-setproxy                    ${REPOSRC}/setproxy.git
-skel                        ${REPOSRC}/skel.git
-ssh-multi                   ${REPOSRC}/ssh-multi.git
-ssh-tools                   ${REPOSRC}/ssh-tools.git
-        tf2-config                  ${REPOSRC}/tf2-config.git
-    transfer.sh                 ${REPOSRC}/transfer.sh.git
-    upload.sh                   ${REPOSRC}/upload.sh.git
-vmrc                        ${REPOSRC}/vmrc.git
-        windows-setup               ${REPOSRC}/windows-setup.git
-                                                                            wtfc                        ${REPOSRC}/wtfc.git
-zfs-tools                   ${REPOSRC}/zfs-tools.git
-zsnapple                    ${REPOSRC}/zsnapple.git
+apache-config-freebsd       ${REPOSRC}/apache-config-freebsd
+                                                                            btfc                        ${REPOSRC}/btfc
+                                                                            btfc2                       ${REPOSRC}/btfc2
+btfs                        ${REPOSRC}/btfs
+                                                                            checkmail-ahk               ${REPOSRC}/checkmail-ahk
+crontabbed                  ${REPOSRC}/crontabbed
+        crossdj-mappings            ${REPOSRC}/crossdj-mappings
+delugefs                    ${REPOSRC}/delugefs
+deploy                      ${REPOSRC}/deploy
+    dillinger                   ${REPOSRC}/dillinger
+                                                                            dmenu                       ${REPOSRC}/dmenu
+        doc                         ${REPOSRC}/doc
+    dtfc                        ${REPOSRC}/dtfc
+                                                                            dwm                         ${REPOSRC}/dwm
+                                                                            dwmsd                       ${REPOSRC}/dwmsd
+    echoplexus                  ${REPOSRC}/echoplexus
+                                                                            eza                         ${REPOSRC}/eza
+ffmpeg-tools                ${REPOSRC}/ffmpeg-tools
+freebsd-install-script      ${REPOSRC}/freebsd-install-script
+freebsd-pf-script           ${REPOSRC}/freebsd-pf-script
+freebsd-ports-test          ${REPOSRC}/freebsd-ports-test
+freebsd-sortconf            ${REPOSRC}/freebsd-sortconf
+freebsd-system-info         ${REPOSRC}/freebsd-system-info
+github-backup               ${REPOSRC}/github-backup
+                                                                            gtfc                        ${REPOSRC}/gtfc
+    h5ai                        ${REPOSRC}/h5ai
+hddid                       ${REPOSRC}/hddid
+iocage-tools                ${REPOSRC}/iocage-tools
+    kanso-chat                  ${REPOSRC}/kanso-chat
+    kanso-example               ${REPOSRC}/kanso-example
+    kanso-focus                 ${REPOSRC}/kanso-focus
+    kanso-manage-couchdb        ${REPOSRC}/kanso-manage-couchdb
+    kanso-movies                ${REPOSRC}/kanso-movies
+    kanso-music                 ${REPOSRC}/kanso-music
+    kanso-photos                ${REPOSRC}/kanso-photos
+    kanso-wiki                  ${REPOSRC}/kanso-wiki
+    kanso-wtfc                  ${REPOSRC}/kanso-wtfc
+    klaus                       ${REPOSRC}/klaus
+                                                                            kurz.go                     ${REPOSRC}/kurz.go
+    mdwiki                      ${REPOSRC}/mdwiki
+                                                                            mfsbsd                      ${REPOSRC}/mfsbsd
+        mixxx-novation-launchpad    ${REPOSRC}/mixxx-novation-launchpad
+mount_iso                   ${REPOSRC}/mount_iso
+netconn                     ${REPOSRC}/netconn
+newsyslog.conf.d            ${REPOSRC}/newsyslog.conf.d
+nginx-config-sites-enabled  ${REPOSRC}/nginx-config-sites-enabled
+                                                                            Pico                        ${REPOSRC}/Pico
+psnap                       ${REPOSRC}/psnap
+pwgen                       ${REPOSRC}/pwgen
+        python-rtmidi               ${REPOSRC}/python-rtmidi
+rad                         ${REPOSRC}/rad
+randomword                  ${REPOSRC}/randomword
+rsync-tools                 ${REPOSRC}/rsync-tools
+setproxy                    ${REPOSRC}/setproxy
+skel                        ${REPOSRC}/skel
+ssh-multi                   ${REPOSRC}/ssh-multi
+ssh-tools                   ${REPOSRC}/ssh-tools
+        tf2-config                  ${REPOSRC}/tf2-config
+    transfer.sh                 ${REPOSRC}/transfer.sh
+    upload.sh                   ${REPOSRC}/upload.sh
+vmrc                        ${REPOSRC}/vmrc
+        windows-setup               ${REPOSRC}/windows-setup
+                                                                            wtfc                        ${REPOSRC}/wtfc
+zfs-tools                   ${REPOSRC}/zfs-tools
+zsnapple                    ${REPOSRC}/zsnapple
 "
 
-# ${REPOSRC}/couchdbtodomvc.git
-# ${REPOSRC}/couchdb-fuse.git
-# ${REPOSRC}/johnko.github.io.git
-# ${REPOSRC}/mac-dotfiles.git
+# ${REPOSRC}/couchdbtodomvc
+# ${REPOSRC}/couchdb-fuse
+# ${REPOSRC}/johnko.github.io
+# ${REPOSRC}/mac-dotfiles
 
 export PROJECTS
