@@ -3,19 +3,17 @@
 # TODO: setup postgresql
 # Probably will not use until there is PullRequest workflow
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=150615-212959
-
 # Based on http://gogs.io/docs/installation/install_from_source.html
 
-pkg install -y sudo git lang/go postgresql94-server
+DB="gogs_production"
+DBUSER="git"
+DBPASS="password"
+
+pkg install -y sudo git lang/go
 
 echo "git:1005:::::Gogs:/usr/home/git:/usr/sbin/nologin:" | adduser -w no -f -
 
-sysrc postgresql_enable="YES"
-service postgresql start
+deploy_postgresql94 1105 ${DB} ${DBUSER} ${DBPASS}
 
 install -d -m 755 -o git /usr/home/git
 install -d -m 755 -o git /usr/home/git/local

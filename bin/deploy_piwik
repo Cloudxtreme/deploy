@@ -15,20 +15,20 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
+deploy_php_apache24
+
+deploy_mysql_percona55 ${DB} ${DBUSER} ${DBPASS}
+
 pkg install -y www/piwik \
 php56-mbstring \
 php56-simplexml \
-php56-openssl \
-percona55-server \
-apache24
+php56-openssl
 
 if [ ! -e /usr/local/www/piwik ]; then
     echo "ERROR: install failed"
     exit 1
 fi
 
-apache-config-freebsd
-pkg install -fy www/mod_php56
 cat ~/git/deploy/usr/local/etc/apache24/extra/piwik.conf \
 | sed "s/localhost.my.domain/${FQDN}/" \
 >/usr/local/etc/apache24/Includes/piwik.conf
@@ -43,23 +43,7 @@ if [ ! -e /usr/bin/python ]; then
     ln -s /usr/local/bin/python /usr/bin/python
 fi
 
-sysrc apache24_enable="YES"
-#sysrc php_fpm_enable="YES"
-sysrc mysql_enable="YES"
-
-#service php-fpm start
-service apache24 start
-service mysql-server start
-
-
-while ! mysql -u root mysql -e "CREATE database ${DB};" 2>&1 | grep -o "database exists" ; do
-    sleep 10
-done
-
-mysql -u root mysql -e "GRANT ALL PRIVILEGES ON ${DB} TO '${DBUSER}'@'localhost' IDENTIFIED BY '${DBPASS}';"
-mysql -u root mysql -e "FLUSH PRIVILEGES;"
-mysql -u root mysql -e "GRANT ALL PRIVILEGES ON ${DB}.* TO '${DBUSER}'@'localhost' IDENTIFIED BY '${DBPASS}' WITH GRANT OPTION;"
-mysql -u root mysql -e "FLUSH PRIVILEGES;"
+service apache24 restart
 
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`

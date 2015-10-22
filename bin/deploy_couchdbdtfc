@@ -11,47 +11,5 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
-MYUSER="dtfc"
-
-pkg install -y lang/go nginx sudo couchdb
-
-if [ ! -e /usr/local/etc/rc.d/couchdb ]; then
-    echo "ERROR: install failed"
-    exit 1
-fi
-
-echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
-
-cd /usr/home/dtfc
-if [ ! -d /usr/home/dtfc/src ]; then
-    sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}johnko/dtfc.git /usr/home/dtfc/src
-fi
-
-cd /usr/home/dtfc/src
-sh scripts/install.sh
-
-nginx-config-sites-enabled
-nginx-openssl-generate
-cat ~/git/deploy/usr/local/etc/nginx/sites-available/couchdb \
-| sed "s/localhost.my.domain/${FQDN}/" \
->/usr/local/etc/nginx/sites-enabled/couchdbdtfc
-
-if [ ! -d /usr/home/dtfc/config ]; then
-    install -d -o ${MYUSER} /usr/home/dtfc/config
-fi
-
-for i in /usr/home/dtfc/config/melist.txt /usr/home/dtfc/config/peerlist.txt ; do
-    if [ ! -f ${i} ]; then
-        echo "https://${FQDN}/dtfc/" >${i}
-    fi
-done
-
-sysrc couchdb_enable="YES"
-sysrc nginx_enable="YES"
-
-service dtfc start
-service couchdb start
-service nginx start
-
-echo
-echo "Visit https://${FQDN}/couch/_util/"
+env FQDN=${FQDN} deploy_couchdb
+env REPOSRC=${REPOSRC} FQDN=${FQDN} deploy_dtfc

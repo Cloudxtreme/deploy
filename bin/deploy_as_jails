@@ -7,35 +7,35 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ "x" == "x${FQDN}" ]; then
+if [ "x" = "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
     exit 1
 fi
 
-if [ "x" == "x${REPOSRC}" ]; then
+if [ "x" = "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
 fi
 
-if [ "x" == "x${GITLABSRC}" ]; then
+if [ "x" = "x${GITLABSRC}" ]; then
     GITLABSRC=https://gitlab.com/
 fi
 
-if [ "x" == "x${NIC}" ]; then
+if [ "x" = "x${NIC}" ]; then
     NIC="lo1"
     if ! ifconfig ${NIC} >/dev/null ; then
         ifconfig ${NIC} create
     fi
 fi
 
-if [ "x" == "x${IPNET}" ]; then
+if [ "x" = "x${IPNET}" ]; then
     IPNET="10.7.7."
 fi
 
-if [ "x" == "x${HOSTIP}" ]; then
+if [ "x" = "x${HOSTIP}" ]; then
     HOSTIP="$( net-ip )"
 fi
 
-if [ "x" == "x${HOSTNIC}" ]; then
+if [ "x" = "x${HOSTNIC}" ]; then
     HOSTNIC="$( net-nic )"
 fi
 
@@ -60,7 +60,7 @@ if [ "x" != "x${STARTCOUNT}" ]; then
     count=`echo ${STARTCOUNT} | sed 's/[^[:digit:]]//g'`
 fi
 
-if [ "x" == "x${count}" ]; then
+if [ "x" = "x${count}" ]; then
     count=0
 fi
 
@@ -74,7 +74,7 @@ jailip() {
         | while read num name ; do
             if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
                 #echo "debug: search ${1}, name ${name}"
-                if [ "x${1}" == "x${name}" ]; then
+                if [ "x${1}" = "x${name}" ]; then
                     RESULT=$(( count + num ))
                     #echo "debug: match ${num}, result ${RESULT}"
                     echo "${RESULT}"

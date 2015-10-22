@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# READY
+
+zfs list priv/data || zfs create priv/data
+if ! zfs list priv/data > /dev/null ; then
+    echo "ERROR: missing priv/data"
+    exit 1
+fi
+
+install -d -m 755 /priv/data/movies
+install -d -m 755 /priv/data/music
+install -d -m 755 /priv/data/photos
+
+crontabbed
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo > /root/crontabbed/zsnapple_bootpool_hourly
+    echo > /root/crontabbed/zsnapple_pool_hourly
+fi
+echo "10 * * * * dlna-permissions" > /root/crontabbed/dlna_permission_hourly
+crontabbed

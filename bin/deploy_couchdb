@@ -7,24 +7,23 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
-pkg install -y couchdb nginx
+deploy_nginx
+
+pkg install -y couchdb
 
 if [ ! -e /usr/local/etc/rc.d/couchdb ]; then
     echo "ERROR: install failed"
     exit 1
 fi
 
-nginx-config-sites-enabled
-nginx-openssl-generate
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/couchdb \
 | sed "s/localhost.my.domain/${FQDN}/" \
 >/usr/local/etc/nginx/sites-enabled/couchdb
 
 sysrc couchdb_enable="YES"
-sysrc nginx_enable="YES"
 
 service couchdb start
-service nginx start
+service nginx restart
 
 echo
 echo "Visit https://${FQDN}/couch/_util/"

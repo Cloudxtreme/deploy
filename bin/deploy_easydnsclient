@@ -2,11 +2,6 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=150626-151355
-
 pkg install -y p5-Crypt-SSLeay p5-DNS-EasyDNS
 
 mkdir -p ~/bin

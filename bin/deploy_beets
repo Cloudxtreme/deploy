@@ -2,11 +2,6 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=150712-235945
-
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: beet should be installed on host with minidlna or firefly"
     exit 1

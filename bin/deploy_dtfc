@@ -2,11 +2,6 @@
 
 # READY
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=151008-043645
-
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/
 fi
@@ -18,7 +13,9 @@ fi
 
 MYUSER="dtfc"
 
-pkg install -y lang/go nginx sudo
+deploy_nginx
+
+pkg install -y lang/go sudo
 
 echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
 
@@ -30,8 +27,6 @@ fi
 cd /usr/home/dtfc/src
 sh scripts/install.sh
 
-nginx-config-sites-enabled
-nginx-openssl-generate
 cat /usr/local/etc/nginx/sites-available/example-couchdb | sed "s/localhost.my.domain/${FQDN}/" >/usr/local/etc/nginx/sites-enabled/dtfc
 
 if [ ! -d /usr/home/dtfc/config ]; then
@@ -44,10 +39,8 @@ for i in /usr/home/dtfc/config/melist.txt /usr/home/dtfc/config/peerlist.txt ; d
     fi
 done
 
-sysrc nginx_enable="YES"
-
 service dtfc start
-service nginx start
+service nginx restart
 
 echo
 echo "Visit https://${FQDN}/dtfc/"

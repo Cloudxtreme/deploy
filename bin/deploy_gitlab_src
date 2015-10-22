@@ -72,44 +72,17 @@ gem install bundler --no-ri --no-rdoc
 
 echo "3 git user"
 echo "git:211:::::gitosis user:/usr/local/git:/bin/sh:" | adduser -w no -f -
-# Add git user to redis group
-pw groupmod redis -m git
 
 
 echo "4 postgresql"
 # different uid so shared memory of postgresql don't clash
-pw usermod -n pgsql -u 1100
-find / -user 70 -exec chown pgsql {} \;
-sysrc postgresql_enable="YES"
-service postgresql initdb
-service postgresql start
-/usr/local/bin/createuser -U pgsql ${DBUSER}
-/usr/local/bin/createdb -E utf8 -U pgsql -O ${DBUSER} ${DB}
-/usr/local/bin/psql -U pgsql -d template1 -c "ALTER ROLE ${DBUSER} WITH password '${DBPASS}';"
-if [ ! -e /usr/local/pgsql/data/pg_hba.conf.dist ]; then
-    cp -a /usr/local/pgsql/data/pg_hba.conf /usr/local/pgsql/data/pg_hba.conf.dist
-fi
-cat >/usr/local/pgsql/data/pg_hba.conf <<EOF
-local   all             all                                     trust
-host    all             all             127.0.0.1/32            trust
-host    all             all             ::1/128                 trust
-hostnossl  ${DB}   ${DBUSER}    samehost                trust
-EOF
-service postgresql restart
+deploy_postgresql94 1100 ${DB} ${DBUSER} ${DBPASS}
 
 
 echo "5 redis"
-if [ ! -e /usr/local/etc/redis.conf.orig ]; then
-    cp /usr/local/etc/redis.conf /usr/local/etc/redis.conf.orig
-fi
-sed 's/^port .*/port 0/' /usr/local/etc/redis.conf.orig >/usr/local/etc/redis.conf
-echo 'unixsocket /var/run/redis/redis.sock' >>/usr/local/etc/redis.conf
-echo 'unixsocketperm 770' >>/usr/local/etc/redis.conf
-mkdir -p /var/run/redis
-chown redis:redis /var/run/redis
-chmod 755 /var/run/redis
-sysrc redis_enable="YES"
-service redis start
+deploy_redis_unix
+# Add git user to redis group
+pw groupmod redis -m git
 
 
 echo "6 gitlab"
@@ -230,6 +203,7 @@ service gitlab start
 
 
 echo "13 nginx"
+deploy_nginx
 mkdir -p /var/log/nginx
 #wget -O /usr/local/etc/nginx/sites-enabled/gitlab.conf https://gitlab.com/gitlab-org/gitlab-ce/raw/master/lib/support/nginx/gitlab-ssl
 #cp /usr/local/www/gitlab/lib/support/nginx/gitlab /usr/local/etc/nginx/sites-enabled/gitlab.conf
@@ -241,8 +215,7 @@ cat ~/git/deploy/usr/local/etc/nginx/sites-available/gitlab \
 >/usr/local/etc/nginx/sites-enabled/gitlab
 chmod 644 /usr/local/etc/nginx/sites-enabled/gitlab
 #pw user mod www -G git
-sysrc nginx_enable="YES"
-service nginx start
+service nginx restart
 
 
 echo "14 Other services: SSH"
@@ -253,25 +226,12 @@ if sysctl security.jail.jailed | grep 1 >/dev/null ; then
     cat /etc/ssh/sshd_config.tmp >/etc/ssh/sshd_config
     rm /etc/ssh/sshd_config.tmp
 fi
-sysrc sshd_enable="YES"
-sysrc sshd_rsa1_enable="NO"
-sysrc sshd_dsa_enable="NO"
-sysrc sshd_ecdsa_enable="NO"
+sshd-config
 service sshd start
 
 
 echo "15 Other services: mail"
-service sendmail onestop
-sysrc postfix_enable="YES"
-sysrc sendmail_enable="NO"
-sysrc sendmail_submit_enable="NO"
-sysrc sendmail_outbound_enable="NO"
-sysrc sendmail_msp_queue_enable="NO"
-sysrc -f /etc/periodic.conf daily_clean_hoststat_enable="NO"
-sysrc -f /etc/periodic.conf daily_status_mail_rejects_enable="NO"
-sysrc -f /etc/periodic.conf daily_status_include_submit_mailq="NO"
-sysrc -f /etc/periodic.conf daily_submit_queuerun="NO"
-service postfix start
+deploy_postfix
 
 
 echo

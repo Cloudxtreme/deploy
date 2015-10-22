@@ -88,8 +88,11 @@ JAILIP=`ifconfig | grep inet | awk '{print $2}'`
 echo "Squid is setup, eza-unlink-basejail will setup PKG_ENV to ${JAILIP}:3128"
 
 # 3127 for public.pem
-deploy nginx
+deploy_nginx
+
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/squid \
     | sed "s/0.0.0.0/${JAILIP}/" \
     >/usr/local/etc/nginx/sites-enabled/squid
 chmod 644 /usr/local/etc/nginx/sites-enabled/squid
+
+service nginx restart

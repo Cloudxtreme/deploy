@@ -9,14 +9,14 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
 fi
 
 ## unblock all the pkgs required for ffmpeg before minidlna
-cat perm/pkglist | sed 's/^# //' > local/pkglist
+cat ~/perm/pkglist | sed 's/^# //' > ~/local/pkglist
 fres
 if ! pkg info | grep ffmpeg >/dev/null 2>&1 ; then
     echo "ERROR: requires ffmpeg"
     exit 1
 fi
 ## unblock minidlna
-cat perm/pkglist | sed 's/^# //' | sed 's/^## //' > local/pkglist
+cat ~/perm/pkglist | sed 's/^# //' | sed 's/^## //' > ~/local/pkglist
 
 pkg install -y net/minidlna
 
@@ -25,26 +25,9 @@ if [ ! -e /usr/local/etc/minidlna.conf.sample ]; then
     exit 1
 fi
 
-zfs list priv/data || zfs create priv/data
-if ! zfs list priv/data > /dev/null ; then
-    echo "ERROR: missing priv/data"
-    exit 1
-fi
-
-install -d -m 755 /priv/data/movies
-install -d -m 755 /priv/data/music
-install -d -m 755 /priv/data/photos
-
 install -m 644 ~/git/deploy/usr/local/etc/minidlna.conf /usr/local/etc/minidlna.conf
 
-
-crontabbed
-if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
-    echo > /root/crontabbed/zsnapple_bootpool_hourly
-    echo > /root/crontabbed/zsnapple_pool_hourly
-fi
-echo "10 * * * * dlna-permissions" > /root/crontabbed/dlna_permission_hourly
-crontabbed
+deploy_dlna-permissions
 
 # sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
 
