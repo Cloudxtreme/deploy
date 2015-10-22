@@ -29,8 +29,9 @@ map $uri $redirect_uri {
     ~^/wiki$       https://localhost.localdomain/wiki/;
     ~^/zabbix$     https://localhost.localdomain/zabbix/;
 }
+## Redirects all HTTP traffic to the HTTPS host
 server {
-    listen   0.0.0.0:80 default_server;
+    listen 80 default_server;
     server_name localhost.localdomain;
     return 302 https://$host$request_uri;
 }

@@ -11,7 +11,6 @@ DBUSER="git"
 DBPASS="password"
 ROOTPASS="password"
 BRANCH="8-0-stable" # 7-14-stable"
-JAILIP=`ifconfig | grep inet | awk '{print $2}'`
 
 if [ "x" != "x${GITLABROOTPASS}" ]; then
     ROOTPASS=${GITLABROOTPASS}
@@ -210,7 +209,6 @@ mkdir -p /var/log/nginx
 #cat /usr/local/www/gitlab/lib/support/nginx/gitlab \
 #| sed 's/gzip_static on;/#gzip_static on;/' \
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/gitlab \
-| sed "s/0.0.0.0/${JAILIP}/" \
 | sed "s/localhost.localdomain/${FQDN}/" \
 >/usr/local/etc/nginx/sites-enabled/gitlab
 chmod 644 /usr/local/etc/nginx/sites-enabled/gitlab
@@ -234,6 +232,7 @@ echo "15 Other services: mail"
 deploy_postfix
 
 
+JAILIP=`ifconfig | grep inet | awk '{print $2}'`
 echo
 cat <<EOF
 Visit https://${JAILIP}/

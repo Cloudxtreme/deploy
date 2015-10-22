@@ -4,12 +4,6 @@ upstream gitlab {
 upstream gitlab-git-http-server {
   server unix:/usr/local/www/gitlab/tmp/sockets/gitlab-git-http-server.socket fail_timeout=0;
 }
-## Redirects all HTTP traffic to the HTTPS host
-server {
-    listen   0.0.0.0:80 default_server;
-    server_name localhost.localdomain;
-    return 302 https://$host$request_uri;
-}
 ## HTTPS host
 server {
     listen 443 ssl;

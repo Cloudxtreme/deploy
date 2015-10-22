@@ -6,7 +6,6 @@ if [ "x" == "x${FQDN}" ]; then
     echo "Please set or export variable FQDN"
     exit 1
 fi
-JAILIP=$( ifconfig | grep inet | awk '{print $2}' )
 
 deploy_nginx
 
@@ -37,15 +36,14 @@ echo "${PROJECTS}" \
 done
 
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/klaus \
-| sed "s/127.0.0.1/${JAILIP}/" \
 | sed "s/localhost.localdomain/${FQDN}/" \
 >/usr/local/etc/nginx/sites-enabled/klaus
 chmod 644 /usr/local/etc/nginx/sites-enabled/klaus
 sysrc nginx_enable="YES"
 service nginx start
 
+#| sed "s/0.0.0.0/${JAILIP}/" \
 cat ~/git/deploy/usr/local/lib/python2.7/site-packages/klauswsgireload.py \
-| sed "s/0.0.0.0/${JAILIP}/" \
 | sed "s;unrelenting.technology;${FQDN};" \
 | sed "s;/home/freebsd/src/github.com/myfreeweb;/usr/local/git/repos;" \
 >/usr/local/lib/python2.7/site-packages/klauswsgireload.py
@@ -61,3 +59,5 @@ if sysctl security.jail.jailed | grep 1 >/dev/null ; then
 fi
 sshd-config
 service sshd start
+
+JAILIP=$( ifconfig | grep inet | awk '{print $2}' )

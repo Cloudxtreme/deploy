@@ -86,9 +86,7 @@ jailip() {
 setupnginxconfig() {
     local name=${1}
     local FQDN=${2}
-    local NGINXJAILIP=${IPNET}`jailip nginx`
     cat ~/git/deploy/usr/local/etc/nginx/sites-available/nginx-all \
-        | sed "s/0.0.0.0/${NGINXJAILIP}/" \
         | sed "s/localhost.localdomain/${FQDN}/" \
         >$( ioc-pathof ${name} )/usr/local/etc/nginx/sites-enabled/${name}
     chmod 644 $( ioc-pathof ${name} )/usr/local/etc/nginx/sites-enabled/${name}
