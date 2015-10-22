@@ -1,0 +1,29 @@
+# example couchdb
+# things to change:
+#   localhost.my.domain
+client_max_body_size 0;
+upstream dtfcsources {
+    server localhost:8080;
+}
+map $uri $redirect_uri {
+    ~^/mdwiki$  https://localhost.my.domain/mdwiki/;
+    ~^/$        https://localhost.my.domain/mdwiki/;
+}
+server {
+    listen 443 ssl;
+    server_name localhost.my.domain;
+    ssl_certificate ssl/ssl.crt;
+    ssl_certificate_key ssl/ssl.key;
+    include /usr/local/etc/nginx/tls.conf;
+    access_log  /var/log/nginx-ssl-access.log realip;
+    error_log   /var/log/nginx-ssl-error.log;
+    root /usr/local/www;
+    location / {
+        try_files $uri $uri/ @redirect-map;
+    }
+    location @redirect-map {
+        if ($redirect_uri) {
+            return 302 $redirect_uri;
+        }
+    }
+}
