@@ -70,7 +70,6 @@ vmrc                        ${REPOSRC}johnko/vmrc.git
                                                                             wtfc                        ${REPOSRC}johnko/wtfc.git
 zfs-tools                   ${REPOSRC}johnko/zfs-tools.git
 zsnapple                    ${REPOSRC}johnko/zsnapple.git
-                                                                            gitlab-ce                   ${GITLABSRC}gitlab-org/gitlab-ce.git
 "
 
 # ${REPOSRC}johnko/couchdbtodomvc.git
