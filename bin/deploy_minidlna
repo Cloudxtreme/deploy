@@ -8,6 +8,16 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     exit 1
 fi
 
+## unblock all the pkgs required for ffmpeg before minidlna
+cat perm/pkglist | sed 's/^# //' > local/pkglist
+fres
+if ! pkg info | grep ffmpeg >/dev/null 2>&1 ; then
+    echo "ERROR: requires ffmpeg"
+    exit 1
+fi
+## unblock minidlna
+cat perm/pkglist | sed 's/^# //' | sed 's/^## //' > local/pkglist
+
 pkg install -y net/minidlna
 
 if [ ! -e /usr/local/etc/minidlna.conf.sample ]; then
