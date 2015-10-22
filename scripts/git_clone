@@ -19,10 +19,6 @@ if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/johnko
 fi
 
-if [ "x" == "x${GITLABSRC}" ]; then
-    GITLABSRC=https://gitlab.com/
-fi
-
 . ${0%/*}/git_conf
 
 if [ "x" == "x${PROJECTS}" ]; then
@@ -30,78 +26,36 @@ if [ "x" == "x${PROJECTS}" ]; then
     exit 1
 fi
 
-groups() {
-    echo "${PROJECTS}" \
-    | while read name url ; do
-        if [ "x" != "x${name}" ] && [ "x" != "x${url}" ]; then
-            echo "${url}" | sed -E 's;https?://[^/][^/]*/;v.;g' | sed -E 's;/.*;;g'
-        fi
-    done
-}
-
-if [ "xcreate" == "x${ACTION}" ]; then
-    for name in `groups | sort -u` ; do
-        if [ "x" != "x${name}" ]; then
-            curl \
-            --header "PRIVATE-TOKEN: ${TOKEN}" \
-            -X POST \
-            -d "name=${name}&path=${name}" "https://${FQDN}/api/v3/groups"
-        fi
-    done
-fi
-
 echo "${PROJECTS}" \
-| while read name url ; do
-    if [ "x" != "x${name}" ] && [ "x" != "x${url}" ]; then
-        groupname=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;v.;g' | sed -E 's;/.*;;g'`
-        echo "${groupname}/${name}"
-        if [ "xcreate" == "x${ACTION}" ]; then
-            if ! curl -s --head "https://${FQDN}/${groupname}/${name}" | grep '200 OK' ; then
-                projectid=`curl -s --header "PRIVATE-TOKEN: ${TOKEN}" \
-                    -X POST -d "user_id=root&name=${name}&public=true" \
-                    "https://${FQDN}/api/v3/projects" \
-                    | grep -o '"id" *: *[0-9][0-9]* *,' | head -1 | grep -o '[0-9][0-9]*'`
-                groupid=`curl -s --header "PRIVATE-TOKEN: ${TOKEN}" \
-                    "https://${FQDN}/api/v3/groups" \
-                    | grep -o "\"id\" *: *[0-9][0-9]* *, *\"name\" *: *\"${groupname}\"" | head -1 | grep -o '[0-9][0-9]*' | head -1`
-                echo
-                echo "==== Transferring ${name} to ${groupname}: https://${FQDN}/api/v3/groups/${groupid}/projects/${projectid}"
-                while curl -s --header "PRIVATE-TOKEN: ${TOKEN}" \
-                    -X POST \
-                    "https://${FQDN}/api/v3/groups/${groupid}/projects/${projectid}" | grep 'Cannot move project' ; do
-                        sleep 20
-                done
-            fi
-        fi
-        novgroupname=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;;g' | sed -E 's;/.*;;g'`
-            #urlpath=`echo "${url}" | sed -E 's;https?://[^/][^/]*/;;g'`
-        if [ ! -e "${FOLDER}/${novgroupname}/${name}" ]; then
-            mkdir -p "${FOLDER}/${novgroupname}"
-            git clone ${url} "${FOLDER}/${novgroupname}/${name}"
-            cd "${FOLDER}/${novgroupname}/${name}"
+| while read name ; do
+    if [ "x" != "x${name}" ]; then
+        echo "${name}"
+        if [ ! -e "${FOLDER}/johnko/${name}" ]; then
+            mkdir -p "${FOLDER}/johnko"
+            git clone ${REPOSRC}/${name} "${FOLDER}/johnko/${name}"
+            cd "${FOLDER}/johnko/${name}"
             git remote rename origin github
             if git remote -v | grep "github.com/johnko" ; then
                 # use ssh
                 git remote set-url github "git@github.com:johnko/${name##*/}.git"
             fi
         else
-            cd "${FOLDER}/${novgroupname}/${name}"
+            cd "${FOLDER}/johnko/${name}"
 #            git remote remove home
             if ! git remote -v | grep "^home" > /dev/null ; then
-                #git remote add home ssh://git@${FQDN}:23/v.${urlpath}
                 git remote add home ssh://git@${FQDN}:23/usr/local/git/repos/${name}
             elif ! git remote -v | grep "^home" | grep "usr/local/git/repos" > /dev/null ; then
                 git remote set-url home ssh://git@${FQDN}:23/usr/local/git/repos/${name}
             fi
         fi
         if [ "xgithub" == "x${ACTION}" ]; then
-            cd "${FOLDER}/${novgroupname}/${name}"
+            cd "${FOLDER}/johnko/${name}"
             if git remote -v | grep "github.com:johnko" ; then
                 git push --mirror github
             fi
         fi
         if [ "xhome" == "x${ACTION}" ]; then
-            cd "${FOLDER}/${novgroupname}/${name}"
+            cd "${FOLDER}/johnko/${name}"
             if git remote -v | grep "git@${FQDN}:23/usr/local/git/repos/${name}" ; then
                 git push --mirror home
             fi

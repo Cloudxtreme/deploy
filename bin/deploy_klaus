@@ -28,7 +28,7 @@ install -d -o git -g git -m 755 /usr/local/git/repos
 
 . ~/git/deploy/scripts/git_conf
 echo "${PROJECTS}" \
-| while read name url ; do
+| while read name ; do
     if [ "x" != "x${name}" ]; then
         sudo -u git -H mkdir /usr/local/git/repos/${name}
         cd /usr/local/git/repos/${name}
