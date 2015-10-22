@@ -18,7 +18,7 @@ crontabbed                  ${REPOSRC}johnko/crontabbed.git
         crossdj-mappings            ${REPOSRC}johnko/crossdj-mappings.git
 delugefs                    ${REPOSRC}johnko/delugefs.git
 deploy                      ${REPOSRC}johnko/deploy.git
-            dillinger                   ${REPOSRC}johnko/dillinger.git
+    dillinger                   ${REPOSRC}johnko/dillinger.git
                                                                             dmenu                       ${REPOSRC}johnko/dmenu.git
         doc                         ${REPOSRC}johnko/doc.git
     dtfc                        ${REPOSRC}johnko/dtfc.git
@@ -36,15 +36,15 @@ github-backup               ${REPOSRC}johnko/github-backup.git
                                                                             gtfc                        ${REPOSRC}johnko/gtfc.git
 hddid                       ${REPOSRC}johnko/hddid.git
 iocage-tools                ${REPOSRC}johnko/iocage-tools.git
-        kanso-chat                  ${REPOSRC}johnko/kanso-chat.git
-        kanso-example               ${REPOSRC}johnko/kanso-example.git
-        kanso-focus                 ${REPOSRC}johnko/kanso-focus.git
-        kanso-manage-couchdb        ${REPOSRC}johnko/kanso-manage-couchdb.git
-        kanso-movies                ${REPOSRC}johnko/kanso-movies.git
-        kanso-music                 ${REPOSRC}johnko/kanso-music.git
-        kanso-photos                ${REPOSRC}johnko/kanso-photos.git
-        kanso-wiki                  ${REPOSRC}johnko/kanso-wiki.git
-        kanso-wtfc                  ${REPOSRC}johnko/kanso-wtfc.git
+    kanso-chat                  ${REPOSRC}johnko/kanso-chat.git
+    kanso-example               ${REPOSRC}johnko/kanso-example.git
+    kanso-focus                 ${REPOSRC}johnko/kanso-focus.git
+    kanso-manage-couchdb        ${REPOSRC}johnko/kanso-manage-couchdb.git
+    kanso-movies                ${REPOSRC}johnko/kanso-movies.git
+    kanso-music                 ${REPOSRC}johnko/kanso-music.git
+    kanso-photos                ${REPOSRC}johnko/kanso-photos.git
+    kanso-wiki                  ${REPOSRC}johnko/kanso-wiki.git
+    kanso-wtfc                  ${REPOSRC}johnko/kanso-wtfc.git
                                                                             kurz.go                     ${REPOSRC}johnko/kurz.go.git
     klaus                       ${REPOSRC}johnko/klaus.git
                                                                             mfsbsd                      ${REPOSRC}johnko/mfsbsd.git
