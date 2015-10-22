@@ -34,6 +34,7 @@ freebsd-sortconf            ${REPOSRC}/freebsd-sortconf.git
 freebsd-system-info         ${REPOSRC}/freebsd-system-info.git
 github-backup               ${REPOSRC}/github-backup.git
                                                                             gtfc                        ${REPOSRC}/gtfc.git
+    h5ai                        ${REPOSRC}/h5ai.git
 hddid                       ${REPOSRC}/hddid.git
 iocage-tools                ${REPOSRC}/iocage-tools.git
     kanso-chat                  ${REPOSRC}/kanso-chat.git
@@ -47,6 +48,7 @@ iocage-tools                ${REPOSRC}/iocage-tools.git
     kanso-wtfc                  ${REPOSRC}/kanso-wtfc.git
     klaus                       ${REPOSRC}/klaus.git
                                                                             kurz.go                     ${REPOSRC}/kurz.go.git
+    mdwiki                      ${REPOSRC}/mdwiki.git
                                                                             mfsbsd                      ${REPOSRC}/mfsbsd.git
         mixxx-novation-launchpad    ${REPOSRC}/mixxx-novation-launchpad.git
 mount_iso                   ${REPOSRC}/mount_iso.git
@@ -65,6 +67,8 @@ skel                        ${REPOSRC}/skel.git
 ssh-multi                   ${REPOSRC}/ssh-multi.git
 ssh-tools                   ${REPOSRC}/ssh-tools.git
         tf2-config                  ${REPOSRC}/tf2-config.git
+    transfer.sh                 ${REPOSRC}/transfer.sh.git
+    upload.sh                   ${REPOSRC}/upload.sh.git
 vmrc                        ${REPOSRC}/vmrc.git
         windows-setup               ${REPOSRC}/windows-setup.git
                                                                             wtfc                        ${REPOSRC}/wtfc.git
