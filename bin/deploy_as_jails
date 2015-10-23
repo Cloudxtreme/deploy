@@ -165,9 +165,9 @@ echo "$JAILNAMES" \
                     iocage start ${name}
                     ;;
                 nginx)
-                    setupnginxconfig ${name} ${FQDN}
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}
                     iocage start ${name}
+                    setupnginxconfig ${name} ${FQDN}
                     ;;
                 couch|couchdb)
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_fqdn=${FQDN}
