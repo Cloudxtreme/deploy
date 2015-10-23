@@ -115,6 +115,8 @@ EOF
                     sed "s/ucarp_/ucarp${name}_/g" /etc/rc.conf.d/ucarp${name}.tmp >/etc/rc.conf.d/ucarp${name}
                     rm /etc/rc.conf.d/ucarp${name}.tmp
                 fi
+                ## start ucarp* but only if enabled
+                ## because it could have been disabled on purpose
                 service ucarp${name} onestatus >/dev/null 2>/dev/null || service ucarp${name} start
             fi
         fi
