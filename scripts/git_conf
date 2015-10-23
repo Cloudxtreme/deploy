@@ -55,6 +55,7 @@ mount_iso
 netconn
 newsyslog.conf.d
 nginx-config-sites-enabled
+ori-tools
                                                                             Pico
 psnap
 pwgen
