@@ -1,7 +1,7 @@
 #!/bin/sh
 
-JAILNAME=squid
-LOGFILE=/var/log/squid/access.log
+JAILNAME=nginx
+LOGFILE=/var/log/nginx-ssl-access.log
 
 
 if ! ioc-pathof ${JAILNAME} >/dev/null 2>&1 ; then
