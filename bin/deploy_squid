@@ -7,8 +7,6 @@ if [ "x" == "x${SQUIDPKG}" ]; then
     exit 1
 fi
 
-export BATCH=yes
-
 NEWINSTALL="YES"
 if sysrc squid_enable | grep YES >/dev/null ; then
     NEWINSTALL="NO"
@@ -18,34 +16,7 @@ fi
 if [ "xYES" == "x${NEWINSTALL}" ]; then
     if [ -e ${SQUIDPKG} ]; then
         pkg add -f ${SQUIDPKG}
-    else
-        PORTNAME="www/squid"
-        ## install squid and dependencies
-        pkg install -y ${PORTNAME} lang/perl5.20
-        ## remove squid because we want custom options
-        ## openssl from ports conflicts https://lists.freebsd.org/pipermail/freebsd-questions/2015-June/266245.html
-        pkg remove -y ${PORTNAME} openssl
-        # psnap
-
-        ## we want LAX_HTTP=on
-        if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
-            cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
-        fi
-        cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP SSL SSL_CRTD TP_PF LARGEFILE ;' >/usr/ports/${PORTNAME}/Makefile
-
-        ## remove old config
-        if [ -e /var/db/ports/www_squid/options ]; then
-            rm /var/db/ports/www_squid/options
-        fi
-
-        mkdir -p /var/ports/packages/All
-        cd /usr/ports/${PORTNAME}
-        make && make install && make package \
-        && cp /var/ports/usr/ports/${PORTNAME}/work/pkg/*.txz /var/ports/packages/All/ \
-        && make clean
-        ## see /var/ports/packages/All/
     fi
-
     if ! which squid ; then
         echo "Failed to build squid."
         exit 1

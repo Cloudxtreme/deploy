@@ -1,23 +1,7 @@
 #!/bin/sh
 
-# READY, build works
+# isntall runtime dependencies for gitlab
 
-######################################################################
-# Script version is yymmdd-HHMMSS in UTC, date -u +%y%m%d-%H%M%S
-######################################################################
-SCRIPTVERSION=151001-013053
-
-if [ "x" == "x${REPOSRC}" ]; then
-    REPOSRC=https://github.com/johnko
-fi
-
-if [ ! -d ${HOME}/gitlabports ]; then
-    git clone --depth 1 ${REPOSRC}/freebsd-ports-test.git -b gitlab-7.14.1 ${HOME}/gitlabports
-fi
-
-rsync -virthP --exclude .git  ${HOME}/gitlabports/  /usr/ports/
-
-# Runtime dependencies
 pkg install -y \
 rubygem-unicorn rubygem-raindrops ruby21-gems ruby libyaml libffi indexinfo libedit rubygem-kgio rubygem-rack16 \
 rubygem-sanitize rubygem-crass rubygem-nokogiri libxslt libxml2 libgcrypt libgpg-error gettext-runtime rubygem-nokogumbo \
@@ -114,109 +98,5 @@ rubygem-omniauth-gitlab \
 rubygem-gitlab-flowdock-git-hook rubygem-flowdock \
 rubygem-ace-rails-ap
 
-# Build dependencies
-pkg install -y \
-autoconf \
-autoconf-wrapper \
-bash \
-bison \
-boehm-gc \
-cmake \
-cmake-modules \
-docbook \
-docbook-sgml \
-docbook-xml \
-docbook-xsl \
-getopt \
-gettext-tools \
-gmake \
-gmake-lite \
-help2man \
-iso8879 \
-jsoncpp \
-libarchive \
-libatomic_ops \
-libiconv \
-libpaper \
-lzo2 \
-m4 \
-openssl \
-p5-Locale-gettext \
-pkgconf \
-py27-Babel \
-py27-Jinja2 \
-py27-MarkupSafe \
-py27-alabaster \
-py27-docutils \
-py27-pygments \
-py27-pystemmer \
-py27-pytz \
-py27-setuptools27 \
-py27-six \
-py27-snowballstemmer \
-py27-sphinx \
-py27-sphinx_rtd_theme \
-scons \
-sdocbook-xml \
-swig13 \
-w3m \
-xmlcatmgr \
-xmlcharent \
-xmlto
-
-PORTPATHS="
-/usr/ports/www/rubygem-activeresource4-rails41
-/usr/ports/www/rubygem-acts-as-taggable-on3-rails41
-/usr/ports/www/rubygem-asana-rails41
-/usr/ports/www/rubygem-cal-heatmap-rails0-rails41
-/usr/ports/www/rubygem-carrierwave-rails41
-/usr/ports/www/rubygem-d3_rails-rails41
-/usr/ports/devel/rubygem-default_value_for-rails41
-/usr/ports/devel/rubygem-devise-async-rails41
-/usr/ports/devel/rubygem-devise-rails41
-/usr/ports/security/rubygem-devise-two-factor-rails41
-/usr/ports/security/rubygem-doorkeeper-rails41
-/usr/ports/www/rubygem-dropzonejs-rails41
-/usr/ports/devel/rubygem-enumerize-rails41
-/usr/ports/devel/rubygem-font-awesome-rails-rails41
-/usr/ports/devel/rubygem-gitlab_git-rails41
-/usr/ports/www/rubygem-gon-rails41
-/usr/ports/devel/rubygem-grape-entity-rails41
-/usr/ports/devel/rubygem-grape-rails41
-/usr/ports/www/rubygem-haml-rails-rails41
-/usr/ports/textproc/rubygem-html-pipeline-rails41
-/usr/ports/www/rubygem-jquery-rails-rails41
-/usr/ports/www/rubygem-jquery-rails41
-/usr/ports/www/rubygem-jquery-scrollto-rails41
-/usr/ports/www/rubygem-jquery-turbolinks-rails41
-/usr/ports/www/rubygem-jquery-ui-rails-rails41
-/usr/ports/www/rubygem-kaminari-rails41
-/usr/ports/security/rubygem-rack-oauth2-rails41
-/usr/ports/devel/rubygem-rails-deprecated_sanitizer-rails41
-/usr/ports/textproc/rubygem-rails-dom-testing-rails41
-/usr/ports/devel/rubygem-rails-observers-rails41
-/usr/ports/www/rubygem-rails41
-/usr/ports/databases/rubygem-redis-actionpack-rails41
-/usr/ports/devel/rubygem-redis-activesupport-rails41
-/usr/ports/www/rubygem-redis-rails41
-/usr/ports/www/rubygem-responders1
-/usr/ports/textproc/rubygem-sass-rails41
-/usr/ports/databases/rubygem-seed-fu-rails41
-/usr/ports/devel/rubygem-sprockets-rails41
-/usr/ports/www/rubygem-task_list-rails41
-/usr/ports/www/gitlab/
-"
-
-export BATCH=yes
-
-for i in ${PORTPATHS} ; do
-    if [ "x" != "x${i}" ] && [ -d ${i} ]; then
-        cd ${i}
-        # make config-recursive
-        make && make install
-        make package
-        make clean
-        # make package-recursive
-        # see /var/ports/packages/All/
-    fi
-done
+# for the deploy_gitlab_config script
+pkg install -y sudo
