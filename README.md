@@ -43,7 +43,7 @@ source local/cshvars
 
 ```
 fzg-random-key
-fzg -i -z 922 -p tank -r mirror -d ada0 -d ada1 -d ada2
+fzg -i -t 5 -z 922 -p tank -r mirror -d ada0 -d ada1 -d ada2
 fzg-unlock-on-boot
 ```
 
@@ -177,7 +177,7 @@ source local/cshvars
 
 ```
 fzg-random-key
-fzg -i -z 922 -p tank -r mirror -d ada0 -d ada1 -d ada2
+fzg -i -t 5 -z 922 -p tank -r mirror -d ada0 -d ada1 -d ada2
 fzg-unlock-on-boot
 ```
 
