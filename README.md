@@ -23,7 +23,7 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 fres
 rm /var/ports/packages/All/squid-*.txz
 fzg -r mirror -d ada0 -d ada1 -d ada2 -z 5g -n -H `hostname-by-ptr-dns`
-copy-network-conf-to-mnt
+fzg-copy-network-conf-to-mnt
 reboot
 ```
 
@@ -158,7 +158,7 @@ env SQUID=192.168.255.201:3128 setproxy
 setenv FQDN virtual.local
 env REPOSRC=https://${FQDN}/git fres
 fzg -d ada0 -d ada2 -z 5g -n -H `hostname-by-ptr-dns`
-copy-network-conf-to-mnt
+fzg-copy-network-conf-to-mnt
 reboot
 ```
 
