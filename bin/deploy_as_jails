@@ -243,7 +243,7 @@ echo "$JAILNAMES" \
                     sysrc -f $( ioc-pathof ${name} )/etc/rc.conf.d/firstboot_jail firstboot_jail_deploy=${name}_config
                     iocage start ${name}
                     ;;
-                builder|buildersquid|builderffmpeg|buildgitlab)
+                builder|buildersquidpkg|builderffmpegpkg|buildgitlabpkg)
                     if [ -e /var/ports ]; then
                         rsync -qalmP --exclude work /var/ports/ $( ioc-pathof ${name} )/var/ports/
                     fi
