@@ -50,6 +50,7 @@ iocage-tools
     kanso-wtfc
     klaus
                                                                     kurz.go
+md5sha256
     mdwiki
                                                                             mfsbsd
         mixxx-novation-launchpad
@@ -72,7 +73,7 @@ ssh-multi
 ssh-tools
         tf2-config
     transfer.sh
-    upload.sh
+    uploadonly.sh
 vmrc
         windows-setup
                                                                     wtfc
