@@ -75,6 +75,7 @@ ssh-multi
 ssh-tools
                     tf2-config
                                         transfer.sh
+                                        transfer.sh.ui
                                         uploadonly.sh
 vmrc
                     windows-setup
