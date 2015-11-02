@@ -11,7 +11,7 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
-MYUSER="dtfc"
+MYUSER="app"
 
 deploy_php_nginx
 

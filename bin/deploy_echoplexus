@@ -6,11 +6,10 @@ if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/qq99
 fi
 
-MYUSER="echoplexus"
+MYUSER="app"
 
 # Based on https://github.com/qq99/echoplexus/blob/master/INSTALL.md
-
-echo "${MYUSER}:1006:::::Echoplexus:/usr/home/${MYUSER}:/usr/sbin/nologin:" | adduser -w no -f -
+echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
 pw user mod ${MYUSER} -G redis
 
 pkg install -y www/node www/npm sudo git nginx ruby ruby21-gems redis
