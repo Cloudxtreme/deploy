@@ -4,39 +4,41 @@
 
 # FreeBSD
 #   Jails
-#       Other OS
-#           Not used
-#               Abandoned
+#           Library
+#                   Other OS
+#                               TODO
+#                                                           Not used
+#                                                                           Abandoned
 
 PROJECTS="
 apache-config-freebsd
                                                                             btfc
                                                                             btfc2
-btfs
-ccasfs
+                                btfs
+                                ccasfs
                                                                             checkmail-ahk
 crontabbed
-        crossdj-mappings
-delugefs
+                    crossdj-mappings
+                                delugefs
 deploy
-    dillinger
+                                dillinger
                                                                             dmenu
-        doc
-    dtfc
+                                doc
+                                dtfc
                                                                             dwm
                                                                             dwmsd
-    echoplexus
+                                echoplexus
                                                                             eza
 ffmpeg-tools
 freebsd-install-script
 freebsd-pf-script
-freebsd-ports-test
+    freebsd-ports-test
 freebsd-sortconf
 freebsd-system-info
-                                                                    gfs-py
+            gfs-py
 github-backup
 gtfc
-    h5ai
+                                h5ai
 hddid
 iocage-tools
     kanso-chat
@@ -49,21 +51,21 @@ iocage-tools
     kanso-wiki
     kanso-wtfc
     klaus
-                                                                    kurz.go
-md5sha256
-    mdwiki
+            kurz.go
+            md5sha256
+                                mdwiki
                                                                             mfsbsd
-        mixxx-novation-launchpad
-                                                                    mongo-python-driver
+                    mixxx-novation-launchpad
+                                                            mongo-python-driver
 mount_iso
 netconn
 newsyslog.conf.d
 nginx-config-sites-enabled
-ori-tools
+                                                                            ori-tools
                                                                             Pico
 psnap
 pwgen
-        python-rtmidi
+                    python-rtmidi
 rad
 randomword
 rsync-tools
@@ -71,12 +73,12 @@ setproxy
 skel
 ssh-multi
 ssh-tools
-        tf2-config
-    transfer.sh
-    uploadonly.sh
+                    tf2-config
+                                transfer.sh
+                                uploadonly.sh
 vmrc
-        windows-setup
-                                                                    wtfc
+                    windows-setup
+                                wtfc
 zfs-tools
 zsnapple
 "
