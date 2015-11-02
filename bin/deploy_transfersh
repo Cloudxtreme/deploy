@@ -19,12 +19,12 @@ pkg install -y lang/go sudo
 
 echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
 
-cd /usr/home/dtfc
-if [ ! -d /usr/home/dtfc/src ]; then
-    sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}/transfer.sh.git /usr/home/dtfc/src
+cd /usr/home/${MYUSER}
+if [ ! -d /usr/home/${MYUSER}/src ]; then
+    sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}/transfer.sh.git /usr/home/${MYUSER}/src
 fi
 
-cd /usr/home/dtfc/src
+cd /usr/home/${MYUSER}/src
 sh scripts/install.sh
 
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/transfersh \

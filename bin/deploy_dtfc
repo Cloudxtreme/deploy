@@ -19,23 +19,23 @@ pkg install -y lang/go sudo
 
 echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
 
-cd /usr/home/dtfc
-if [ ! -d /usr/home/dtfc/src ]; then
-    sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}/dtfc.git /usr/home/dtfc/src
+cd /usr/home/${MYUSER}
+if [ ! -d /usr/home/${MYUSER}/src ]; then
+    sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}/dtfc.git /usr/home/${MYUSER}/src
 fi
 
-cd /usr/home/dtfc/src
+cd /usr/home/${MYUSER}/src
 sh scripts/install.sh
 
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/couchdb \
 | sed "s/localhost.my.domain/${FQDN}/" \
 >/usr/local/etc/nginx/sites-enabled/dtfc
 
-if [ ! -d /usr/home/dtfc/config ]; then
-    install -d -o ${MYUSER} /usr/home/dtfc/config
+if [ ! -d /usr/home/${MYUSER}/config ]; then
+    install -d -o ${MYUSER} /usr/home/${MYUSER}/config
 fi
 
-for i in /usr/home/dtfc/config/melist.txt /usr/home/dtfc/config/peerlist.txt ; do
+for i in /usr/home/${MYUSER}/config/melist.txt /usr/home/${MYUSER}/config/peerlist.txt ; do
     if [ ! -f ${i} ]; then
         echo "https://${FQDN}/dtfc/" >${i}
     fi
