@@ -6,7 +6,7 @@
 #   Jails
 #           Library
 #                   Other OS
-#                               TODO
+#                                       TODO
 #                                                           Not used
 #                                                                           Abandoned
 
@@ -14,20 +14,20 @@ PROJECTS="
 apache-config-freebsd
                                                                             btfc
                                                                             btfc2
-                                btfs
-                                ccasfs
+                                        btfs
+                                        ccasfs
                                                                             checkmail-ahk
 crontabbed
                     crossdj-mappings
-                                delugefs
+                                        delugefs
 deploy
-                                dillinger
+                                        dillinger
                                                                             dmenu
-                                doc
-                                dtfc
+                                        doc
+                                        dtfc
                                                                             dwm
                                                                             dwmsd
-                                echoplexus
+                                        echoplexus
                                                                             eza
 ffmpeg-tools
 freebsd-install-script
@@ -38,7 +38,7 @@ freebsd-system-info
             gfs-py
 github-backup
 gtfc
-                                h5ai
+                                        h5ai
 hddid
 iocage-tools
     kanso-chat
@@ -53,7 +53,7 @@ iocage-tools
     klaus
             kurz.go
             md5sha256
-                                mdwiki
+                                        mdwiki
                                                                             mfsbsd
                     mixxx-novation-launchpad
                                                             mongo-python-driver
@@ -74,11 +74,11 @@ skel
 ssh-multi
 ssh-tools
                     tf2-config
-                                transfer.sh
-                                uploadonly.sh
+                                        transfer.sh
+                                        uploadonly.sh
 vmrc
                     windows-setup
-                                wtfc
+                                        wtfc
 zfs-tools
 zsnapple
 "
