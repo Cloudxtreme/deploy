@@ -76,7 +76,7 @@ ssh-tools
                     tf2-config
                                         transfer.sh
                                         transfer.sh.ui
-                                        uploadonly.sh
+                                        upload.sh
 vmrc
                     windows-setup
                                         wtfc
