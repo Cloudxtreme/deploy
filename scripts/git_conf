@@ -53,6 +53,7 @@ iocage-tools
     kanso-wtfc
     klaus
             kurz.go
+                    md2html
             md5sha256
                                         mdwiki
                                                                             mfsbsd
