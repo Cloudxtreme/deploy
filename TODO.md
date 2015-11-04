@@ -1,7 +1,8 @@
-# deploy done
+# _delete_jails
+# _deploy_app
+# _deploy_jails
+# deploy
 # deploy_apache24
-# deploy_as_jails
-# deploy_as_jails_delete
 # deploy_baikal             bad
 # deploy_beets
 # deploy_couchdb

@@ -25,7 +25,7 @@ fi
 
 name=$1
 if ! iocage list | grep "${name}$" >/dev/null 2>/dev/null; then
-    # typically only in here if deploying a single app not with deploy_as_jails, eg.
+    # typically only in here if deploying a single app not with _deploy_jails, eg.
     # env NIC=lo1 IP=10.7.7.7
     if [ "x" = "x${IP}" ]; then
         echo "Usage: env IP=10.7.7.7 ${0##*/} name boot_on/off app_name"
