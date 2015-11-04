@@ -12,7 +12,7 @@
 
 PROJECTS="
 apache-config-freebsd
-                                        bsdploy
+                                                                            bsdploy
                                                                             btfc
                                                                             btfc2
                                         btfs
@@ -65,7 +65,7 @@ newsyslog.conf.d
 nginx-config-sites-enabled
                                                                             ori-tools
                                                                             Pico
-                                        ploy_iocage
+                                                                            ploy_iocage
 psnap
 pwgen
                     python-rtmidi
