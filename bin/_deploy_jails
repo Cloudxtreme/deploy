@@ -185,13 +185,10 @@ echo "$JAILNAMES" \
                     allowsysvipc ${name}
                     ## only if we are installing via src to cache rubygems
                     #copysslselfcert ${name}
-                    if ifconfig | grep ${WEBIPALIAS} >/dev/null ; then
-                        # Set jail ip as FQDN so git-shell works
-                        grep -v " ${FQDN}" $( ioc-pathof ${name} )/etc/hosts >$( ioc-pathof ${name} )/etc/hosts.tmp
-                        cat $( ioc-pathof ${name} )/etc/hosts.tmp >$( ioc-pathof ${name} )/etc/hosts
-                        echo "${IPNET}`jailip gitlab` ${FQDN}" >>$( ioc-pathof ${name} )/etc/hosts
-                        rm  $( ioc-pathof ${name} )/etc/hosts.tmp
-                    fi
+                    # Set jail ip as FQDN so git-shell works
+                    grep -v " ${FQDN}" $( ioc-pathof ${name} )/etc/hosts >$( ioc-pathof ${name} )/etc/hosts.tmp
+                    cat $( ioc-pathof ${name} )/etc/hosts.tmp >$( ioc-pathof ${name} )/etc/hosts
+                    echo "${IPNET}`jailip gitlab` ${FQDN}" >>$( ioc-pathof ${name} )/etc/hosts
                                             _deploy_app ${name} ${boot} ${name}_config
                     ;;
                 builder|buildersquidpkg|builderffmpegpkg|buildgitlabpkg)
