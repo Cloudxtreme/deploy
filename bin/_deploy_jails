@@ -103,7 +103,7 @@ case ${1} in
         JAILNAMES="${JAILSDEV}"
         ;;
     nginx)
-        env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" setup_pfjails_ucarp
+        env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" _deploy_pf_ucarp
         setupnginxconfig nginx ${FQDN}
         exit
         ;;
@@ -143,7 +143,7 @@ save_var_ports() {
     rsync -qalmP --exclude work $( ioc-pathof ${name} )/var/ports/ /var/ports/
 }
 
-env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" setup_pfjails_ucarp
+env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" _deploy_pf_ucarp
 
 echo "$JAILNAMES" \
     | while read num name boot ; do
