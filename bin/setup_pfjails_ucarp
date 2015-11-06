@@ -7,15 +7,15 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ "x" == "x${IPNET}" ]; then
+if [ "x" = "x${IPNET}" ]; then
     IPNET="10.7.7."
 fi
 
-if [ "x" == "x${HOSTIP}" ]; then
+if [ "x" = "x${HOSTIP}" ]; then
     HOSTIP="$( net-ip )"
 fi
 
-if [ "x" == "x${HOSTNIC}" ]; then
+if [ "x" = "x${HOSTNIC}" ]; then
     HOSTNIC="$( net-nic )"
 fi
 
@@ -24,7 +24,7 @@ if [ "x" != "x${STARTCOUNT}" ]; then
     count=`echo ${STARTCOUNT} | sed 's/[^[:digit:]]//g'`
 fi
 
-if [ "x" == "x${count}" ]; then
+if [ "x" = "x${count}" ]; then
     count=0
 fi
 
@@ -33,46 +33,8 @@ setuppf() {
     cat >/etc/pf/jails.anchor <<EOF
     nat pass on ${HOSTNIC} inet from ${IPNET}0/24 to any -> ${HOSTIP}
 EOF
-    if [ "x" == "x${SQUIDIPALIAS}" ]; then
-        SQUIDIPALIAS=0
-    fi
-    if [ "x" == "x${WEBIPALIAS}" ]; then
-        WEBIPALIAS=0
-    fi
-    if [ "x" == "x${POSTFIXIPALIAS}" ]; then
-        POSTFIXIPALIAS=0
-    fi
-    if [ "x" == "x${DOVECOTIPALIAS}" ]; then
-        DOVECOTIPALIAS=0
-    fi
-    if [ "x" == "x${XMPPIPALIAS}" ]; then
-        XMPPIPALIAS=0
-    fi
-    if [ "x" == "x${MURMURIPALIAS}" ]; then
-        MURMURIPALIAS=0
-    fi
-    if [ "x" == "x${MONITIPALIAS}" ]; then
-        MONITIPALIAS=0
-    fi
-    if [ "x" == "x${ZABBIXIPALIAS}" ]; then
-        ZABBIXIPALIAS=0
-    fi
-    # name alias pubport realport ucarp
-    ALIASES="
-    squid     ${SQUIDIPALIAS}     3127    3127  u
-    squid     ${SQUIDIPALIAS}     3128    3128  .
-    nginx     ${WEBIPALIAS}         80      80  u
-    nginx     ${WEBIPALIAS}        443     443  .
-    klaus     ${WEBIPALIAS}         23      23  .
-    postfix   ${POSTFIXIPALIAS}    587     587  u
-    dovecot   ${DOVECOTIPALIAS}    993     993  u
-    ejabberd  ${XMPPIPALIAS}      5222    5222  u
-    murmur    ${MURMURIPALIAS}   64738   64738  u
-    monit     ${MONITIPALIAS}     2812    2812  u
-    zabbix    ${ZABBIXIPALIAS}   10050   10050  u
-    zabbix    ${ZABBIXIPALIAS}   10051   10051  .
-"
-    echo "$ALIASES" \
+
+    echo "$JAILIPFWD" \
     | while read name ipalias pubport realport doucarp ; do
         #echo "debug ${name} ${ipalias} ${pubport} ${realport}"
         if [ "x0" != "x${ipalias}" ] && [ "x" != "x${ipalias}" ] \

@@ -118,12 +118,13 @@ allowsysvipc() {
 }
 
 copysslselfcert() {
-    if [ "x" != "x${SQUIDIPALIAS}" ]; then
-        if ifconfig | grep ${SQUIDIPALIAS} >/dev/null ; then
+    if [ "x" != "x${HTTP_PROXY}" ]; then
+        PROXYIP=$( echo $HTTP_PROXY | awk -F/ '{print $NF}' | awk -F: '{print $1}' )
+        if [ "x10.7.7.1" = "$PROXYIP" ]; then
             cat $( ioc-pathof squid )/usr/local/etc/squid/public.pem >>$( ioc-pathof ${1} )/usr/local/share/certs/ca-root-nss.crt
         else
-            curl --output $( ioc-pathof ${1} )/root/public-${SQUIDIPALIAS}.pem http://${SQUIDIPALIAS}:3127/public.pem
-            cat           $( ioc-pathof ${1} )/root/public-${SQUIDIPALIAS}.pem >>$( ioc-pathof ${1} )/usr/local/share/certs/ca-root-nss.crt
+            curl --output $( ioc-pathof ${1} )/root/public-${PROXYIP}.pem http://${PROXYIP}:3127/public.pem
+            cat           $( ioc-pathof ${1} )/root/public-${PROXYIP}.pem >>$( ioc-pathof ${1} )/usr/local/share/certs/ca-root-nss.crt
         fi
     else
         cat $( ioc-pathof squid )/usr/local/etc/squid/public.pem >>$( ioc-pathof ${1} )/usr/local/share/certs/ca-root-nss.crt
@@ -171,6 +172,8 @@ echo "$JAILNAMES" \
                 murmur)                     _deploy_app ${name} ${boot} ;;
                 vnc)                        _deploy_app ${name} ${boot} ;;
                 klaus)                      _deploy_app ${name} ${boot} ;;
+                smtp)                       _deploy_app ${name} ${boot} postfix ;;
+                imap)                       _deploy_app ${name} ${boot} dovecot ;;
                 owncloud)
                     if [         -d /root/local/owncloud ]; then
                         mkdir -p                          $( ioc-pathof ${name} )/root/local/owncloud

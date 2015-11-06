@@ -5,11 +5,11 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 
 ## Planning
 
-### FQDN and WEBIPALIAS that would be reachable if this service is to be public
+### FQDN and IP that would be reachable if this service is to be public
 - virtual.local
 - 192.168.255.200
 
-### SQUIDIPALIAS, IP to use as alias for transparent ssl proxy
+### IP to use as transparent ssl proxy
 - 192.168.255.201
 
 ## Host (alpha.local 192.168.255.120)
