@@ -34,7 +34,7 @@ setuppf() {
     nat pass on ${HOSTNIC} inet from ${IPNET}0/24 to any -> ${HOSTIP}
 EOF
 
-    echo "$JAILIPFWD" \
+    echo "$JAILSIPFWD" \
     | while read name ipalias pubport realport doucarp ; do
         #echo "debug ${name} ${ipalias} ${pubport} ${realport}"
         if [ "x0" != "x${ipalias}" ] && [ "x" != "x${ipalias}" ] \
