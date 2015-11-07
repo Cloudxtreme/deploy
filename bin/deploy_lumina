@@ -4,6 +4,7 @@
 
 pkg install -y lumina \
 hal \
+xfce4-panel \
 thunderbird \
 firefox
 
@@ -16,6 +17,10 @@ XINITRC=${HOME}/.xinitrc
 if [ ! -f $XINITRC ]; then
     cat > $XINITRC <<EOF
 #!/bin/sh
+wait_and_launch() {
+    sleep 15; exec $1
+}
+wait_and_launch xfce4-panel &
 exec Lumina-DE
 EOF
     chmod +x $XINITRC
