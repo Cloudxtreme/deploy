@@ -17,11 +17,7 @@ Deploying apps, sometimes not the FreeBSD Ports way... WARNING: this might be du
 ### Install
 
 ```
-## Optional
-# env SQUID=192.168.255.201:3128 setproxy
-
 fres
-rm /var/ports/packages/All/squid-*.txz
 fzg -r mirror -d ada0 -d ada1 -d ada2 -z 5g -n -H `hostname-by-ptr-dns`
 fzg-copy-network-conf-to-mnt
 reboot
@@ -30,9 +26,6 @@ reboot
 ### First run
 
 ```
-## Optional
-# env SQUID=192.168.255.201:3128 setproxy
-
 pg pkg || fres
 cp ~/perm/cshvars ~/local/cshvars
 vi local/cshvars
@@ -42,9 +35,7 @@ source local/cshvars
 ### Create zpool tank
 
 ```
-fzg-random-key
 fzg -i -t 4 -p tank -r mirror -d ada0 -d ada1 -d ada2
-fzg-unlock-on-boot
 ```
 
 ### pfsense on bhyve
@@ -62,7 +53,7 @@ Install the packages:
 Pulls from github.com and gitlab.com.
 
 ```
-sh ~/perm/deploy.a.good
+_deploy_jails good
 
 ## Optional
 # vi /etc/rc.conf.d/ucarp*
@@ -124,7 +115,7 @@ Then https://virtual.local/owncloud/index.php/settings/admin and set the outgoin
 
 You may want to visit https://virtual.local/git/ :
 
-You should add your ssh public key to `/usr/local/git/.ssh/authorized_keys2`
+You should add your ssh public key to `$( ioc-pathof klaus )/usr/local/git/.ssh/authorized_keys2`
 
 And create bare repos in the jail:
 
@@ -176,9 +167,7 @@ source local/cshvars
 ### Create zpool tank
 
 ```
-fzg-random-key
 fzg -i -t 4 -p tank -r mirror -d ada0 -d ada1 -d ada2
-fzg-unlock-on-boot
 ```
 
 ### Jails
@@ -187,7 +176,7 @@ Pulls from alpha.local.
 
 ```
 rsync -viaP --exclude work alpha:/var/ports/ /var/ports/
-sh ~/perm/deploy.a.good
+_deploy_jails good
 
 ## Optional
 # vi /etc/rc.conf.d/ucarp*
