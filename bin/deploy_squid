@@ -56,7 +56,7 @@ fi
 
 echo
 JAILIP=`ifconfig | grep inet | awk '{print $2}'`
-echo "Squid is setup, eza-unlink-basejail will setup PKG_ENV to ${JAILIP}:3128"
+echo "Squid is setup at ${JAILIP}:3128"
 
 # 3127 for public.pem
 deploy_nginx
