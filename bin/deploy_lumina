@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# READY
+
+pkg install -y lumina \
+hal \
+thunderbird \
+firefox
+
+if [ ! -e /usr/local/bin/Lumina-DE ]; then
+    echo "ERROR: install failed"
+    exit 1
+fi
+
+XINITRC=${HOME}/.xinitrc
+if [ ! -f $XINITRC ]; then
+    cat > $XINITRC <<EOF
+#!/bin/sh
+xrdb \$HOME/.Xresources &
+exec Lumina-DE &
+xterm -bg black -fg gray &
+EOF
+    chmod +x $XINITRC
+fi
+
+sysrc -f /etc/rc.conf.d/dbus dbus_enable="YES"
+#sysrc -f /etc/rc.conf.d/hald hald_enable="YES"
+
+service dbus start
+#service hald start

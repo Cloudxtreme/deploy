@@ -11,9 +11,6 @@ firefox \
 gstreamer1-plugins-good \
 gstreamer1-libav \
 net/tightvnc
-#x11-wm/openbox
-#www/epiphany
-#www/midori
 
 if [ ! -e /usr/local/bin/vncserver ]; then
     echo "ERROR: install failed"
@@ -22,15 +19,16 @@ fi
 
 mkdir ~/.vnc
 
-if [ ! -f ~/.vnc/xstartup ]; then
-    cat >~/.vnc/xstartup <<EOF
+XINITRC=${HOME}/.vnc/xstartup
+if [ ! -f $XINITRC ]; then
+    cat > $XINITRC <<EOF
 #!/bin/sh
 xrdb \$HOME/.Xresources &
 xfwm4 &
 xfce4-panel &
 xterm -bg black -fg gray &
 EOF
-    chmod +x ~/.vnc/xstartup
+    chmod +x $XINITRC
 fi
 
 install -m 755 ~/git/deploy/usr/local/etc/rc.d/vnc /usr/local/etc/rc.d/vnc
