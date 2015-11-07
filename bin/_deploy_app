@@ -15,24 +15,16 @@ if ! iocage list -r | grep 'RELEASE' >/dev/null 2>/dev/null ; then
     fi
 fi
 
-if ! iocage list -t | grep 'common' >/dev/null 2>/dev/null ; then
-    ioc-newtemplate common 'lo1|10.7.7.253/32'
-    if ! iocage list -t | grep 'common' >/dev/null 2>/dev/null ; then
-        echo "ERROR: iocage common template doesn't exist, something went wrong."
-        exit 1
-    fi
-fi
-
 name=$1
-if ! iocage list | grep "${name}$" >/dev/null 2>/dev/null; then
+if ! iocage get tag ${name} >/dev/null 2>/dev/null; then
     # typically only in here if deploying a single app not with _deploy_jails, eg.
     # env NIC=lo1 IP=10.7.7.7
     if [ "x" = "x${IP}" ]; then
-        echo "Usage: env IP=10.7.7.7 ${0##*/} name boot_on/off app_name"
+        echo "Usage: env IP=10.7.7.253 ${0##*/} name boot_on/off app_name"
         exit 1
     fi
     echo "Creating: ${name} on ${NIC} w/ IP ${IP}"
-    ioc-newjail common ${name} "${NIC}|${IP}"
+    ioc-newjail ${name} "${NIC}|${IP}"
 fi
 boot=$2
 if [ "x" = "x${boot}" ]; then
