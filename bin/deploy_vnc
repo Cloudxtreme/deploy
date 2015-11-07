@@ -6,13 +6,13 @@ ROOTPASS="password"
 
 pkg install -y x11/xorg x11-wm/xfce4-wm \
 Thunar xfce4-tumbler \
-www/epiphany \
 thunderbird \
 firefox \
 gstreamer1-plugins-good \
 gstreamer1-libav \
 net/tightvnc
 #x11-wm/openbox
+#www/epiphany
 #www/midori
 
 if [ ! -e /usr/local/bin/vncserver ]; then
