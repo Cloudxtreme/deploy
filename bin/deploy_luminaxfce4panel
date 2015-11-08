@@ -21,7 +21,7 @@ wait_and_launch() {
     sleep 15; exec \$1
 }
 wait_and_launch xfce4-panel &
-exec Lumina-DE
+exec Lumina-DE &
 EOF
     chmod +x $XINITRC
 fi

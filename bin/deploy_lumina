@@ -16,7 +16,7 @@ XINITRC=${HOME}/.xinitrc
 if [ ! -f $XINITRC ]; then
     cat > $XINITRC <<EOF
 #!/bin/sh
-exec Lumina-DE
+exec Lumina-DE &
 EOF
     chmod +x $XINITRC
 fi
