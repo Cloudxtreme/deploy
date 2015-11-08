@@ -5,6 +5,7 @@
 ROOTPASS="password"
 
 pkg install -y lumina \
+hal \
 net/tightvnc
 
 if [ ! -e /usr/local/bin/Lumina-DE ]; then
@@ -28,9 +29,11 @@ install -m 755 ~/git/deploy/usr/local/etc/rc.d/vnc /usr/local/etc/rc.d/vnc
 cd /usr/local/bin
 patch < ~/git/deploy/patch/vncserver.patch
 
-sysrc dbus_enable="YES"
+sysrc -f /etc/rc.conf.d/dbus dbus_enable="YES"
+sysrc -f /etc/rc.conf.d/hald hald_enable="YES"
 
 service dbus start
+service hald start
 
 cat >~/.vnc/passwd.b64 <<EOF
 29g8/XJ6FFg=
