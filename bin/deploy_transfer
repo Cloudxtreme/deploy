@@ -2,6 +2,8 @@
 
 # READY
 
+. /usr/local/bin/loadmyvars.sh
+
 if [ "x" == "x${REPOSRC}" ]; then
     REPOSRC=https://github.com/johnko
 fi
@@ -20,19 +22,19 @@ pkg install -y lang/go sudo
 echo "${MYUSER}:1004::::::/usr/home/${MYUSER}:/bin/sh:" | adduser -w no -f -
 
 cd /usr/home/${MYUSER}
-if [ ! -d /usr/home/${MYUSER}/src-uploadsh ]; then
-    sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}/upload.sh.git /usr/home/${MYUSER}/src-uploadsh
+if [ ! -d /usr/home/${MYUSER}/src-transfersh ]; then
+    sudo -u ${MYUSER} -i -- git clone --depth 1 ${REPOSRC}/transfer.sh.git /usr/home/${MYUSER}/src-transfersh
 fi
 
-cd /usr/home/${MYUSER}/src-uploadsh
+cd /usr/home/${MYUSER}/src-transfersh
 sh extras/install.sh
 
-cat ~/git/deploy/usr/local/etc/nginx/sites-available/uploadsh \
+cat ~/git/deploy/usr/local/etc/nginx/sites-available/transfersh \
 | sed "s/localhost.my.domain/${FQDN}/" \
->/usr/local/etc/nginx/sites-enabled/uploadsh
+>/usr/local/etc/nginx/sites-enabled/transfersh
 
-service uploadsh start
+service transfersh start
 service nginx restart
 
 echo
-echo "Visit https://${FQDN}/upload/"
+echo "Visit https://${FQDN}/transfersh/"
