@@ -38,6 +38,7 @@ freebsd-sortconf
 freebsd-system-info
             gfs-py
 github-backup
+    gitlab-freebsd-port
 gtfc
 gtfc-overlay
                                         h5ai
