@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. /usr/local/bin/loadmyvars.sh
+
 name=$1
 boot=$2
 deployapp=$3
@@ -17,8 +19,8 @@ save_var_ports() {
 }
 
 copysslselfcert() {
-    if [ "x" != "x${HTTP_PROXY}" ]; then
-        PROXYIP=$( echo $HTTP_PROXY | awk -F/ '{print $NF}' | awk -F: '{print $1}' )
+    if [ "x" != "x${SQUID}" ]; then
+        PROXYIP=$( echo $SQUID | awk -F: '{print $1}' )
         if [ "x10.7.7.1" = "$PROXYIP" ]; then
             cat $( ioc-pathof squid )/usr/local/etc/squid/public.pem >>$( ioc-pathof ${1} )/usr/local/share/certs/ca-root-nss.crt
         else
