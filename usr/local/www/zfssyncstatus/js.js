@@ -226,7 +226,7 @@ function fetch_ramusage() {
 }
 function fetch_poolspace() {
     $.ajax({
-        url: "./json-poolspace.js",
+        url: "./json-poolusage.js",
         dataType: "json"
     }).success(function(data) {
         //parse_space_pie("#flot-pie-chartpool",data);
@@ -237,7 +237,7 @@ function fetch_poolspace() {
 }
 function fetch_tankspace() {
     $.ajax({
-        url: "./json-tankspace.js",
+        url: "./json-tankusage.js",
         dataType: "json"
     }).success(function(data) {
         //parse_space_pie("#flot-pie-charttank",data);
