@@ -86,6 +86,7 @@ vmrc
                     windows-setup
                                         wtfc
 zfs-tools
+    zfssyncstatus
 zsnapple
 "
 
