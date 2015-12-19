@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Ready
+
+if sysctl security.jail.jailed | grep 1 >/dev/null ; then
+    cat /etc/ssh/sshd_config \
+    | sed 's/#Port 22/Port 6371/' \
+    >/etc/ssh/sshd_config.tmp
+    cat /etc/ssh/sshd_config.tmp >/etc/ssh/sshd_config
+    rm /etc/ssh/sshd_config.tmp
+fi
+sshd-config
+service sshd start
