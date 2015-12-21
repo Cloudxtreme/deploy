@@ -49,7 +49,6 @@ pkg install -y \
     net/mono-zeroconf \
     devel/mono-addins \
     devel/notify-sharp \
-    x11-toolkits/gtk-sharp-beans \
     multimedia/libmtp \
     www/webkit-sharp \
     devel/google-gdata \
