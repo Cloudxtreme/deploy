@@ -98,8 +98,9 @@ if ls /usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
                     nginx)
                                                 env IP=${IPNET}${num}  _deploy_app ${name} ${boot}
                         setupnginxconfig ${name} ${FQDN}
-                        ;;
+                    ;;
                     zfssyncstatus)              env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
+                    ampache)                    env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
                     squid)                      env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
                     easydnsclient)              env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
                     couchdb)                    env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
@@ -117,7 +118,7 @@ if ls /usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
                     gitlab)                     env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ${name}_config ;;
                     builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg)
                                                 env IP=${IPNET}${num}  _deploy_app ${name} ${boot}
-                        ;;
+                    ;;
                     # DEV JAILNAMES
                     monit)                      env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
                     zabbix)                     env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
