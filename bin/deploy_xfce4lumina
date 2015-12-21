@@ -28,6 +28,7 @@ deskutils/kdepim4 \
 audio/mumble \
 audio/audacity \
 multimedia/vlc-qt4 \
+audio/clementine-player \
 www/chromium \
 www/firefox
 
