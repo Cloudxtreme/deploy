@@ -5,6 +5,7 @@
 
 pkg install -y \
 x11/xorg \
+x11-wm/dwm \
 x11-wm/xfce4 x11-wm/xfce4-wm \
 x11-fm/thunar deskutils/xfce4-tumbler \
 x11/lumina \
