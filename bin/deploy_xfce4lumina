@@ -25,7 +25,8 @@ www/choqok \
 editors/calligra \
 deskutils/kdepim4 \
 audio/mumble \
-multimedia/vlc \
+audio/audacity \
+multimedia/vlc-qt4 \
 www/chromium \
 www/firefox
 
