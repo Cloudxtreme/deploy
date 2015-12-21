@@ -44,10 +44,8 @@ gtfc-overlay
                                         h5ai
 hddid
 iocage-tools
-    kanso-chat
     kanso-example
     kanso-fileadmin
-    kanso-focus
     kanso-manage-couchdb
     kanso-movies
     kanso-music
@@ -90,6 +88,8 @@ zfs-tools
 zsnapple
 "
 
+# kanso-chat
+# kanso-focus
 # couchdbtodomvc
 # couchdb-fuse
 # johnko.github.io
