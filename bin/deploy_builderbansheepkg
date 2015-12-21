@@ -35,6 +35,53 @@ build_it_now() {
 
 
 PORTNAME="multimedia/banshee"
+pkg install -y \
+    textproc/p5-XML-Parser \
+    shells/bash \
+    devel/desktop-file-utils \
+    devel/gmake \
+    lang/mono \
+    devel/pkgconf \
+    misc/shared-mime-info \
+    devel/gettext-tools \
+    devel/dbus-sharp-glib \
+    audio/taglib-sharp \
+    net/mono-zeroconf \
+    devel/mono-addins \
+    devel/notify-sharp \
+    x11-toolkits/gtk-sharp-beans \
+    multimedia/libmtp \
+    www/webkit-sharp \
+    devel/google-gdata \
+    x11/libXrandr \
+    x11/libXxf86vm \
+    audio/gstreamer-plugins-cdparanoia \
+    audio/gstreamer-plugins-soundtouch \
+    textproc/gnome-doc-utils \
+    misc/gnome-mime-data \
+    x11-toolkits/gnome-sharp20 \
+    graphics/gtk-update-icon-cache \
+    x11-toolkits/gtk-sharp20 \
+    textproc/intltool \
+    lang/perl5.20 \
+    devel/gettext-runtime \
+    databases/sqlite3 \
+    accessibility/atk \
+    devel/gconf2 \
+    graphics/gdk-pixbuf2 \
+    devel/glib20 \
+    devel/gnome-vfs \
+    x11-toolkits/gtk20 \
+    www/gtkhtml3 \
+    devel/libglade2 \
+    devel/libgsf \
+    devel/libIDL \
+    graphics/librsvg2 \
+    textproc/libxml2 \
+    textproc/libxslt \
+    devel/ORBit2 \
+    x11-toolkits/pango \
+    x11-toolkits/vte
 build_it_now ${PORTNAME}
 
 
