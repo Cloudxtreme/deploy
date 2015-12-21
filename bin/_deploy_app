@@ -59,7 +59,7 @@ done
 
 # PRESTART COPY
 case ${name} in
-    squid|builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg)
+    squid|builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg)
         copy_var_ports ${name}
     ;;
     gitlab)
@@ -92,7 +92,7 @@ iocage set boot=${boot} ${name}
 
 # AFTER START COPY
 case ${name} in
-    builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg)
+    builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg)
         save_var_ports ${name}
     ;;
     owncloud)
@@ -103,7 +103,7 @@ case ${name} in
         if [ -e $fstab ]; then
             cat >$fstab <<EOF
 /usr/local/www/data    /iocage/tags/zfssyncstatus/root/usr/local/www/data    nullfs    ro    0    0
-/var/log    /iocage/tags/zfssyncstatus/root/var/hostlog    nullfs    ro    0    0
+/var/log               /iocage/tags/zfssyncstatus/root/var/hostlog           nullfs    ro    0    0
 EOF
         fi
     ;;
