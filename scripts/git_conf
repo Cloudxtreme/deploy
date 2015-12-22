@@ -33,6 +33,7 @@ deploy
 ffmpeg-tools
 freebsd-install-script
 freebsd-pf-script
+    freebsd-ports-ampache
     freebsd-ports-test
 freebsd-sortconf
 freebsd-system-info
