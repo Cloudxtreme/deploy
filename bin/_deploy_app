@@ -59,7 +59,10 @@ done
 
 # PRESTART COPY
 case ${name} in
-    squid|builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg|builderampachepkg)
+    squid|ampache)
+	copy_var_ports ${name}
+    ;;
+    builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg|builderampachepkg)
         copy_var_ports ${name}
     ;;
     gitlab)
