@@ -50,6 +50,8 @@ pkg install -y \
     php56-mbstring \
     php56-filter \
     php56-xml \
+    php56-pdo \
+    php56-pdo_mysql \
     php-composer \
     git
 build_it_now ${PORTNAME}
