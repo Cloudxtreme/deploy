@@ -18,6 +18,11 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
+pkg install -y \
+    devel/php-composer
+#    php56-filter \
+#    php56-xml
+
 deploy_php_apache24
 
 deploy_mysql_percona55 ${DB} ${DBUSER} ${DBPASS}
@@ -28,6 +33,9 @@ else
     echo "Failed to install ampache."
     exit 1
 fi
+
+cd /usr/local/www/ampache
+composer install --prefer-source --no-interaction
 
 cat ~/git/deploy/usr/local/etc/apache24/extra/ampache.conf \
 | sed "s/localhost.my.domain/${FQDN}/" \
