@@ -59,7 +59,7 @@ done
 
 # PRESTART COPY
 case ${name} in
-    squid|builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg)
+    squid|builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg|builderampachepkg)
         copy_var_ports ${name}
     ;;
     gitlab)
@@ -92,7 +92,7 @@ iocage set boot=${boot} ${name}
 
 # AFTER START COPY
 case ${name} in
-    builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg)
+    builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg|builderampachepkg)
         save_var_ports ${name}
     ;;
     owncloud)

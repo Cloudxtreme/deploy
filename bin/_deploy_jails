@@ -116,7 +116,7 @@ if ls /usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
                     imap)                       env IP=${IPNET}${num}  _deploy_app ${name} ${boot} dovecot ;;
                     owncloud)                   env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
                     gitlab)                     env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ${name}_config ;;
-                    builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg)
+                    builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg|builderampachepkg)
                                                 env IP=${IPNET}${num}  _deploy_app ${name} ${boot}
                     ;;
                     # DEV JAILNAMES
