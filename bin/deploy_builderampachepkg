@@ -47,5 +47,9 @@ pkg install -y \
     php56-iconv \
     php56-hash \
     php56-gettext \
-    php56-mbstring
+    php56-mbstring \
+    php56-filter \
+    php56-xml \
+    php-composer \
+    git
 build_it_now ${PORTNAME}
