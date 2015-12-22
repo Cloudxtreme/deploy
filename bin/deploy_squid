@@ -20,7 +20,7 @@ if [ "xYES" == "x${NEWINSTALL}" ]; then
         pkg add -f ${SQUIDPKG}
     fi
     if ! which squid ; then
-        echo "Failed to build squid."
+        echo "Failed to install squid."
         exit 1
     fi
 fi
