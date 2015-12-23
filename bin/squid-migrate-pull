@@ -1,7 +1,12 @@
 #!/bin/sh
 
+if [ "x" = "x$1" ]; then
+    echo "Usage: ${0##*/} remote_host"
+    exit 1
+fi
+
 #DRYRUN="-n"
-RSYNC="rsync $DRYRUN -viaLP"
+RSYNC="rsync $DRYRUN -viaLP --delete"
 
 REMOTEFOLDER=$( ssh $1 ioc-pathof squid )
 
