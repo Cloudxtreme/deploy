@@ -88,7 +88,7 @@ case ${name} in
     zfssyncstatus)
         install -d /usr/local/www/data
     ;;
-    ampache|minidlna)
+    ampache)
 	copy_var_ports ${name}
         install -d /data/music
         install -d /data/movies
@@ -116,7 +116,7 @@ case ${name} in
 EOF
         fi
     ;;
-    ampache|minidlna)
+    ampache)
         fstab=/iocage/tags/ampache/fstab
         if [ -e $fstab ]; then
             cat >$fstab <<EOF

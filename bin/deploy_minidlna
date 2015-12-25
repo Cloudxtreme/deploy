@@ -4,11 +4,11 @@
 
 . /usr/local/bin/loadmyvars.sh
 
-#if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
-#    echo "ERROR: Multicast udp 1900 has issues reaching a jail"
-#    echo "ERROR: Clients will not detect this in a jail"
-#    exit 1
-#fi
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo "ERROR: Multicast udp 1900 has issues reaching a jail"
+    echo "ERROR: Clients will not detect this in a jail"
+    exit 1
+fi
 
 if [ -e $LAMEPKG ]; then
     pkg add $LAMEPKG
@@ -38,7 +38,7 @@ install -m 644 ~/git/deploy/usr/local/etc/minidlna.conf /usr/local/etc/minidlna.
 
 deploy_dlna-permissions
 
-sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
+#sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
 
 service minidlna onestart
 
