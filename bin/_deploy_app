@@ -88,7 +88,7 @@ case ${name} in
     zfssyncstatus)
         install -d /usr/local/www/data
     ;;
-    ampache)
+    ampache|minidlna)
         install -d /data/music
         install -d /data/movies
     ;;
@@ -109,17 +109,17 @@ case ${name} in
         fstab=/iocage/tags/zfssyncstatus/fstab
         if [ -e $fstab ]; then
             cat >$fstab <<EOF
-/usr/local/www/data    /iocage/tags/zfssyncstatus/root/usr/local/www/data    nullfs    ro    0    0
-/var/log               /iocage/tags/zfssyncstatus/root/var/hostlog           nullfs    ro    0    0
+/usr/local/www/data    /iocage/tags/${name}/root/usr/local/www/data    nullfs    ro    0    0
+/var/log               /iocage/tags/${name}/root/var/hostlog           nullfs    ro    0    0
 EOF
         fi
     ;;
-    ampache)
+    ampache|minidlna)
         fstab=/iocage/tags/ampache/fstab
         if [ -e $fstab ]; then
             cat >$fstab <<EOF
-/data/music            /iocage/tags/ampache/root/data/music           nullfs    ro    0    0
-/data/movies           /iocage/tags/ampache/root/data/movies          nullfs    ro    0    0
+/data/music            /iocage/tags/${name}/root/data/music            nullfs    ro    0    0
+/data/movies           /iocage/tags/${name}/root/data/movies           nullfs    ro    0    0
 EOF
         fi
     ;;

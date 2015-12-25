@@ -2,21 +2,28 @@
 
 # READY
 
-if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
-    echo "ERROR: Multicast udp 1900 has issues reaching a jail"
-    echo "ERROR: Clients will not detect this in a jail"
-    exit 1
+#if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+#    echo "ERROR: Multicast udp 1900 has issues reaching a jail"
+#    echo "ERROR: Clients will not detect this in a jail"
+#    exit 1
+#fi
+
+if [ -e $LAMEPKG ]; then
+    pkg add $LAMEPKG
 fi
 
-## unblock all the pkgs required for ffmpeg before minidlna
-cat ~/perm/pkglist | sed 's/^# //' > ~/local/pkglist
-fres
+if [ -e $LIBAACPLUSPKG ]; then
+    pkg install -y $LIBAACPLUSPKG
+fi
+
+if [ -e $FFMPEGPKG ]; then
+    pkg install -y $FFMPEGPKG
+fi
+
 if ! pkg info | grep ffmpeg >/dev/null 2>&1 ; then
     echo "ERROR: requires ffmpeg"
     exit 1
 fi
-## unblock minidlna
-cat ~/perm/pkglist | sed 's/^# //' | sed 's/^## //' > ~/local/pkglist
 
 pkg install -y net/minidlna
 
@@ -29,7 +36,7 @@ install -m 644 ~/git/deploy/usr/local/etc/minidlna.conf /usr/local/etc/minidlna.
 
 deploy_dlna-permissions
 
-# sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
+sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
 
 service minidlna onestart
 
