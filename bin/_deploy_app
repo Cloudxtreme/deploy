@@ -91,6 +91,7 @@ case ${name} in
     ampache|minidlna)
         install -d /data/music
         install -d /data/movies
+        install -d /data/photos
     ;;
 esac
 
