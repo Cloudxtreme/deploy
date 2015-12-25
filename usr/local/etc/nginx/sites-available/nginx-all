@@ -17,17 +17,21 @@ upstream klaussources {
 upstream zabbixsources {
     server 10.7.7.16:443;
 }
+upstream ampachesources {
+    server 10.7.7.19:443;
+}
 map $uri $redirect_uri {
-    ~^/$           https://localhost.localdomain/explore;
-    ~^/couch$      https://localhost.localdomain/couch/;
-    ~^/dtfc$       https://localhost.localdomain/dtfc/;
-    ~^/git$        https://localhost.localdomain/git/;
-    ~^/movies$     https://localhost.localdomain/movies/;
-    ~^/music$      https://localhost.localdomain/music/;
-    ~^/owncloud$   https://localhost.localdomain/owncloud/;
-    ~^/piwik$      https://localhost.localdomain/piwik/;
-    ~^/wiki$       https://localhost.localdomain/wiki/;
-    ~^/zabbix$     https://localhost.localdomain/zabbix/;
+    ~^/$           /explore/;
+    ~^/couch$      /couch/;
+    ~^/dtfc$       /dtfc/;
+    ~^/git$        /git/;
+    ~^/movies$     /movies/;
+    ~^/music$      /music/;
+    ~^/owncloud$   /owncloud/;
+    ~^/piwik$      /piwik/;
+    ~^/wiki$       /wiki/;
+    ~^/zabbix$     /zabbix/;
+    ~^/ampache$    /ampache/;
 }
 ## Redirects all HTTP traffic to the HTTPS host
 server {
@@ -92,6 +96,11 @@ server {
         rewrite /git/(.*) /git/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass https://klaussources;
+    }
+    location  ~^/ampache/ {
+        rewrite /ampache/(.*) /ampache/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass https://ampachesources;
     }
     location / {
         try_files $uri $uri/ @redirect-map;

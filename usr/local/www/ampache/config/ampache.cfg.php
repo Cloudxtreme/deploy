@@ -908,7 +908,7 @@ transcode_player_customize = "true"
 ; equivalent to the old default, but if you find that necessary you should be
 ; clever enough to figure out how on your own.
 ; DEFAULT: none
-transcode_cmd = "ffmpeg"
+transcode_cmd = "/usr/local/bin/ffmpeg"
 ;transcode_cmd = "avconv"
 ;transcode_cmd = "/usr/bin/neatokeen"
 
