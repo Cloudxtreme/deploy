@@ -88,6 +88,10 @@ case ${name} in
     zfssyncstatus)
         install -d /usr/local/www/data
     ;;
+    ampache)
+        install -d /data/music
+        install -d /data/movies
+    ;;
 esac
 
 iocage start ${name}
@@ -107,6 +111,15 @@ case ${name} in
             cat >$fstab <<EOF
 /usr/local/www/data    /iocage/tags/zfssyncstatus/root/usr/local/www/data    nullfs    ro    0    0
 /var/log               /iocage/tags/zfssyncstatus/root/var/hostlog           nullfs    ro    0    0
+EOF
+        fi
+    ;;
+    ampache)
+        fstab=/iocage/tags/ampache/fstab
+        if [ -e $fstab ]; then
+            cat >$fstab <<EOF
+/data/music            /iocage/tags/ampache/root/data/music           nullfs    ro    0    0
+/data/movies           /iocage/tags/ampache/root/data/movies          nullfs    ro    0    0
 EOF
         fi
     ;;
