@@ -18,6 +18,7 @@ apache-config-freebsd
                                         btfs
                                         ccasfs
                                                                             checkmail-ahk
+                                                                            chunk-fuse
 crontabbed
                     crossdj-mappings
                                         delugefs
