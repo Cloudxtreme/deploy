@@ -434,13 +434,13 @@ licensing = "false"
 ; Album Art Store on Disk
 ; This defines if arts should be stored on disk instead of database.
 ; DEFAULT: false
-;album_art_store_disk = "false"
+album_art_store_disk = "true"
 
 ; Local Metadata Directory
 ; This define a local metadata directory with write access where to store
 ; heavy data if enabled (album arts, ...)
 ; DEFAULT: none
-;local_metadata_dir = "/metadata"
+local_metadata_dir = "/data/meta"
 
 ; Maximal upload size
 ; Specify the maximal allowed upload size for images, in bytes.
@@ -479,7 +479,7 @@ licensing = "false"
 ; Set this to true if you want Ampache to generate statistical
 ; graphs on usages / users.
 ; DEFAULT: false
-;statistical_graphs = "false"
+statistical_graphs = "true"
 
 ; Art Gather Order
 ; Simply arrange the following in the order you would like
