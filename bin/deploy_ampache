@@ -18,6 +18,14 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
+if [ -e $LAMEPKG ]; then
+    pkg add $LAMEPKG
+fi
+
+if [ -e $LIBAACPLUSPKG ]; then
+    pkg install -y $LIBAACPLUSPKG
+fi
+
 if [ -e $FFMPEGPKG ]; then
     pkg install -y $FFMPEGPKG
 fi
