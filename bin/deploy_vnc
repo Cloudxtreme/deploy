@@ -4,14 +4,20 @@
 
 ROOTPASS="password"
 
-pkg install -y x11/xorg x11-wm/xfce4-wm \
-Thunar xfce4-tumbler \
-lumina \
-hal \
-thunderbird \
-firefox \
-gstreamer1-plugins-good \
-gstreamer1-libav \
+pkg install -y \
+x11/xorg \
+x11-wm/xfce4 x11-wm/xfce4-wm \
+x11-fm/thunar deskutils/xfce4-tumbler \
+sysutils/hal \
+editors/kate \
+ftp/filezilla \
+editors/libreoffice \
+graphics/inkscape \
+graphics/gimp \
+deskutils/kdepim4 \
+multimedia/vlc-qt4 \
+www/chromium \
+www/firefox \
 net/tightvnc
 
 if [ ! -e /usr/local/bin/vncserver ]; then
@@ -26,9 +32,7 @@ if [ ! -f $XINITRC ]; then
     cat > $XINITRC <<EOF
 #!/bin/sh
 xrdb \$HOME/.Xresources &
-xfwm4 &
-xfce4-panel &
-xterm -bg black -fg gray &
+exec /usr/local/bin/startxfce4
 EOF
     chmod +x $XINITRC
 fi
