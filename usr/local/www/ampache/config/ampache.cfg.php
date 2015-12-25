@@ -429,7 +429,7 @@ licensing = "false"
 ; Especially useful if you have a front and a back image in a folder
 ; comment out if ampache should search for any jpg,gif or png
 ; DEFAULT: folder.jpg
-;album_art_preferred_filename = "folder.jpg"
+album_art_preferred_filename = "cover.jpg"
 
 ; Album Art Store on Disk
 ; This defines if arts should be stored on disk instead of database.
