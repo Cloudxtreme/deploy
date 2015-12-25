@@ -59,7 +59,7 @@ done
 
 # PRESTART COPY
 case ${name} in
-    squid|ampache)
+    squid)
 	copy_var_ports ${name}
     ;;
     builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg|builderampachepkg)
@@ -89,6 +89,7 @@ case ${name} in
         install -d /usr/local/www/data
     ;;
     ampache|minidlna)
+	copy_var_ports ${name}
         install -d /data/music
         install -d /data/movies
         install -d /data/photos
