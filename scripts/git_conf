@@ -65,6 +65,7 @@ netconn
 newsyslog.conf.d
 nginx-config-sites-enabled
                                                                             ori-tools
+pefs-tools
                                                                             Pico
                                                                             ploy_iocage
 psnap
