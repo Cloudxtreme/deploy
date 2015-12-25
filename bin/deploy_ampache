@@ -21,6 +21,8 @@ fi
 pkg install -y \
     ffmpeg
 
+mkdir -p /tmp/ampache
+
 deploy_php_apache24
 
 deploy_mysql_percona55 ${DB} ${DBUSER} ${DBPASS}
