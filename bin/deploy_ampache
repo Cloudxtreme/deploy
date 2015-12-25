@@ -35,6 +35,10 @@ install -d -m 755 -o www -g www /var/log/ampache
 
 deploy_php_apache24
 
+# optional for drawing waveforms
+pkg install -y \
+    php56-gd
+
 deploy_mysql_percona55 ${DB} ${DBUSER} ${DBPASS}
 
 if [ -e ${AMPACHEPKG} ]; then
