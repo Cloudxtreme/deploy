@@ -18,10 +18,12 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
-pkg install -y \
-    ffmpeg
+if [ -e $FFMPEGPKG ]; then
+    pkg install -y $FFMPEGPKG
+fi
 
-mkdir -p /tmp/ampache
+install -d -m 755 -o www -g www /tmp/ampache
+install -d -m 755 -o www -g www /var/log/ampache
 
 deploy_php_apache24
 
