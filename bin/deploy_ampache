@@ -18,10 +18,8 @@ if [ "x" == "x${FQDN}" ]; then
     exit 1
 fi
 
-#pkg install -y \
-#    devel/php-composer
-#    php56-filter \
-#    php56-xml
+pkg install -y \
+    ffmpeg
 
 deploy_php_apache24
 
