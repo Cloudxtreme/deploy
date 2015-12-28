@@ -348,7 +348,7 @@ tmp_dir_path = "/tmp/ampache"
 ; This determines if a preview image should be retrieved from video files
 ; It requires encode_get_image transcode settings.
 ; DEFAULT: false
-generate_video_preview = "true"
+generate_video_preview = "false"
 
 ; Un comment if don't want ampache to follow symlinks
 ; DEFAULT: false
