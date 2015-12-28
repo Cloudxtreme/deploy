@@ -90,9 +90,9 @@ case ${name} in
     ;;
     ampache)
 	copy_var_ports ${name}
-        install -d /data/music
-        install -d /data/movies
-        install -d /data/photos
+        install -d /data/audio
+        install -d /data/video
+        install -d /data/img
     ;;
 esac
 
@@ -120,8 +120,8 @@ EOF
         fstab=/iocage/tags/ampache/fstab
         if [ -e $fstab ]; then
             cat >$fstab <<EOF
-/data/music            /iocage/tags/${name}/root/data/music            nullfs    ro    0    0
-/data/movies           /iocage/tags/${name}/root/data/movies           nullfs    ro    0    0
+/data/audio            /iocage/tags/${name}/root/data/audio            nullfs    ro    0    0
+/data/video            /iocage/tags/${name}/root/data/video            nullfs    ro    0    0
 EOF
         fi
     ;;
