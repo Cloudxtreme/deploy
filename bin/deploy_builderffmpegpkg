@@ -14,10 +14,10 @@ if [ "x" == "x${LAMEPKG}" ]; then
     echo "ERROR: LAMEPKG not defined."
     exit 1
 fi
-if [ "x" == "x${LIBAACPLUSPKG}" ]; then
-    echo "ERROR: LIBAACPLUSPKG not defined."
-    exit 1
-fi
+#if [ "x" == "x${LIBAACPLUSPKG}" ]; then
+#    echo "ERROR: LIBAACPLUSPKG not defined."
+#    exit 1
+#fi
 if [ "x" == "x${FFMPEGPKG}" ]; then
     echo "ERROR: FFMPEGPKG not defined."
     exit 1
@@ -25,11 +25,14 @@ fi
 if [ -e ${LAMEPKG} ]; then
     rm ${LAMEPKG}
 fi
-if [ -e ${LIBAACPLUSPKG} ]; then
-    rm ${LIBAACPLUSPKG}
-fi
+#if [ -e ${LIBAACPLUSPKG} ]; then
+#    rm ${LIBAACPLUSPKG}
+#fi
 if [ -e ${FFMPEGPKG} ]; then
     rm ${FFMPEGPKG}
+fi
+if [ -e ${VLCPKG} ]; then
+    rm ${VLCPKG}
 fi
 
 
@@ -50,41 +53,55 @@ build_it_now() {
 
 PORTNAME="audio/lame"
 ## install dependencies
-pkg install -y devel/gmake #converters/libiconv
+#pkg install -y devel/gmake #converters/libiconv
 ## remove libiconv because it could be an older version that breaks the build process
-pkg remove -y converters/libiconv
+#pkg remove -y converters/libiconv
 build_it_now ${PORTNAME}
 
 
-PORTNAME="audio/libaacplus"
+#PORTNAME="audio/libaacplus"
 ## install dependencies
-pkg install -y devel/autoconf devel/automake devel/libtool \
-    devel/pkgconf math/fftw3 math/fftw3-float
-build_it_now ${PORTNAME}
+#pkg install -y devel/autoconf devel/automake devel/libtool \
+#    devel/pkgconf math/fftw3 math/fftw3-float
+#build_it_now ${PORTNAME}
 
 
 PORTNAME="multimedia/ffmpeg"
 ## install dependencies
-pkg install -y devel/yasm devel/binutils graphics/frei0r devel/gmake \
-    devel/pkgconf textproc/texi2html lang/perl5.20 \
-    sysutils/libcdio-paranoia multimedia/libbluray \
-    multimedia/librtmp \
-    x11-fonts/fontconfig print/freetype2 graphics/opencv-core \
-    multimedia/schroedinger multimedia/libtheora audio/libvorbis \
-    multimedia/libvpx multimedia/libx264 multimedia/xvid security/gnutls
+#pkg install -y devel/yasm devel/binutils graphics/frei0r devel/gmake \
+#    devel/pkgconf textproc/texi2html lang/perl5.20 \
+#    sysutils/libcdio-paranoia multimedia/libbluray \
+#    multimedia/librtmp \
+#    x11-fonts/fontconfig print/freetype2 graphics/opencv-core \
+#    multimedia/schroedinger multimedia/libtheora audio/libvorbis \
+#    multimedia/libvpx multimedia/libx264 multimedia/xvid security/gnutls
     #converters/libiconv
 ## remove libiconv because it could be an older version that breaks the build process
-pkg remove -y converters/libiconv
+#pkg remove -y converters/libiconv
 ## we want custom options
 if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
     cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
 fi
 # CDIO LIBBLURAY
-cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT= AACPLUS LAME RTMP ;' >/usr/ports/${PORTNAME}/Makefile
+cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT= LAME RTMP ;' >/usr/ports/${PORTNAME}/Makefile
+build_it_now ${PORTNAME}
+
+
+PORTNAME="multimedia/vlc"
+## we want custom options
+if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
+    cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
+fi
+cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT= UPNP ;' >/usr/ports/${PORTNAME}/Makefile
 build_it_now ${PORTNAME}
 
 
 if ! which ffmpeg ; then
-    echo "Failed to build."
+    echo "Failed to build ffmpeg."
+    exit 1
+fi
+
+if ! which vlc ; then
+    echo "Failed to build vlc."
     exit 1
 fi
