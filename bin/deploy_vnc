@@ -15,7 +15,7 @@ editors/libreoffice \
 graphics/inkscape \
 graphics/gimp \
 deskutils/kdepim4 \
-multimedia/vlc-qt4 \
+multimedia/vlc \
 www/chromium \
 www/firefox \
 net/tightvnc

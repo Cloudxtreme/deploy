@@ -27,10 +27,14 @@ editors/calligra \
 deskutils/kdepim4 \
 audio/mumble \
 audio/audacity \
-multimedia/vlc-qt4 \
 audio/clementine-player \
 www/chromium \
 www/firefox
+
+if [ -e $VLCPKG ]; then
+    pkg install -y $VLCPKG
+fi
+
 
 if [ ! -e /usr/local/bin/startxfce4 ]; then
     echo "ERROR: install failed"
