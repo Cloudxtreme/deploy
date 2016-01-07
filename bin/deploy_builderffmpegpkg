@@ -92,7 +92,7 @@ PORTNAME="multimedia/vlc"
 if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
     cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
 fi
-cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT= UPNP ;' >/usr/ports/${PORTNAME}/Makefile
+cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT= UPNP X264 ;' >/usr/ports/${PORTNAME}/Makefile
 build_it_now ${PORTNAME}
 
 
