@@ -30,6 +30,7 @@ audio/audacity \
 audio/clementine-player \
 www/node \
 www/npm \
+textproc/jq \
 www/chromium \
 www/firefox
 
