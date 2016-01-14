@@ -47,7 +47,7 @@ server {
     include /usr/local/etc/nginx/tls.conf;
     access_log  /var/log/nginx-ssl-access.log realip;
     error_log   /var/log/nginx-ssl-error.log;
-    location ~^/(_session|_replicate|_users) {
+    location ~^/(_session|_replicate|_users|_info) {
         rewrite  /(.*) /$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass http://couchsources;
