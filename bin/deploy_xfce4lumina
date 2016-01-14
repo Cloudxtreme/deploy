@@ -28,6 +28,8 @@ deskutils/kdepim4 \
 audio/mumble \
 audio/audacity \
 audio/clementine-player \
+www/node \
+www/npm \
 www/chromium \
 www/firefox
 
