@@ -46,6 +46,7 @@ gtfc-overlay
                                         h5ai
 hddid
 iocage-tools
+js-bookmarklets
     kanso-example
     kanso-fileadmin
     kanso-manage-couchdb
