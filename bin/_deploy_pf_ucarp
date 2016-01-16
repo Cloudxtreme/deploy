@@ -53,19 +53,13 @@ EOF
             && [ "x" != "x${name}" ] && [ "x" != "x${pubport}" ] \
             && [ "x" != "x${realport}" ] && [ "x" != "x${doucarp}" ] \
             && [ "x" != "x`jailip ${name}`" ]; then
-                # alias allow service
-                if  ! pf-anchor show jails | grep "rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${ipalias} port = ${pubport} " >/dev/null ; then
+                # primary ip allow service
+                if  ! pf-anchor show jails | grep "rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to (${HOSTNIC}) port = ${pubport} " >/dev/null ; then
                     cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${ipalias} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
+rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to (${HOSTNIC}) port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
 EOF
                 fi
                 if [ "$HOSTIP" != "$ipalias" ] && [ "($HOSTNIC)" != "$ipalias" ] && [ "xu" == "x${doucarp}" ]; then
-                    # primary ip allow service
-                    if  ! pf-anchor show jails | grep "rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${HOSTIP} port = ${pubport} " >/dev/null ; then
-                        cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to ${HOSTIP} port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
-EOF
-                    fi
                     if [ ! -e /usr/local/etc/rc.d/ucarp${name} ]; then
                         cat /usr/local/etc/rc.d/ucarp \
                         | sed "s;ucarp;ucarp${name};g" >/usr/local/etc/rc.d/ucarp${name}
