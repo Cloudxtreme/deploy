@@ -78,8 +78,8 @@ EOF
                         cat >/etc/rc.conf.d/ucarp${name}.tmp <<EOF
 ucarp_enable="YES"
 ucarp_addr="${ipalias}"
-ucarp_if="${HOSTNIC}"
-ucarp_src="${HOSTIP}"
+ucarp_if="\$(net-nic)"
+ucarp_src="\$(net-ip)"
 ucarp_upscript="/usr/local/sbin/ucarp-up"
 ucarp_downscript="/usr/local/sbin/ucarp-down"
 ucarp_pass="${name}"
