@@ -138,7 +138,7 @@ git push home master
 deploy minidlna
 ```
 
-Put files in /vault/data/...
+Put files in /tank/...
 
 ## Host (sega.local 192.168.255.160)
 
