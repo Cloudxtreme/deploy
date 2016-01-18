@@ -36,7 +36,7 @@ fi
 
 install -m 644 ~/git/deploy/usr/local/etc/minidlna.conf /usr/local/etc/minidlna.conf
 
-#deploy_dlna-permissions
+deploy_dlna-permissions
 
 #sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
 
