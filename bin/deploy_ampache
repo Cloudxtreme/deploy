@@ -30,6 +30,10 @@ if [ -e $FFMPEGPKG ]; then
     pkg install -y $FFMPEGPKG
 fi
 
+# dir for nullfs mount
+install -d -m 755 /data/audio
+install -d -m 755 /data/video
+
 install -d -m 755 -o www -g www /data/meta
 install -d -m 755 -o www -g www /tmp/ampache
 install -d -m 755 -o www -g www /var/log/ampache
