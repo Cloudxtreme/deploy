@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# READY
+
+. /usr/local/bin/loadmyvars.sh
+
+if [ "x" == "x${I2PPKG}" ]; then
+    echo "ERROR: I2PPKG not defined."
+    exit 1
+fi
+
+pkg install -y \
+    openjdk8-jre
+
+if [ -e $I2PPKG ]; then
+    pkg install -y $I2PPKG
+else
+    echo "Failed to install i2p."
+    exit 1
+fi
+
+echo "i2p:::::::/usr/home/i2p:/bin/csh:" | adduser -w no -f -
+
+sysrc i2p_enable=YES
+sysrc i2p_user=i2p
+
+/usr/local/etc/rc.d/i2p install
+
+cat <<EOF
+i2p is setup.
+
+You may want to edit this:
+
+    vi /usr/home/i2p/i2p/runplain.sh
+
+And run with:
+
+    su -l i2p -c '/usr/home/i2p/i2p/runplain.sh'
+
+EOF
