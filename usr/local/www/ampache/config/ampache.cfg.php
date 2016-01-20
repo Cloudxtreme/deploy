@@ -848,7 +848,7 @@ transcode_shn      = required
 transcode_mp3      = allowed
 ;;; Video
 transcode_avi      = allowed
-transcode_mkv      = required
+transcode_mkv      = allowed
 transcode_mpg      = allowed
 transcode_mpeg     = allowed
 transcode_m4v      = allowed
