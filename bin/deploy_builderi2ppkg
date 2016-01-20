@@ -35,4 +35,12 @@ build_it_now() {
 
 
 PORTNAME="security/i2p"
+pkg install -y \
+    math/gmp \
+    java/openjdk7 \
+    devel/apache-ant \
+    devel/gettext-tools \
+    archivers/unzip \
+    devel/gettext-runtime
+    #converters/libiconv
 build_it_now ${PORTNAME}
