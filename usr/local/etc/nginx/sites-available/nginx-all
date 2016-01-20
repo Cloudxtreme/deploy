@@ -1,52 +1,46 @@
 client_max_body_size 0;
-upstream couchsources {
-    server 10.7.7.5:5984;
-}
-upstream dtfcsources {
-    server 10.7.7.6:8080;
-}
-upstream piwiksources {
-    server 10.7.7.7:443;
-}
-upstream owncloudsources {
-    server 10.7.7.8:443;
-}
-upstream klaussources {
-    server 10.7.7.13:443;
-}
-upstream zabbixsources {
-    server 10.7.7.16:443;
-}
-upstream ampachesources {
-    server 10.7.7.19:443;
-}
+upstream couchsources    { server 10.7.7.5:5984; }
+upstream dtfcsources     { server 10.7.7.6:8080; }
+upstream piwiksources    { server 10.7.7.7:443; }
+upstream owncloudsources { server 10.7.7.8:443; }
+upstream klaussources    { server 10.7.7.13:443; }
+upstream zabbixsources   { server 10.7.7.16:443; }
+upstream ampachesources  { server 10.7.7.19:443; }
 map $uri $redirect_uri {
-    ~^/$           /explore/;
+    ~^/$           /login/;
+    ~^/ampache$    /ampache/;
     ~^/couch$      /couch/;
     ~^/dtfc$       /dtfc/;
+    ~^/explore$    /explore/;
     ~^/git$        /git/;
+    ~^/login$      /login/;
     ~^/movies$     /movies/;
     ~^/music$      /music/;
     ~^/owncloud$   /owncloud/;
     ~^/piwik$      /piwik/;
+    ~^/public$     /public/;
     ~^/wiki$       /wiki/;
     ~^/zabbix$     /zabbix/;
-    ~^/ampache$    /ampache/;
 }
-## Redirects all HTTP traffic to the HTTPS host
 server {
-    listen 80 default_server;
+    listen 80;
+
     server_name localhost.localdomain;
+
+    ## Redirects all HTTP traffic to the HTTPS host
     return 302 https://$host$request_uri;
 }
 server {
     listen 443 ssl;
+
     server_name localhost.localdomain;
+
     ssl_certificate ssl/ssl.crt;
     ssl_certificate_key ssl/ssl.key;
     include /usr/local/etc/nginx/tls.conf;
-    access_log  /var/log/nginx-ssl-access.log realip;
-    error_log   /var/log/nginx-ssl-error.log;
+    access_log  /var/log/nginx-domain-ssl-access.log realip;
+    error_log   /var/log/nginx-domain-ssl-error.log;
+
     location ~^/(_session|_replicate|_users) {
         rewrite  /(.*) /$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
@@ -54,6 +48,11 @@ server {
     }
     location ~^/couch/ {
         rewrite  /couch/(.*) /$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass http://couchsources;
+    }
+    location  ~^/login/ {
+        rewrite /login/(.*) /login/_design/login/_rewrite/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass http://couchsources;
     }
@@ -72,36 +71,43 @@ server {
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass http://couchsources;
     }
+
     location  ~^/dtfc/ {
         rewrite /dtfc/(.*) /$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass http://dtfcsources;
     }
+
     location  ~^/piwik/ {
         rewrite /piwik/(.*) /piwik/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass https://piwiksources;
     }
+
     location  ~^/owncloud/ {
         rewrite /owncloud/(.*) /owncloud/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass https://owncloudsources;
     }
-    location  ~^/zabbix/ {
-        rewrite /zabbix/(.*) /zabbix/$1 break;
-        include /usr/local/etc/nginx/proxypass.conf;
-        proxy_pass https://zabbixsources;
-    }
+
     location  ~^/git/ {
         rewrite /git/(.*) /git/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass https://klaussources;
     }
+
+    location  ~^/zabbix/ {
+        rewrite /zabbix/(.*) /zabbix/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass https://zabbixsources;
+    }
+
     location  ~^/ampache/ {
         rewrite /ampache/(.*) /ampache/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass https://ampachesources;
     }
+
     location / {
         try_files $uri $uri/ @redirect-map;
     }

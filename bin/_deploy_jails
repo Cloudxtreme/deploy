@@ -78,7 +78,7 @@ setupnginxconfig() {
 case ${1} in
     nginx)
         env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" _deploy_pf_ucarp
-        setupnginxconfig nginx ${FQDN}
+        setupnginxconfig domain ${FQDN}
         exit
         ;;
 esac

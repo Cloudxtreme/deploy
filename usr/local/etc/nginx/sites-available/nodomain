@@ -1,0 +1,16 @@
+## Return 204 "No Content" for unknown domain
+server {
+    listen 80 default_server;
+
+    return 204;
+}
+server {
+    listen 443 default_server ssl;
+    ssl_certificate ssl/ssl.crt;
+    ssl_certificate_key ssl/ssl.key;
+    include /usr/local/etc/nginx/tls.conf;
+    access_log  /var/log/nginx-nodomain-ssl-access.log realip;
+    error_log   /var/log/nginx-nodomain-ssl-error.log;
+
+    return 204;
+}
