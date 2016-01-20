@@ -9,7 +9,7 @@ start_cmd="my_start"
 stop_cmd="my_stop"
 my_start()
 {
-    /usr/local/bin/vncserver -depth 24 -geometry 1280x800 -nolisten tcp :1 &
+    /usr/local/bin/vncserver -depth 24 -geometry 1920x1080 -nolisten tcp :1 &
 }
 my_stop()
 {
