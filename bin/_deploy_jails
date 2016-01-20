@@ -65,10 +65,11 @@ fi
 
 setupnginxconfig() {
     local name=${1}
-    local FQDN=${2}
+    local cfg=${2}
+    local FQDN=${3}
     local path=$( ioc-pathof ${name} )/usr/local/etc/nginx/sites-enabled/${name}
     if [ ! -e $path ]; then
-        cat ~/git/deploy/usr/local/etc/nginx/sites-available/nginx-all \
+        cat ~/git/deploy/usr/local/etc/nginx/sites-available/${cfg} \
             | sed "s/localhost.localdomain/${FQDN}/" \
             >$path
     fi
@@ -78,7 +79,8 @@ setupnginxconfig() {
 case ${1} in
     nginx)
         env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" _deploy_pf_ucarp
-        setupnginxconfig domain ${FQDN}
+        setupnginxconfig domain nginx-all ${FQDN}
+        setupnginxconfig nodomain nodomain ${FQDN}
         exit
         ;;
 esac
@@ -97,7 +99,8 @@ if ls /usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
                     # GOOD JAILNAMES
                     nginx)
                                                 env IP=${IPNET}${num}  _deploy_app ${name} ${boot}
-                        setupnginxconfig ${name} ${FQDN}
+                        setupnginxconfig domain   nginx-all ${FQDN}
+                        setupnginxconfig nodomain nodomain  ${FQDN}
                     ;;
                     zfssyncstatus)              env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
                     ampache)                    env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
