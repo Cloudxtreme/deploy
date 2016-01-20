@@ -1,8 +1,8 @@
-## Return 204 "No Content" for unknown domain
+## Return 444 "Close-Connection by NGINX" for unknown domain
 server {
     listen 80 default_server;
 
-    return 204;
+    return 444;
 }
 server {
     listen 443 default_server ssl;
@@ -12,5 +12,5 @@ server {
     access_log  /var/log/nginx-nodomain-ssl-access.log realip;
     error_log   /var/log/nginx-nodomain-ssl-error.log;
 
-    return 204;
+    return 444;
 }
