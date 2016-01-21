@@ -24,7 +24,16 @@ echo "i2p:::::::/usr/home/i2p:/bin/csh:" | adduser -w no -f -
 sysrc i2p_enable=YES
 sysrc i2p_user=i2p
 
-/usr/local/etc/rc.d/i2p install
+if [ ! -e /usr/home/i2p/i2p/runplain.sh ]; then
+    mkdir -p /tmp/i2p
+    /usr/local/etc/rc.d/i2p install
+    mv \
+        /usr/home/i2p/i2p/runplain.sh \
+        /usr/home/i2p/i2p/runplain.sh.orig
+    cat /usr/home/i2p/i2p/runplain.sh.orig \
+        | sed 's;%SYSTEM_java_io_tmpdir;/tmp/i2p;' \
+        > /usr/home/i2p/i2p/runplain.sh
+fi
 
 cat <<EOF
 i2p is setup.
