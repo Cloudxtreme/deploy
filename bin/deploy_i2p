@@ -25,9 +25,9 @@ sysrc i2p_enable=YES
 sysrc i2p_user=i2p
 
 if [ ! -e /usr/home/i2p/i2p/runplain.sh ]; then
-    mkdir -p /tmp/i2p
+    install -d -o i2p -g i2p /tmp/i2p
     /usr/local/etc/rc.d/i2p install
-    mv \
+    cp -a \
         /usr/home/i2p/i2p/runplain.sh \
         /usr/home/i2p/i2p/runplain.sh.orig
     cat /usr/home/i2p/i2p/runplain.sh.orig \
