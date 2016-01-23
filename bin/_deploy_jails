@@ -64,12 +64,12 @@ if [ "x" = "x${count}" ]; then
 fi
 
 setupnginxconfig() {
-    local name=${1}
-    local cfg=${2}
+    local newcfg=${1}
+    local oldcfg=${2}
     local FQDN=${3}
-    local path=$( ioc-pathof ${name} )/usr/local/etc/nginx/sites-enabled/${name}
+    local path=$( ioc-pathof nginx )/usr/local/etc/nginx/sites-enabled/${newcfg}
     if [ ! -e $path ]; then
-        cat ~/git/deploy/usr/local/etc/nginx/sites-available/${cfg} \
+        cat ~/git/deploy/usr/local/etc/nginx/sites-available/${oldcfg} \
             | sed "s/localhost.localdomain/${FQDN}/" \
             >$path
     fi
