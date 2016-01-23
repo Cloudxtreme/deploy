@@ -1,0 +1,4 @@
+#!/bin/sh
+
+deploy_dovecot
+deploy_postfix

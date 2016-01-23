@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. /usr/local/bin/loadmyvars.sh
+
+
+
+sysrc dovecot_enable="YES"
+service dovecot start
