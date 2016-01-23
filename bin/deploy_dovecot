@@ -2,7 +2,7 @@
 
 . /usr/local/bin/loadmyvars.sh
 
-
+pkg install -y dovecot
 
 sysrc dovecot_enable="YES"
 service dovecot start
