@@ -19,3 +19,4 @@ $RSYNC --exclude nodomain \
 
 # optional
 $RSYNC  ${OLDFOLDER}/usr/local/www/                ${NEWFOLDER}/usr/local/www/
+$RSYNC  ${OLDFOLDER}/var/log/nginx-*               ${NEWFOLDER}/var/log/
