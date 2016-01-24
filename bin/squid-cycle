@@ -19,6 +19,12 @@ iocage set tag=${OLDJAIL} $uuid
 
 iocage set ip4_addr="lo1|${OIP}" $uuid
 
+cp -a /iocage/tags/${OLDJAIL}/fstab /iocage/tags/${OLDJAIL}/fstab.old
+
+cat /iocage/tags/${OLDJAIL}/fstab.old \
+    | sed ";/iocage/tags/${NEWJAIL}/;/iocage/tags/${OLDJAIL}/;" \
+    >/iocage/tags/${OLDJAIL}/fstab
+
 iocage start ${OLDJAIL}
 
 env SQUID=${OIP}:3128 setproxy
