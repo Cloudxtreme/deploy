@@ -45,4 +45,6 @@ iocage stop ${NEWJAIL}
 
 iocage start ${NEWJAIL}
 
+iocage stop ${OLDJAIL}
+
 #iocage destroy -f ${OLDJAIL}
