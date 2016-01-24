@@ -6,9 +6,10 @@ ONUM=100
 OIP=10.7.7.${ONUM}
 NEWJAIL=squid
 NIP=10.7.7.1
-oldpfcfg=/usr/local/etc/deploypfucarp.conf.d/squidold
-tmpjailcfg=/usr/local/etc/deployjails.conf.d.010_squid
+ tmppfcfg=/usr/local/etc/deploypfucarp.conf.d.squidtmp
+goodpfcfg=/usr/local/etc/deploypfucarp.conf.d/squid
 goodjailcfg=/usr/local/etc/deployjails.conf.d/010_squid
+oldpfcfg=${goodpfcfg}old
 oldjailcfg=${goodjailcfg}old
 
 #fres
@@ -19,10 +20,10 @@ iocage stop ${BUILDJAIL}
 iocage destroy -f ${BUILDJAIL}
 
 ## map portfwd to old jail
+mv ${goodpfcfg}  ${tmppfcfg}
 cat >${oldjailcfg} <<EOF
 ${ONUM}   squidold               on
 EOF
-mv ${goodjailcfg}  ${tmpjailcfg}
 cat >${oldpfcfg} <<EOF
 squidold           0   3127    3127    u
 squidold           0   3128    3128    .
@@ -60,7 +61,7 @@ iocage stop ${NEWJAIL}
 squid-migrate-local ${OLDJAIL}
 iocage start ${NEWJAIL}
 ## map portfwd to new jail
-mv ${tmpjailcfg}  ${goodjailcfg}
+mv ${tmppfcfg}  ${goodpfcfg}
 rm ${oldpfcfg}
 rm ${oldjailcfg}
 _deploy_jails
