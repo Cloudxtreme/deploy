@@ -36,7 +36,9 @@ server {
     }
 
     ## Redirects all HTTP traffic to the HTTPS host
-    return 302 https://$host$request_uri;
+    location / {
+        return 302 https://$host$request_uri;
+    }
 }
 server {
     listen 443 ssl;
