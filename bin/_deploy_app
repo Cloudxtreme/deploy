@@ -155,6 +155,7 @@ case ${name} in
     nginx)
         setupnginxconfig ${FQDN}  localhost.localdomain ${FQDN}
         setupnginxconfig nodomain nodomain              ${FQDN}
+        iocage exec ${name} nginx-openssl-generate ${FQDN}
         iocage stop ${name}
         iocage start ${name}
     ;;
