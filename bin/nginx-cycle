@@ -2,9 +2,14 @@
 
 
 OLDJAIL=nginxold
-OIP=10.7.7.101
+ONUM=101
+OIP=10.7.7.${ONUM}
 NEWJAIL=nginx
 NIP=10.7.7.2
+oldpfcfg=/usr/local/etc/deploypfucarp.conf.d/nginxold
+tmpjailcfg=/usr/local/etc/deployjails.conf.d.015_nginx
+goodjailcfg=/usr/local/etc/deployjails.conf.d/015_nginx
+oldjailcfg=${goodjailcfg}old
 
 #fres
 
@@ -12,6 +17,16 @@ NIP=10.7.7.2
 
 
 
+
+## map portfwd to old jail
+cat >${oldjailcfg} <<EOF
+${ONUM}   nginxold               on
+EOF
+mv ${goodjailcfg}  ${tmpjailcfg}
+cat >${oldpfcfg} <<EOF
+nginxold           0   80      80      u
+nginxold           0   443     443     .
+EOF
 
 iocage stop ${NEWJAIL}
 uuid=$( iocage get host_hostuuid ${NEWJAIL} )
@@ -44,6 +59,11 @@ iocage stop ${OLDJAIL}
 iocage stop ${NEWJAIL}
 nginx-migrate-local ${OLDJAIL}
 iocage start ${NEWJAIL}
+## map portfwd to new jail
+mv ${tmpjailcfg}  ${goodjailcfg}
+rm ${oldpfcfg}
+rm ${oldjailcfg}
+_deploy_jails
 
 
 

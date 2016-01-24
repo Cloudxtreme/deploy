@@ -2,9 +2,14 @@
 
 BUILDJAIL=buildersquidpkg
 OLDJAIL=squidold
-OIP=10.7.7.100
+ONUM=100
+OIP=10.7.7.${ONUM}
 NEWJAIL=squid
 NIP=10.7.7.1
+oldpfcfg=/usr/local/etc/deploypfucarp.conf.d/squidold
+tmpjailcfg=/usr/local/etc/deployjails.conf.d.010_squid
+goodjailcfg=/usr/local/etc/deployjails.conf.d/010_squid
+oldjailcfg=${goodjailcfg}old
 
 #fres
 
@@ -12,6 +17,16 @@ NIP=10.7.7.1
 
 iocage stop ${BUILDJAIL}
 iocage destroy -f ${BUILDJAIL}
+
+## map portfwd to old jail
+cat >${oldjailcfg} <<EOF
+${ONUM}   squidold               on
+EOF
+mv ${goodjailcfg}  ${tmpjailcfg}
+cat >${oldpfcfg} <<EOF
+squidold           0   3127    3127    u
+squidold           0   3128    3128    .
+EOF
 
 iocage stop ${NEWJAIL}
 uuid=$( iocage get host_hostuuid ${NEWJAIL} )
@@ -44,6 +59,11 @@ iocage stop ${OLDJAIL}
 iocage stop ${NEWJAIL}
 squid-migrate-local ${OLDJAIL}
 iocage start ${NEWJAIL}
+## map portfwd to new jail
+mv ${tmpjailcfg}  ${goodjailcfg}
+rm ${oldpfcfg}
+rm ${oldjailcfg}
+_deploy_jails
 
 env SQUID=${NIP}:3128 setproxy
 
