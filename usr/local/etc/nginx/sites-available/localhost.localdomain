@@ -30,6 +30,11 @@ server {
     access_log  /var/log/nginx-localhost.localdomain-nossl-access.log realip;
     error_log   /var/log/nginx-localhost.localdomain-nossl-error.log;
 
+    ## for Let's Encrypt
+    location ~^/.well-known/acme-challenge {
+        root  /usr/local/www;
+    }
+
     ## Redirects all HTTP traffic to the HTTPS host
     return 302 https://$host$request_uri;
 }
