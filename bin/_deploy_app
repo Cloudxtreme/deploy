@@ -97,10 +97,6 @@ case ${name} in
     squid)
         fstab_readonly ${name} ${fstab}
     ;;
-    nginx)
-        setupnginxconfig domain   nginx-all ${FQDN}
-        setupnginxconfig nodomain nodomain  ${FQDN}
-    ;;
     gitlab)
         iocage set allow_sysvipc=1 ${name}
         fstab_readonly ${name} ${fstab}
@@ -156,6 +152,12 @@ iocage set boot=${boot} ${name}
 
 # AFTER START
 case ${name} in
+    nginx)
+        setupnginxconfig domain   nginx-all ${FQDN}
+        setupnginxconfig nodomain nodomain  ${FQDN}
+        iocage stop ${name}
+        iocage start ${name}
+    ;;
     owncloud)
         #rsync -qalmP $( ioc-pathof ${name} )/root/local/owncloud/ /root/local/owncloud/
     ;;
