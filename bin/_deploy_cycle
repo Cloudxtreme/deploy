@@ -1,0 +1,139 @@
+#!/bin/sh
+
+JAILNAME=$1
+if [ "x" = "x$JAILNAME" ]; then
+    echo "Usage: ${0##*/} jail_name"
+    exit 1
+fi
+
+######################################################
+
+case $JAILNAME in
+    squid)
+        BUILDJAIL=buildersquidpkg
+        OLDJAIL=squidold
+        ONUM=100
+        OIP=10.7.7.${ONUM}
+        NEWJAIL=squid
+        NIP=10.7.7.1
+         tmppfcfg=/usr/local/etc/deploypfucarp.conf.d.squidtmp
+        goodpfcfg=/usr/local/etc/deploypfucarp.conf.d/squid
+        goodjailcfg=/usr/local/etc/deployjails.conf.d/010_squid
+        oldpfcfg=${goodpfcfg}old
+        oldjailcfg=${goodjailcfg}old
+    ;;
+    nginx)
+        OLDJAIL=nginxold
+        ONUM=101
+        OIP=10.7.7.${ONUM}
+        NEWJAIL=nginx
+        NIP=10.7.7.2
+         tmppfcfg=/usr/local/etc/deploypfucarp.conf.d.nginxtmp
+        goodpfcfg=/usr/local/etc/deploypfucarp.conf.d/nginx
+        goodjailcfg=/usr/local/etc/deployjails.conf.d/015_nginx
+        oldpfcfg=${goodpfcfg}old
+        oldjailcfg=${goodjailcfg}old
+    ;;
+esac
+
+######################################################
+#fres
+#gtfc-overlay-install
+
+case $JAILNAME in
+    squid)
+        iocage stop ${BUILDJAIL}
+        iocage destroy -f ${BUILDJAIL}
+    ;;
+esac
+
+######################################################
+## map portfwd to old jail
+mv ${goodpfcfg}  ${tmppfcfg}
+
+######################################################
+
+case $JAILNAME in
+    squid)
+        cat >${oldjailcfg} <<EOF
+${ONUM}   squidold               on
+EOF
+        cat >${oldpfcfg} <<EOF
+squidold           0   3127    3127    u
+squidold           0   3128    3128    .
+EOF
+    ;;
+    nginx)
+        cat >${oldjailcfg} <<EOF
+${ONUM}   nginxold               on
+EOF
+        cat >${oldpfcfg} <<EOF
+nginxold           0   80      80      u
+nginxold           0   443     443     .
+EOF
+    ;;
+esac
+
+######################################################
+
+iocage stop ${NEWJAIL}
+uuid=$( iocage get host_hostuuid ${NEWJAIL} )
+iocage set tag=${OLDJAIL} $uuid
+iocage set ip4_addr="lo1|${OIP}" $uuid
+
+cp -a /iocage/tags/${OLDJAIL}/fstab /iocage/tags/${OLDJAIL}/fstab.old
+cat /iocage/tags/${OLDJAIL}/fstab.old \
+    | sed "s;/iocage/tags/${NEWJAIL}/;/iocage/tags/${OLDJAIL}/;" \
+    >/iocage/tags/${OLDJAIL}/fstab
+
+iocage start ${OLDJAIL}
+
+######################################################
+
+case $JAILNAME in
+    squid)
+        env SQUID=${OIP}:3128 setproxy
+    ;;
+esac
+
+######################################################
+
+_deploy_jails
+iocage stop ${OLDJAIL}
+iocage stop ${NEWJAIL}
+
+######################################################
+
+case $JAILNAME in
+    squid)
+        squid-migrate-local ${OLDJAIL}
+    ;;
+    nginx)
+        nginx-migrate-local ${OLDJAIL}
+    ;;
+esac
+
+######################################################
+
+iocage start ${NEWJAIL}
+## map portfwd to new jail
+mv ${tmppfcfg}  ${goodpfcfg}
+rm ${oldpfcfg}
+rm ${oldjailcfg}
+_deploy_jails
+
+######################################################
+
+case $JAILNAME in
+    squid)
+        env SQUID=${NIP}:3128 setproxy
+    ;;
+esac
+
+######################################################
+
+cat <<EOF
+Check that the new jail is working.
+If all is good, then you can delete the old jail:
+    iocage destroy -f ${OLDJAIL}
+EOF
