@@ -42,4 +42,4 @@ KEYSIZE=2048
 EOF
 
 cd ${SSLPATH}
-su -m ${LEUSER} -c "./letsencrypt.sh --cron"
+su ${LEUSER} -c "./letsencrypt.sh --cron"
