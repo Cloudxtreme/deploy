@@ -37,10 +37,12 @@ fstab_write() {
     local name=$1
     local fstab=$2
         install -d /iocage/tags/${name}/root/usr/ports
+        install -d /iocage/tags/${name}/root/var/db/portsnap
         install -d /iocage/tags/${name}/root/var/ports
     if [ -e ${fstab} ]; then
         cat >${fstab} <<EOF
 /usr/ports                      /iocage/tags/${name}/root/usr/ports             nullfs    rw    0    0
+/var/db/portsnap                /iocage/tags/${name}/root/var/db/portsnap       nullfs    rw    0    0
 /var/ports                      /iocage/tags/${name}/root/var/ports             nullfs    rw    0    0
 EOF
     fi
