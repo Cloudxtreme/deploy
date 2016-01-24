@@ -17,7 +17,7 @@ if ! id ${LEUSER} >/dev/null 2>&1 ; then
     pw useradd  -n ${LEUSER} -u 443 -g 443 -d ${SSLPATH} -w no -s /nonexistent
 fi
 
-zfs create -o mountpoint=${SSLPATH} tank/letsencrypt
+zfs list tank/letsencrypt >/dev/null 2>&1 || zfs create -o mountpoint=${SSLPATH} tank/letsencrypt
 chown root:${LEGROUP}  ${SSLPATH}
 chmod 770                ${SSLPATH}
 
