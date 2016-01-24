@@ -1,0 +1,50 @@
+#!/bin/sh
+
+OLDJAIL=squidold
+OIP=10.7.7.100
+NEWJAIL=squid
+NIP=10.7.7.1
+
+fres
+
+gtfc-overlay-install
+
+_delete_builders
+
+iocage stop ${NEWJAIL}
+
+uuid=$( iocage get host_hostuuid ${NEWJAIL} )
+
+iocage set tag=${OLDJAIL} $uuid
+
+iocage set ip4_addr="lo1|${OIP}" $uuid
+
+iocage start ${OLDJAIL}
+
+env SQUID=${OIP}:3128 setproxy
+
+gtfc-push
+
+cat <<EOF
+Waiting for _deploy_jails to finish running via gtfc-push.
+
+You can check on the status with:
+    Ctrl + b  s
+
+When it's done, type:
+    exit
+EOF
+
+sh
+
+iocage stop ${OLDJAIL}
+
+iocage stop ${NEWJAIL}
+
+squid-migrate-local ${OLDJAIL}
+
+iocage start ${NEWJAIL}
+
+env SQUID=${NIP}:3128 setproxy
+
+iocage destroy -f ${OLDJAIL}
