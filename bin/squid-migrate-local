@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ "x" = "x$1" ]; then
+    echo "Usage: ${0##*/} old_jail_tag"
+    exit 1
+fi
+
+#DRYRUN="-n"
+RSYNC="rsync $DRYRUN -viaLP --delete"
+
+OLDFOLDER=$( ioc-pathof $1 )
+
+NEWFOLDER=$( ioc-pathof squid )
+
+$RSYNC  ${OLDFOLDER}/var/squid/cache/               ${NEWFOLDER}/var/squid/cache/
