@@ -14,11 +14,6 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ "x" = "x${FQDN}" ]; then
-    echo "Please set or export variable FQDN"
-    exit 1
-fi
-
 if [ "x" = "x${NIC}" ]; then
     NIC="lo1"
     if ! ifconfig ${NIC} >/dev/null ; then
