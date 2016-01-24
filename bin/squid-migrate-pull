@@ -6,7 +6,7 @@ if [ "x" = "x$1" ]; then
 fi
 
 #DRYRUN="-n"
-RSYNC="rsync $DRYRUN -viaLP --delete"
+RSYNC="rsync $DRYRUN -vialP --delete"
 
 REMOTEFOLDER=$( ssh $1 ioc-pathof squid )
 

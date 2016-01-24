@@ -6,7 +6,7 @@ if [ "x" = "x$1" ]; then
 fi
 
 #DRYRUN="-n"
-RSYNC="rsync $DRYRUN -viaLP"
+RSYNC="rsync $DRYRUN -vialP"
 
 OLDFOLDER=$( ioc-pathof $1 )
 
@@ -16,4 +16,4 @@ $RSYNC  ${OLDFOLDER}/usr/local/etc/nginx/ssl/               ${NEWFOLDER}/usr/loc
 $RSYNC  ${OLDFOLDER}/usr/local/etc/nginx/sites-enabled/     ${NEWFOLDER}/usr/local/etc/nginx/sites-enabled/
 
 # optional
-$RSYNC  ${OLDFOLDER}/usr/local/www/redirect/                ${NEWFOLDER}/usr/local/www/redirect/
+$RSYNC  ${OLDFOLDER}/usr/local/www/                ${NEWFOLDER}/usr/local/www/

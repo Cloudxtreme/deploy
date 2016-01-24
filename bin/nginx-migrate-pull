@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #DRYRUN="-n"
-RSYNC="rsync $DRYRUN -viaLP"
+RSYNC="rsync $DRYRUN -vialP"
 
 REMOTEFOLDER=$( ssh $1 ioc-pathof nginx )
 
@@ -11,4 +11,4 @@ $RSYNC  ${1}:${REMOTEFOLDER}/usr/local/etc/nginx/ssl/               ${LOCALFOLDE
 $RSYNC  ${1}:${REMOTEFOLDER}/usr/local/etc/nginx/sites-enabled/     ${LOCALFOLDER}/usr/local/etc/nginx/sites-enabled/
 
 # optional
-$RSYNC  ${1}:${REMOTEFOLDER}/usr/local/www/redirect/                ${LOCALFOLDER}/usr/local/www/redirect/
+$RSYNC  ${1}:${REMOTEFOLDER}/usr/local/www/                ${LOCALFOLDER}/usr/local/www/
