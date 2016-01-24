@@ -68,10 +68,10 @@ if ls /usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
                 # The following case can be in any order
                 case ${name} in
                     # GOOD JAILNAMES
-                    nginx)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    squid|squidnew)             _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    nginx|nginxnew)             _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                     zfssyncstatus)              _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                     ampache)                    _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    squid)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                     easydnsclient)              _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                     couchdb)                    _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                     dtfc|upload|transfer)       _deploy_app ${IPNET}${num} ${name} ${boot} ;;

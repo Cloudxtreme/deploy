@@ -43,7 +43,7 @@ esac
 ######################################################
 
 cat >${newjailcfg} <<EOF
-${NNUM}   ${JAILNAME}new               on
+${NNUM}   ${NEWJAIL}               on
 EOF
 
 _deploy_jails
@@ -75,7 +75,7 @@ cat <<EOF
 Check that the jail is working.
 To undo:
     iocage stop ${JAILNAME}
-    iocage stop ${NEWJAIL}
+    iocage stop ${OLDJAIL}
     ioc-retag ${JAILNAME} ${JAILNAME}undo "${NIC}|${NIP}"
     ioc-retag ${OLDJAIL} ${JAILNAME} "${NIC}|${IP}"
     iocage start ${JAILNAME}
