@@ -71,6 +71,8 @@ if ls /usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
                     gitlab)                     _deploy_app ${IPNET}${num} ${name} ${boot} ${name}_config ;;
                     gogs)                       _deploy_app ${IPNET}${num} ${name} ${boot} ${name}_src ;;
                     horde)                      _deploy_app ${IPNET}${num} ${name} ${boot} ${name}webmail ;;
+                    nginxnew)                   _deploy_app ${IPNET}${num} ${name} ${boot} nginx ;;
+                    squidnew)                   _deploy_app ${IPNET}${num} ${name} ${boot} squid ;;
                     *)                          _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                 esac
                 #if [ "xsquid" != "x${name}" ]; then
