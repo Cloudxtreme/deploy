@@ -24,6 +24,7 @@ setupnginxconfig() {
 fstab_readonly() {
     local name=$1
     local fstab=$2
+        install -d /iocage/tags/${name}/root/var/ports
     if [ -e ${fstab} ]; then
         cat >${fstab} <<EOF
 /var/ports                      /iocage/tags/${name}/root/var/ports             nullfs    ro    0    0
@@ -35,6 +36,8 @@ EOF
 fstab_write() {
     local name=$1
     local fstab=$2
+        install -d /iocage/tags/${name}/root/usr/ports
+        install -d /iocage/tags/${name}/root/var/ports
     if [ -e ${fstab} ]; then
         cat >${fstab} <<EOF
 /usr/ports                      /iocage/tags/${name}/root/usr/ports             nullfs    rw    0    0
@@ -119,9 +122,9 @@ case ${name} in
         iocage set allow_sysvipc=1 ${name}
     ;;
     zfssyncstatus)
-        install -d /usr/local/www/data
-        install -d /iocage/tags/${name}/root/usr/local/www/data
-        install -d /iocage/tags/${name}/root/var/hostlog
+            install -d /usr/local/www/data
+            install -d /iocage/tags/${name}/root/usr/local/www/data
+            install -d /iocage/tags/${name}/root/var/hostlog
         if [ -e ${fstab} ]; then
             cat >${fstab} <<EOF
 /usr/local/www/data    /iocage/tags/${name}/root/usr/local/www/data    nullfs    ro    0    0
@@ -130,10 +133,10 @@ EOF
         fi
     ;;
     ampache)
-        install -d -m 755 ${PERSONALMNT}/audio
-        install -d -m 755 ${PERSONALMNT}/video
-        install -d -m 755 /iocage/tags/${name}/root/data/audio
-        install -d -m 755 /iocage/tags/${name}/root/data/video
+            install -d ${PERSONALMNT}/audio
+            install -d ${PERSONALMNT}/video
+            install -d /iocage/tags/${name}/root/data/audio
+            install -d /iocage/tags/${name}/root/data/video
         fstab_readonly ${name} ${fstab}
         if [ -e ${fstab} ]; then
             cat >>${fstab} <<EOF
