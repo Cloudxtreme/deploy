@@ -1,0 +1,43 @@
+#!/bin/sh
+
+. /usr/local/bin/loadmyvars.sh
+
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo "ERROR: Don't run this from a jail."
+    exit 1
+fi
+
+LEUSER=_letsencrypt
+LEGROUP=_letsencrypt
+SSLPATH=/etc/ssl/letsencrypt
+CHALLENGE=/iocage/tags/nginx/root/usr/local/www/.well-known/acme-challenge
+
+if ! id ${LEUSER} >/dev/null 2>&1 ; then
+    pw groupadd -n ${LEGROUP} -g 443
+    pw useradd  -n ${LEUSER} -u 443 -g 443 -d ${SSLPATH} -w no -s /nonexistent
+fi
+
+zfs create -o mountpoint=${SSLPATH} tank/letsencrypt
+chown root:${LEGROUP}  ${SSLPATH}
+chmod 770                ${SSLPATH}
+
+mkdir -p         ${CHALLENGE}
+chgrp ${LEGROUP} ${CHALLENGE}
+
+env HTTP_PROXY= fetch -o ${SSLPATH}/letsencrypt.sh https://github.com/johnko/letsencrypt.sh/raw/master/letsencrypt.sh
+env HTTP_PROXY= fetch -o ${SSLPATH}/config.sh      https://github.com/johnko/letsencrypt.sh/raw/master/config.sh.example
+chmod +x         ${SSLPATH}/{letsencrypt,config}.sh
+chgrp ${LEGROUP} ${SSLPATH}/{letsencrypt,config}.sh
+
+cat >${SSLPATH}/domain.txt <<EOF
+${FQDN}
+EOF
+
+cat >>${SSLPATH}/config.sh <<EOF
+BASEDIR="${SSLPATH}"
+WELLKNOWN="${CHALLENGE}"
+KEYSIZE=2048
+EOF
+
+cd ${SSLPATH}
+su -m ${LEUSER} -c ./letsencrypt.sh --cron
