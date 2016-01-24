@@ -19,14 +19,6 @@ if [ "x" = "x${FQDN}" ]; then
     exit 1
 fi
 
-if [ "x" = "x${REPOSRC}" ]; then
-    REPOSRC=https://github.com/johnko
-fi
-
-if [ "x" = "x${GITLABSRC}" ]; then
-    GITLABSRC=https://gitlab.com/
-fi
-
 if [ "x" = "x${NIC}" ]; then
     NIC="lo1"
     if ! ifconfig ${NIC} >/dev/null ; then
@@ -63,27 +55,6 @@ if [ "x" = "x${count}" ]; then
     count=0
 fi
 
-setupnginxconfig() {
-    local newcfg=${1}
-    local oldcfg=${2}
-    local FQDN=${3}
-    local path=$( ioc-pathof nginx )/usr/local/etc/nginx/sites-enabled/${newcfg}
-    if [ ! -e $path ]; then
-        cat ~/git/deploy/usr/local/etc/nginx/sites-available/${oldcfg} \
-            | sed "s/localhost.localdomain/${FQDN}/" \
-            >$path
-    fi
-    chmod 644 $path
-}
-
-case ${1} in
-    nginx)
-        env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" _deploy_pf_ucarp
-        setupnginxconfig domain nginx-all ${FQDN}
-        setupnginxconfig nodomain nodomain ${FQDN}
-        exit
-        ;;
-esac
 
 env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" _deploy_pf_ucarp
 
@@ -97,42 +68,38 @@ if ls /usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
                 # The following case can be in any order
                 case ${name} in
                     # GOOD JAILNAMES
-                    nginx)
-                                                env IP=${IPNET}${num}  _deploy_app ${name} ${boot}
-                        setupnginxconfig domain   nginx-all ${FQDN}
-                        setupnginxconfig nodomain nodomain  ${FQDN}
-                    ;;
-                    zfssyncstatus)              env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    ampache)                    env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    squid)                      env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    easydnsclient)              env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    couchdb)                    env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    dtfc|upload|transfer)       env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    mdwiki)                     env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    piwik)                      env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    ejabberd)                   env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    murmur)                     env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    vnc)                        env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    klaus)                      env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    keypkg)                     env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    smtp)                       env IP=${IPNET}${num}  _deploy_app ${name} ${boot} postfix ;;
-                    imap)                       env IP=${IPNET}${num}  _deploy_app ${name} ${boot} dovecot ;;
-                    owncloud)                   env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    gitlab)                     env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ${name}_config ;;
+                    nginx)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    zfssyncstatus)              _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    ampache)                    _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    squid)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    easydnsclient)              _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    couchdb)                    _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    dtfc|upload|transfer)       _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    mdwiki)                     _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    piwik)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    ejabberd)                   _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    murmur)                     _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    vnc)                        _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    klaus)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    keypkg)                     _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    smtp)                       _deploy_app ${IPNET}${num} ${name} ${boot} postfix ;;
+                    mail)                       _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    owncloud)                   _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    gitlab)                     _deploy_app ${IPNET}${num} ${name} ${boot} ${name}_config ;;
                     builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg|builderampachepkg|builderi2ppkg)
-                                                env IP=${IPNET}${num}  _deploy_app ${name} ${boot}
+                                                _deploy_app ${IPNET}${num} ${name} ${boot}
                     ;;
                     # DEV JAILNAMES
-                    monit)                      env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    zabbix)                     env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    echoplexus)                 env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    gitannex)                   env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    gogs)                       env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ${name}_src ;;
-                    phabricator)                env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    pydio)                      env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
+                    monit)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    zabbix)                     _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    echoplexus)                 _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    gitannex)                   _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    gogs)                       _deploy_app ${IPNET}${num} ${name} ${boot} ${name}_src ;;
+                    phabricator)                _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    pydio)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                     # BAD JAILNAMES
-                    baikal)                     env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ;;
-                    horde)                      env IP=${IPNET}${num}  _deploy_app ${name} ${boot} ${name}webmail ;;
+                    baikal)                     _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    horde)                      _deploy_app ${IPNET}${num} ${name} ${boot} ${name}webmail ;;
                 esac
                 #if [ "xsquid" != "x${name}" ]; then
                 #    iocage stop ${name}
