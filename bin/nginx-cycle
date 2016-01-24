@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 OLDJAIL=nginxold
 OIP=10.7.7.101
 NEWJAIL=nginx
@@ -9,25 +10,25 @@ fres
 
 gtfc-overlay-install
 
+
+
+
 iocage stop ${NEWJAIL}
-
 uuid=$( iocage get host_hostuuid ${NEWJAIL} )
-
 iocage set tag=${OLDJAIL} $uuid
-
 iocage set ip4_addr="lo1|${OIP}" $uuid
 
 cp -a /iocage/tags/${OLDJAIL}/fstab /iocage/tags/${OLDJAIL}/fstab.old
-
 cat /iocage/tags/${OLDJAIL}/fstab.old \
     | sed "s;/iocage/tags/${NEWJAIL}/;/iocage/tags/${OLDJAIL}/;" \
     >/iocage/tags/${OLDJAIL}/fstab
 
 iocage start ${OLDJAIL}
 
-gtfc-push
 
-cat <<EOF
+
+#gtfc-push
+cat >/dev/null <<EOF
 Waiting for _deploy_jails to finish running via gtfc-push.
 
 You can check on the status with:
@@ -36,15 +37,14 @@ You can check on the status with:
 When it's done, type:
     exit
 EOF
-
-sh
-
-nginx-migrate-local ${OLDJAIL}
-
-iocage stop ${NEWJAIL}
-
-iocage start ${NEWJAIL}
+#sh
+_deploy_jails
 
 iocage stop ${OLDJAIL}
+iocage stop ${NEWJAIL}
+nginx-migrate-local ${OLDJAIL}
+iocage start ${NEWJAIL}
+
+
 
 #iocage destroy -f ${OLDJAIL}

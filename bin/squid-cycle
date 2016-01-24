@@ -1,5 +1,6 @@
 #!/bin/sh
 
+BUILDJAIL=buildersquidpkg
 OLDJAIL=squidold
 OIP=10.7.7.100
 NEWJAIL=squid
@@ -9,18 +10,15 @@ fres
 
 gtfc-overlay-install
 
-_delete_builders
+iocage stop ${BUILDJAIL}
+iocage destroy -f ${BUILDJAIL}
 
 iocage stop ${NEWJAIL}
-
 uuid=$( iocage get host_hostuuid ${NEWJAIL} )
-
 iocage set tag=${OLDJAIL} $uuid
-
 iocage set ip4_addr="lo1|${OIP}" $uuid
 
 cp -a /iocage/tags/${OLDJAIL}/fstab /iocage/tags/${OLDJAIL}/fstab.old
-
 cat /iocage/tags/${OLDJAIL}/fstab.old \
     | sed "s;/iocage/tags/${NEWJAIL}/;/iocage/tags/${OLDJAIL}/;" \
     >/iocage/tags/${OLDJAIL}/fstab
@@ -29,9 +27,8 @@ iocage start ${OLDJAIL}
 
 env SQUID=${OIP}:3128 setproxy
 
-gtfc-push
-
-cat <<EOF
+#gtfc-push
+cat >/dev/null <<EOF
 Waiting for _deploy_jails to finish running via gtfc-push.
 
 You can check on the status with:
@@ -40,15 +37,12 @@ You can check on the status with:
 When it's done, type:
     exit
 EOF
-
-sh
+#sh
+_deploy_jails
 
 iocage stop ${OLDJAIL}
-
 iocage stop ${NEWJAIL}
-
 squid-migrate-local ${OLDJAIL}
-
 iocage start ${NEWJAIL}
 
 env SQUID=${NIP}:3128 setproxy
