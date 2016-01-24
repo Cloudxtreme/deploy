@@ -6,9 +6,9 @@ OIP=10.7.7.100
 NEWJAIL=squid
 NIP=10.7.7.1
 
-fres
+#fres
 
-gtfc-overlay-install
+#gtfc-overlay-install
 
 iocage stop ${BUILDJAIL}
 iocage destroy -f ${BUILDJAIL}

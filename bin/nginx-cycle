@@ -6,9 +6,9 @@ OIP=10.7.7.101
 NEWJAIL=nginx
 NIP=10.7.7.2
 
-fres
+#fres
 
-gtfc-overlay-install
+#gtfc-overlay-install
 
 
 
@@ -47,4 +47,4 @@ iocage start ${NEWJAIL}
 
 
 
-#iocage destroy -f ${OLDJAIL}
+iocage destroy -f ${OLDJAIL}
