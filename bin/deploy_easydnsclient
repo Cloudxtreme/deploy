@@ -11,6 +11,8 @@ perl /usr/local/share/examples/DNS-EasyDNS/easydns-simple \$*
 EOF
 chmod 755 ~/bin/easydns-client
 
-echo
-echo "Usage as user urep: easydns-client username password hostname"
-echo "crontabbed as user urep: 0 * * * * easydns-client username password hostname"
+cat <<EOF
+Usage as user urep: easydns-client username password hostname
+crontabbed as user urep:
+    0 * * * * easydns-client username password hostname >/dev/null 2>/dev/null
+EOF
