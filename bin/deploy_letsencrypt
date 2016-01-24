@@ -26,8 +26,10 @@ chgrp ${LEGROUP} ${CHALLENGE}
 
 env HTTP_PROXY= fetch -o ${SSLPATH}/letsencrypt.sh https://github.com/johnko/letsencrypt.sh/raw/master/letsencrypt.sh
 env HTTP_PROXY= fetch -o ${SSLPATH}/config.sh      https://github.com/johnko/letsencrypt.sh/raw/master/config.sh.example
-chmod +x         ${SSLPATH}/{letsencrypt,config}.sh
-chgrp ${LEGROUP} ${SSLPATH}/{letsencrypt,config}.sh
+for i in letsencrypt.sh config.sh ; do
+    chmod +x         ${SSLPATH}/$i
+    chgrp ${LEGROUP} ${SSLPATH}/$i
+done
 
 cat >${SSLPATH}/domain.txt <<EOF
 ${FQDN}
@@ -40,4 +42,4 @@ KEYSIZE=2048
 EOF
 
 cd ${SSLPATH}
-su -m ${LEUSER} -c ./letsencrypt.sh --cron
+su -m ${LEUSER} -c "./letsencrypt.sh --cron"
