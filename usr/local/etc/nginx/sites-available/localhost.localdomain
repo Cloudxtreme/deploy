@@ -27,6 +27,9 @@ server {
 
     server_name localhost.localdomain;
 
+    access_log  /var/log/nginx-localhost.localdomain-nossl-access.log realip;
+    error_log   /var/log/nginx-localhost.localdomain-nossl-error.log;
+
     ## Redirects all HTTP traffic to the HTTPS host
     return 302 https://$host$request_uri;
 }
@@ -35,11 +38,11 @@ server {
 
     server_name localhost.localdomain;
 
-    ssl_certificate ssl/ssl.crt;
-    ssl_certificate_key ssl/ssl.key;
+    ssl_certificate ssl/localhost.localdomain.crt;
+    ssl_certificate_key ssl/localhost.localdomain.key;
     include /usr/local/etc/nginx/tls.conf;
-    access_log  /var/log/nginx-domain-ssl-access.log realip;
-    error_log   /var/log/nginx-domain-ssl-error.log;
+    access_log  /var/log/nginx-localhost.localdomain-ssl-access.log realip;
+    error_log   /var/log/nginx-localhost.localdomain-ssl-error.log;
 
     location ~^/(_session|_replicate|_users) {
         rewrite  /(.*) /$1 break;

@@ -153,8 +153,8 @@ iocage set boot=${boot} ${name}
 # AFTER START
 case ${name} in
     nginx)
-        setupnginxconfig domain   nginx-all ${FQDN}
-        setupnginxconfig nodomain nodomain  ${FQDN}
+        setupnginxconfig ${FQDN}  localhost.localdomain ${FQDN}
+        setupnginxconfig nodomain nodomain              ${FQDN}
         iocage stop ${name}
         iocage start ${name}
     ;;
