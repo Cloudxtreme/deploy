@@ -10,7 +10,7 @@ RSYNC="rsync $DRYRUN -vialP"
 
 OLDFOLDER=$( ioc-pathof $1 )
 
-NEWFOLDER=$( ioc-pathof nginx )
+NEWFOLDER=$( ioc-pathof $2 )
 
 $RSYNC --exclude nodomain.crt --exclude nodomain.key --exclude nodomain.csr \
         ${OLDFOLDER}/usr/local/etc/nginx/ssl/               ${NEWFOLDER}/usr/local/etc/nginx/ssl/

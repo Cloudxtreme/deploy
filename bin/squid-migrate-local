@@ -10,7 +10,7 @@ RSYNC="rsync $DRYRUN -vialP --delete"
 
 OLDFOLDER=$( ioc-pathof $1 )
 
-NEWFOLDER=$( ioc-pathof squid )
+NEWFOLDER=$( ioc-pathof $2 )
 
 $RSYNC  ${OLDFOLDER}/var/squid/cache/               ${NEWFOLDER}/var/squid/cache/
 $RSYNC  ${OLDFOLDER}/var/log/squid/                 ${NEWFOLDER}/var/log/squid/
