@@ -12,11 +12,8 @@ OLDFOLDER=$( ioc-pathof $1 )
 
 NEWFOLDER=$( ioc-pathof nginx )
 
-$RSYNC --exclude ssl.crt --exclude ssl.key --exclude ssl.csr \
+$RSYNC --exclude nodomain.crt --exclude nodomain.key --exclude nodomain.csr \
         ${OLDFOLDER}/usr/local/etc/nginx/ssl/               ${NEWFOLDER}/usr/local/etc/nginx/ssl/
-$RSYNC  ${OLDFOLDER}/usr/local/etc/nginx/ssl/ssl.crt        ${NEWFOLDER}/usr/local/etc/nginx/ssl/ssl.crt.old
-$RSYNC  ${OLDFOLDER}/usr/local/etc/nginx/ssl/ssl.csr        ${NEWFOLDER}/usr/local/etc/nginx/ssl/ssl.csr.old
-$RSYNC  ${OLDFOLDER}/usr/local/etc/nginx/ssl/ssl.key        ${NEWFOLDER}/usr/local/etc/nginx/ssl/ssl.key.old
 $RSYNC  ${OLDFOLDER}/usr/local/etc/nginx/sites-enabled/     ${NEWFOLDER}/usr/local/etc/nginx/sites-enabled/
 
 # optional

@@ -8,8 +8,8 @@ server {
 }
 server {
     listen 443 default_server ssl;
-    ssl_certificate ssl/ssl.crt;
-    ssl_certificate_key ssl/ssl.key;
+    ssl_certificate ssl/nodomain.crt;
+    ssl_certificate_key ssl/nodomain.key;
     include /usr/local/etc/nginx/tls.conf;
     access_log  /var/log/nginx-nodomain-ssl-access.log realip;
     error_log   /var/log/nginx-nodomain-ssl-error.log;
