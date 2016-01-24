@@ -24,6 +24,7 @@ setupnginxconfig() {
 fstab_readonly() {
     local name=$1
     local fstab=$2
+        install -d /var/ports
         install -d /iocage/tags/${name}/root/var/ports
     if [ -e ${fstab} ]; then
         cat >${fstab} <<EOF
@@ -36,6 +37,9 @@ EOF
 fstab_write() {
     local name=$1
     local fstab=$2
+        install -d /usr/ports
+        install -d /var/ports
+        install -d /var/db/portsnap
         install -d /iocage/tags/${name}/root/usr/ports
         install -d /iocage/tags/${name}/root/var/db/portsnap
         install -d /iocage/tags/${name}/root/var/ports
