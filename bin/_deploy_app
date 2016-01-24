@@ -100,7 +100,7 @@ case ${name} in
     builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg|builderampachepkg|builderi2ppkg)
         fstab_write ${name} ${fstab}
     ;;
-    squid)
+    squid|squidnew)
         fstab_readonly ${name} ${fstab}
     ;;
     gitlab)
@@ -158,7 +158,7 @@ iocage set boot=${boot} ${name}
 
 # AFTER START
 case ${name} in
-    nginx)
+    nginx|nginxnew)
         setupnginxconfig ${FQDN}  localhost.localdomain ${FQDN}
         setupnginxconfig nodomain nodomain              ${FQDN}
         iocage exec ${name} nginx-openssl-generate ${FQDN}
