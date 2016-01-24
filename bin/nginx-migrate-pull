@@ -9,7 +9,8 @@ LOCALFOLDER=$( ioc-pathof nginx )
 
 $RSYNC --exclude nodomain.crt --exclude nodomain.key --exclude nodomain.csr \
         ${1}:${REMOTEFOLDER}/usr/local/etc/nginx/ssl/               ${LOCALFOLDER}/usr/local/etc/nginx/ssl/
-$RSYNC  ${1}:${REMOTEFOLDER}/usr/local/etc/nginx/sites-enabled/     ${LOCALFOLDER}/usr/local/etc/nginx/sites-enabled/
+$RSYNC --exclude nodomain \
+        ${1}:${REMOTEFOLDER}/usr/local/etc/nginx/sites-enabled/     ${LOCALFOLDER}/usr/local/etc/nginx/sites-enabled/
 
 # optional
 $RSYNC  ${1}:${REMOTEFOLDER}/usr/local/www/                ${LOCALFOLDER}/usr/local/www/

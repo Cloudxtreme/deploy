@@ -14,7 +14,8 @@ NEWFOLDER=$( ioc-pathof nginx )
 
 $RSYNC --exclude nodomain.crt --exclude nodomain.key --exclude nodomain.csr \
         ${OLDFOLDER}/usr/local/etc/nginx/ssl/               ${NEWFOLDER}/usr/local/etc/nginx/ssl/
-$RSYNC  ${OLDFOLDER}/usr/local/etc/nginx/sites-enabled/     ${NEWFOLDER}/usr/local/etc/nginx/sites-enabled/
+$RSYNC --exclude nodomain \
+        ${OLDFOLDER}/usr/local/etc/nginx/sites-enabled/     ${NEWFOLDER}/usr/local/etc/nginx/sites-enabled/
 
 # optional
 $RSYNC  ${OLDFOLDER}/usr/local/www/                ${NEWFOLDER}/usr/local/www/
