@@ -67,39 +67,11 @@ if ls /usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
             if ! iocage get tag ${name} >/dev/null 2>/dev/null; then
                 # The following case can be in any order
                 case ${name} in
-                    # GOOD JAILNAMES
-                    squid|squidnew)             _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    nginx|nginxnew)             _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    zfssyncstatus)              _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    ampache)                    _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    easydnsclient)              _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    couchdb)                    _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    dtfc|upload|transfer)       _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    mdwiki)                     _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    piwik)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    ejabberd)                   _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    murmur)                     _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    vnc)                        _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    klaus)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    keypkg)                     _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                     smtp)                       _deploy_app ${IPNET}${num} ${name} ${boot} postfix ;;
-                    mail)                       _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    owncloud)                   _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                     gitlab)                     _deploy_app ${IPNET}${num} ${name} ${boot} ${name}_config ;;
-                    builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg|builderampachepkg|builderi2ppkg)
-                                                _deploy_app ${IPNET}${num} ${name} ${boot}
-                    ;;
-                    # DEV JAILNAMES
-                    monit)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    zabbix)                     _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    echoplexus)                 _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    gitannex)                   _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                     gogs)                       _deploy_app ${IPNET}${num} ${name} ${boot} ${name}_src ;;
-                    phabricator)                _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    pydio)                      _deploy_app ${IPNET}${num} ${name} ${boot} ;;
-                    # BAD JAILNAMES
-                    baikal)                     _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                     horde)                      _deploy_app ${IPNET}${num} ${name} ${boot} ${name}webmail ;;
+                    *)                          _deploy_app ${IPNET}${num} ${name} ${boot} ;;
                 esac
                 #if [ "xsquid" != "x${name}" ]; then
                 #    iocage stop ${name}
