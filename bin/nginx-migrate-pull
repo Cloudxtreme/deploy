@@ -7,7 +7,10 @@ REMOTEFOLDER=$( ssh $1 ioc-pathof nginx )
 
 LOCALFOLDER=$( ioc-pathof nginx )
 
-$RSYNC  ${1}:${REMOTEFOLDER}/usr/local/etc/nginx/ssl/               ${LOCALFOLDER}/usr/local/etc/nginx/ssl/
+$RSYNC --exclude ssl.crt --exclude ssl.key \
+        ${1}:${REMOTEFOLDER}/usr/local/etc/nginx/ssl/               ${LOCALFOLDER}/usr/local/etc/nginx/ssl/
+$RSYNC  ${1}:${REMOTEFOLDER}/usr/local/etc/nginx/ssl/ssl.crt        ${LOCALFOLDER}/usr/local/etc/nginx/ssl/ssl.crt.old
+$RSYNC  ${1}:${REMOTEFOLDER}/usr/local/etc/nginx/ssl/ssl.key        ${LOCALFOLDER}/usr/local/etc/nginx/ssl/ssl.key.old
 $RSYNC  ${1}:${REMOTEFOLDER}/usr/local/etc/nginx/sites-enabled/     ${LOCALFOLDER}/usr/local/etc/nginx/sites-enabled/
 
 # optional
