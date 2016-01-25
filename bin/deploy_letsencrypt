@@ -10,6 +10,8 @@ fi
 LEUSER=_letsencrypt
 LEGROUP=_letsencrypt
 SSLPATH=/etc/ssl/letsencrypt
+WEBROOT=/iocage/tags/nginx/root/usr/local/www/
+
 CHALLENGE=/iocage/tags/nginx/root/usr/local/www/.well-known/acme-challenge
 
 pkg install -y security/py-letsencrypt
@@ -23,9 +25,14 @@ zfs list tank/letsencrypt >/dev/null 2>&1 || zfs create -o mountpoint=${SSLPATH}
 chown root:${LEGROUP}  ${SSLPATH}
 chmod 770              ${SSLPATH}
 
-mkdir -p         ${CHALLENGE}
-chgrp ${LEGROUP} ${CHALLENGE}
-chmod 770        ${CHALLENGE}
+mkdir -p ${WEBROOT}
+
+for i in ${WEBROOT}/.well-known \
+        ${WEBROOT}/.well-known/acme-challenge ; do
+    mkdir -p         $i
+    chgrp ${LEGROUP} $i
+    chmod 770        $i
+done
 
 su -m ${LEUSER} -c \
 "letsencrypt certonly \
@@ -35,4 +42,4 @@ su -m ${LEUSER} -c \
 --logs-dir ${SSLPATH}/log \
 --server https://acme-staging.api.letsencrypt.org/directory \
 --webroot \
--w ${CHALLENGE} -d ${FQDN}"
+-w ${WEBROOT} -d ${FQDN}"
