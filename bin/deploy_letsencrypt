@@ -49,18 +49,20 @@ if [ "x$REAL" != "x1" ]; then
     SERVER="--server https://acme-staging.api.letsencrypt.org/directory"
 fi
 
-# Modified from http://stackoverflow.com/questions/21297853/how-to-determine-ssl-cert-expiration-date-from-a-pem-encoded-certificate/31718838#31718838
-exp_date=$(openssl x509 -text -noout -in ${CRTPATH} | grep 'Not After' | sed 's;.*Not After : ;;')
-exp_sec=$(date -j -f "%b %d %T %Y %Z" "$exp_date" +%s)
-now_sec=$(date -j +%s)
-days_exp=$(echo \( $exp_sec - $now_sec \) / 86400 |bc)
-
-if [ $days_exp -gt $limit_days ] ; then
-    echo "Certificate is good for $limit_days days! Exiting."
-    exit 1
+if [ -e ${CRTPATH} ]; then
+    # Modified from http://stackoverflow.com/questions/21297853/how-to-determine-ssl-cert-expiration-date-from-a-pem-encoded-certificate/31718838#31718838
+    exp_date=$(openssl x509 -text -noout -in ${CRTPATH} | grep 'Not After' | sed 's;.*Not After : ;;')
+    exp_sec=$(date -j -f "%b %d %T %Y %Z" "$exp_date" +%s)
+    now_sec=$(date -j +%s)
+    days_exp=$(echo \( $exp_sec - $now_sec \) / 86400 |bc)
+    if [ $days_exp -gt $limit_days ] ; then
+        echo "Certificate for $FQDN is good for $limit_days days! Exiting."
+        exit 1
+    fi
+    echo "Certificate for $FQDN has expired or will do so within $limit_days days! Attempting renewal..."
+else
+    echo "Attempting creation of new certificate for $FQDN ..."
 fi
-
-echo "Certificate has expired or will do so within $limit_days days! Attempting renewal..."
 
 su -m ${LEUSER} -c \
 "letsencrypt certonly \
