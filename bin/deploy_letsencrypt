@@ -54,7 +54,7 @@ ${SERVER} \
 -w ${WEBROOT} -d ${FQDN}"
 
 NEWCRT=/etc/ssl/letsencrypt/config/live/${FQDN}/fullchain.pem
-NEWKEY=/etc/ssl/letsencrypt/config/live/${FQDN}/privkey1.pem
+NEWKEY=/etc/ssl/letsencrypt/config/live/${FQDN}/privkey.pem
 CRTPATH=/iocage/tags/nginx/root/usr/local/etc/nginx/ssl/${FQDN}.crt
 KEYPATH=/iocage/tags/nginx/root/usr/local/etc/nginx/ssl/${FQDN}.key
 
