@@ -29,9 +29,9 @@ mkdir -p ${WEBROOT}
 
 for i in ${WEBROOT}/.well-known \
         ${WEBROOT}/.well-known/acme-challenge ; do
-    mkdir -p         $i
-    chgrp ${LEGROUP} $i
-    chmod 770        $i
+    mkdir -p                   $i
+    chown ${LEUSER}:${LEGROUP} $i
+    chmod 755                  $i
 done
 
 su -m ${LEUSER} -c \
