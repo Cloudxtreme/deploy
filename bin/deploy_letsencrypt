@@ -24,7 +24,7 @@ NEWKEY=/etc/ssl/letsencrypt/config/live/${FQDN}/privkey.pem
 CRTPATH=/iocage/tags/nginx/root/usr/local/etc/nginx/ssl/${FQDN}.crt
 KEYPATH=/iocage/tags/nginx/root/usr/local/etc/nginx/ssl/${FQDN}.key
 
-pkg install -y security/py-letsencrypt
+pkg info py27-letsencrypt >/dev/null 2>&1 || pkg install -y security/py-letsencrypt
 
 if ! id ${LEUSER} >/dev/null 2>&1 ; then
     pw groupadd -n ${LEGROUP} -g 443
@@ -68,6 +68,7 @@ su -m ${LEUSER} -c \
 "letsencrypt certonly \
 --email ${EMAIL} \
 --agree-tos \
+--renew-by-default \
 --config-dir ${SSLPATH}/config \
 --work-dir ${SSLPATH}/work \
 --logs-dir ${SSLPATH}/log \
