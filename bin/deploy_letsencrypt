@@ -12,6 +12,8 @@ LEGROUP=_letsencrypt
 SSLPATH=/etc/ssl/letsencrypt
 CHALLENGE=/iocage/tags/nginx/root/usr/local/www/.well-known/acme-challenge
 
+pkg install -y security/py-letsencrypt
+
 if ! id ${LEUSER} >/dev/null 2>&1 ; then
     pw groupadd -n ${LEGROUP} -g 443
     pw useradd  -n ${LEUSER} -u 443 -g 443 -d ${SSLPATH} -w no -s /nonexistent
@@ -19,27 +21,18 @@ fi
 
 zfs list tank/letsencrypt >/dev/null 2>&1 || zfs create -o mountpoint=${SSLPATH} tank/letsencrypt
 chown root:${LEGROUP}  ${SSLPATH}
-chmod 770                ${SSLPATH}
+chmod 770              ${SSLPATH}
 
 mkdir -p         ${CHALLENGE}
 chgrp ${LEGROUP} ${CHALLENGE}
+chmod 770        ${CHALLENGE}
 
-env HTTP_PROXY= fetch -o ${SSLPATH}/letsencrypt.sh https://github.com/johnko/letsencrypt.sh/raw/master/letsencrypt.sh
-env HTTP_PROXY= fetch -o ${SSLPATH}/config.sh      https://github.com/johnko/letsencrypt.sh/raw/master/config.sh.example
-for i in letsencrypt.sh config.sh ; do
-    chmod +x         ${SSLPATH}/$i
-    chgrp ${LEGROUP} ${SSLPATH}/$i
-done
-
-cat >${SSLPATH}/domains.txt <<EOF
-${FQDN}
-EOF
-
-cat >>${SSLPATH}/config.sh <<EOF
-BASEDIR="${SSLPATH}"
-WELLKNOWN="${CHALLENGE}"
-KEYSIZE=2048
-EOF
-
-cd ${SSLPATH}
-su -m ${LEUSER} -c "./letsencrypt.sh --cron"
+su -m ${LEUSER} -c \
+"letsencrypt certonly \
+--agree-tos \
+--config-dir ${SSLPATH}/config \
+--work-dir ${SSLPATH}/work \
+--logs-dir ${SSLPATH}/log \
+--server https://acme-staging.api.letsencrypt.org/directory \
+--webroot \
+-w ${CHALLENGE} -d ${FQDN}"
