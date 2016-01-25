@@ -54,14 +54,15 @@ if [ -e ${CRTPATH} ]; then
     exp_date=$(openssl x509 -text -noout -in ${CRTPATH} | grep 'Not After' | sed 's;.*Not After : ;;')
     exp_sec=$(date -j -f "%b %d %T %Y %Z" "$exp_date" +%s)
     now_sec=$(date -j +%s)
+    now_date=$(date +"%b %d %T")
     days_exp=$(echo \( $exp_sec - $now_sec \) / 86400 |bc)
     if [ $days_exp -gt $threshold_days ] ; then
-        echo "Certificate for $FQDN is good for $days_exp days! Exiting."
+        echo "$now_date Certificate for $FQDN is good for $days_exp days! Exiting."
         exit 1
     fi
-    echo "Certificate for $FQDN will expire within $days_exp days! Attempting renewal..."
+    echo "$now_date Certificate for $FQDN will expire within $days_exp days! Attempting renewal..."
 else
-    echo "Attempting creation of new certificate for $FQDN ..."
+    echo "$now_date Attempting creation of new certificate for $FQDN ..."
 fi
 
 su -m ${LEUSER} -c \
