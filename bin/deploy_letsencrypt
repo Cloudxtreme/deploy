@@ -86,6 +86,8 @@ fi
 if [ "x$REAL" != "x1" ]; then
     ## test message
     cat <<EOF
+You can setup crontab:
+    1 0 * * 1 env REAL=1 ${0##*/} ${FQDN} >>/var/log/letsencrypt-cronjob.log
 If everything looks right, you can run:
     env REAL=1 ${0##*/} ${FQDN}
 EOF
