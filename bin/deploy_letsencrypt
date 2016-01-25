@@ -11,7 +11,7 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     exit 1
 fi
 
-limit_days=29
+threshold_days=29
 LEUSER=_letsencrypt
 LEGROUP=_letsencrypt
 SSLPATH=/etc/ssl/letsencrypt
@@ -55,11 +55,11 @@ if [ -e ${CRTPATH} ]; then
     exp_sec=$(date -j -f "%b %d %T %Y %Z" "$exp_date" +%s)
     now_sec=$(date -j +%s)
     days_exp=$(echo \( $exp_sec - $now_sec \) / 86400 |bc)
-    if [ $days_exp -gt $limit_days ] ; then
-        echo "Certificate for $FQDN is good for $limit_days days! Exiting."
+    if [ $days_exp -gt $threshold_days ] ; then
+        echo "Certificate for $FQDN is good for $days_exp days! Exiting."
         exit 1
     fi
-    echo "Certificate for $FQDN has expired or will do so within $limit_days days! Attempting renewal..."
+    echo "Certificate for $FQDN will expire within $days_exp days! Attempting renewal..."
 else
     echo "Attempting creation of new certificate for $FQDN ..."
 fi
