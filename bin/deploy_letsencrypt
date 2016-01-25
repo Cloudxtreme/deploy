@@ -2,6 +2,10 @@
 
 . /usr/local/bin/loadmyvars.sh
 
+if [ "x" != "x$1" ]; then
+    FQDN=$1
+fi
+
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Don't run this from a jail."
     exit 1
@@ -34,7 +38,7 @@ for i in ${WEBROOT}/.well-known \
     chmod 755                  $i
 done
 
-if [ "x$1" != "xproduction" ]; then
+if [ "x$REAL" != "x1" ]; then
     SERVER="--server https://acme-staging.api.letsencrypt.org/directory"
 fi
 
@@ -63,5 +67,5 @@ fi
 
 cat <<EOF
 If everything looks right, you can run:
-    ${0##*/} production
+    env REAL=1 ${0##*/} ${FQDN}
 EOF
