@@ -34,6 +34,10 @@ for i in ${WEBROOT}/.well-known \
     chmod 755                  $i
 done
 
+if [ "x$1" != "xproduction" ]; then
+    SERVER="--server https://acme-staging.api.letsencrypt.org/directory"
+fi
+
 su -m ${LEUSER} -c \
 "letsencrypt certonly \
 --email ${EMAIL} \
@@ -41,6 +45,23 @@ su -m ${LEUSER} -c \
 --config-dir ${SSLPATH}/config \
 --work-dir ${SSLPATH}/work \
 --logs-dir ${SSLPATH}/log \
---server https://acme-staging.api.letsencrypt.org/directory \
+${SERVER} \
 --webroot \
 -w ${WEBROOT} -d ${FQDN}"
+
+NEWCRT=/etc/ssl/letsencrypt/config/live/${FQDN}/fullchain.pem
+NEWKEY=/etc/ssl/letsencrypt/config/live/${FQDN}/privkey1.pem
+CRTPATH=/iocage/tags/nginx/root/usr/local/etc/nginx/ssl/${FQDN}.crt
+KEYPATH=/iocage/tags/nginx/root/usr/local/etc/nginx/ssl/${FQDN}.key
+
+if [ -e ${NEWCRT} ]; then
+    install -C -m 644 ${NEWCRT}  ${CRTPATH}
+fi
+if [ -e ${NEWKEY} ]; then
+    install -C -m 600 ${NEWKEY}  ${KEYPATH}
+fi
+
+cat <<EOF
+If everything looks right, you can run:
+    ${0##*/} production
+EOF
