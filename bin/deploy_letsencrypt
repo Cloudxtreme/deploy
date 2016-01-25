@@ -36,6 +36,7 @@ done
 
 su -m ${LEUSER} -c \
 "letsencrypt certonly \
+--email ${EMAIL} \
 --agree-tos \
 --config-dir ${SSLPATH}/config \
 --work-dir ${SSLPATH}/work \
