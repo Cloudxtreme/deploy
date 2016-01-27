@@ -9,10 +9,11 @@ deployapp=$4
 fstab=/iocage/tags/${name}/fstab
 
 setupnginxconfig() {
-    local newcfg=${1}
-    local oldcfg=${2}
-    local FQDN=${3}
-    local path=$( ioc-pathof nginx )/usr/local/etc/nginx/sites-enabled/${newcfg}
+    local name=${1}
+    local newcfg=${2}
+    local oldcfg=${3}
+    local FQDN=${4}
+    local path=$( ioc-pathof ${name} )/usr/local/etc/nginx/sites-enabled/${newcfg}
     if [ ! -e ${path} ]; then
         cat ~/git/deploy/usr/local/etc/nginx/sites-available/${oldcfg} \
             | sed "s/localhost.localdomain/${FQDN}/" \
@@ -161,8 +162,8 @@ iocage set boot=${boot} ${name}
 # AFTER START
 case ${name} in
     nginx|nginxnew)
-        setupnginxconfig ${FQDN}  localhost.localdomain ${FQDN}
-        setupnginxconfig nodomain nodomain              ${FQDN}
+        setupnginxconfig ${name} ${FQDN}  localhost.localdomain ${FQDN}
+        setupnginxconfig ${name} nodomain nodomain              ${FQDN}
         iocage exec ${name} nginx-openssl-generate ${FQDN}
         iocage stop ${name}
         iocage start ${name}
