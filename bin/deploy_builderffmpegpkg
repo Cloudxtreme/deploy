@@ -12,161 +12,155 @@ psnap
 export BATCH=yes
 
 
-if [ -e ${LAMEPKG} ]; then
-    rm ${LAMEPKG}
+if [ ! -e ${LAMEPKG} ]; then
+    PORTNAME="audio/lame"
+    ## install dependencies
+    pkg install -y \
+        devel/gmake \
+        converters/libiconv
+    build_it_now ${PORTNAME}
+    if ! which lame ; then
+        ## remove libiconv because it could be an older version that breaks the build process
+        pkg remove -y converters/libiconv
+        build_it_now ${PORTNAME}
+    fi
+    if ! which lame ; then
+        echo "Failed to build lame."
+        exit 1
+    fi
 fi
-#if [ -e ${LIBAACPLUSPKG} ]; then
-#    rm ${LIBAACPLUSPKG}
+
+
+#if [ ! -e ${LIBAACPLUSPKG} ]; then
+#    PORTNAME="audio/libaacplus"
+#    ## install dependencies
+#    pkg install -y \
+#    devel/autoconf \
+#    devel/automake \
+#    devel/libtool \
+#    devel/pkgconf \
+#    math/fftw3 \
+#    math/fftw3-float
+#    build_it_now ${PORTNAME}
 #fi
-if [ -e ${FFMPEGPKG} ]; then
-    rm ${FFMPEGPKG}
-fi
-if [ -e ${VLCPKG} ]; then
-    rm ${VLCPKG}
-fi
 
 
-PORTNAME="audio/lame"
-## install dependencies
-pkg install -y \
-devel/gmake \
-converters/libiconv
-build_it_now ${PORTNAME}
-if ! which lame ; then
-    ## remove libiconv because it could be an older version that breaks the build process
-    pkg remove -y converters/libiconv
+if [ ! -e ${FFMPEGPKG} ]; then
+    PORTNAME="multimedia/ffmpeg"
+    ## install dependencies
+    pkg install -y \
+        devel/yasm \
+        devel/binutils \
+        textproc/texi2html \
+        graphics/frei0r \
+        devel/gmake \
+        devel/pkgconf \
+        lang/perl5.20 \
+        x11-fonts/fontconfig \
+        print/freetype2 \
+        graphics/opencv-core \
+        multimedia/schroedinger \
+        multimedia/libtheora \
+        audio/libvorbis \
+        multimedia/libvpx \
+        multimedia/libx264 \
+        multimedia/xvid \
+        security/gnutls \
+        converters/libiconv \
+        multimedia/librtmp \
+        audio/libcddb \
+        textproc/libxml2 \
+        multimedia/libbdplus \
+        multimedia/libaacs \
+        sysutils/libcdio \
+        multimedia/libbluray \
+        sysutils/libcdio-paranoia \
+    ## we want custom options
+    if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
+        cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
+    fi
+    cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT= LAME RTMP CDIO LIBBLURAY ;' >/usr/ports/${PORTNAME}/Makefile
     build_it_now ${PORTNAME}
+    if ! which ffmpeg ; then
+        ## remove libiconv because it could be an older version that breaks the build process
+        pkg remove -y converters/libiconv
+        build_it_now ${PORTNAME}
+    fi
+    if ! which ffmpeg ; then
+        echo "Failed to build ffmpeg."
+        exit 1
+    fi
 fi
-if ! which lame ; then
-    echo "Failed to build lame."
-    exit 1
-fi
 
 
-#PORTNAME="audio/libaacplus"
-## install dependencies
-#pkg install -y \
-#devel/autoconf \
-#devel/automake \
-#devel/libtool \
-#devel/pkgconf \
-#math/fftw3 \
-#math/fftw3-float
-#build_it_now ${PORTNAME}
-
-
-PORTNAME="multimedia/ffmpeg"
-## install dependencies
-pkg install -y \
-devel/yasm \
-devel/binutils \
-textproc/texi2html \
-graphics/frei0r \
-devel/gmake \
-devel/pkgconf \
-lang/perl5.20 \
-x11-fonts/fontconfig \
-print/freetype2 \
-graphics/opencv-core \
-multimedia/schroedinger \
-multimedia/libtheora \
-audio/libvorbis \
-multimedia/libvpx \
-multimedia/libx264 \
-multimedia/xvid \
-security/gnutls \
-converters/libiconv \
-multimedia/librtmp \
-audio/libcddb \
-textproc/libxml2 \
-multimedia/libbdplus \
-multimedia/libaacs \
-sysutils/libcdio \
-multimedia/libbluray \
-sysutils/libcdio-paranoia \
-## we want custom options
-if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
-    cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
-fi
-cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT= LAME RTMP CDIO LIBBLURAY ;' >/usr/ports/${PORTNAME}/Makefile
-build_it_now ${PORTNAME}
-if ! which ffmpeg ; then
-    ## remove libiconv because it could be an older version that breaks the build process
-    pkg remove -y converters/libiconv
+if [ ! -e ${VLCPKG} ]; then
+    PORTNAME="multimedia/vlc"
+    pkg install -y \
+        devel/yasm \
+        devel/desktop-file-utils \
+        devel/gmake \
+        devel/pkgconf \
+        devel/gettext-tools \
+        graphics/libGL \
+        x11/glproto \
+        x11/dri2proto \
+        x11/libxcb \
+        x11/xproto \
+        devel/qt5-buildtools \
+        devel/qt5-core \
+        x11-toolkits/qt5-gui \
+        x11-toolkits/qt5-widgets \
+        x11/qt5-x11extras \
+        graphics/gtk-update-icon-cache \
+        security/libgcrypt \
+        multimedia/libdvbpsi \
+        x11-fonts/fontconfig \
+        print/freetype2 \
+        dns/libidn \
+        audio/liba52 \
+        net/avahi-app \
+        devel/dbus \
+        multimedia/libdca \
+        multimedia/libdvdnav \
+        multimedia/libdvdread \
+        audio/faad \
+        audio/flac \
+        security/gnutls \
+        net/liveMedia \
+        audio/libmad \
+        multimedia/libmatroska \
+        multimedia/libmpeg2 \
+        audio/libogg \
+        audio/opus \
+        graphics/png \
+        audio/libsamplerate \
+        audio/speex \
+        audio/taglib \
+        multimedia/libtheora \
+        audio/twolame \
+        multimedia/libv4l \
+        audio/libcddb \
+        audio/libvorbis \
+        x11/xcb-util-keysyms \
+        converters/libiconv \
+        lang/lua52 \
+        devel/gettext-runtime \
+        accessibility/atk \
+        graphics/gdk-pixbuf2 \
+        devel/glib20 \
+        textproc/libxml2 \
+        x11-toolkits/pango \
+        devel/upnp \
+        multimedia/libx264
+    #multimedia/ffmpeg \
+    ## we want custom options
+    if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
+        cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
+    fi
+    cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT= UPNP X264 ;' >/usr/ports/${PORTNAME}/Makefile
     build_it_now ${PORTNAME}
-fi
-if ! which ffmpeg ; then
-    echo "Failed to build ffmpeg."
-    exit 1
-fi
-
-
-PORTNAME="multimedia/vlc"
-pkg install -y \
-multimedia/ffmpeg \
-devel/yasm \
-devel/desktop-file-utils \
-devel/gmake \
-devel/pkgconf \
-devel/gettext-tools \
-graphics/libGL \
-x11/glproto \
-x11/dri2proto \
-x11/libxcb \
-x11/xproto \
-devel/qt5-buildtools \
-devel/qt5-core \
-x11-toolkits/qt5-gui \
-x11-toolkits/qt5-widgets \
-x11/qt5-x11extras \
-graphics/gtk-update-icon-cache \
-security/libgcrypt \
-multimedia/libdvbpsi \
-x11-fonts/fontconfig \
-print/freetype2 \
-dns/libidn \
-audio/liba52 \
-net/avahi-app \
-devel/dbus \
-multimedia/libdca \
-multimedia/libdvdnav \
-multimedia/libdvdread \
-audio/faad \
-audio/flac \
-security/gnutls \
-net/liveMedia \
-audio/libmad \
-multimedia/libmatroska \
-multimedia/libmpeg2 \
-audio/libogg \
-audio/opus \
-graphics/png \
-audio/libsamplerate \
-audio/speex \
-audio/taglib \
-multimedia/libtheora \
-audio/twolame \
-multimedia/libv4l \
-audio/libcddb \
-audio/libvorbis \
-x11/xcb-util-keysyms \
-converters/libiconv \
-lang/lua52 \
-devel/gettext-runtime \
-accessibility/atk \
-graphics/gdk-pixbuf2 \
-devel/glib20 \
-textproc/libxml2 \
-x11-toolkits/pango \
-devel/upnp \
-multimedia/libx264
-## we want custom options
-if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
-    cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
-fi
-cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT= UPNP X264 ;' >/usr/ports/${PORTNAME}/Makefile
-build_it_now ${PORTNAME}
-if ! which vlc ; then
-    echo "Failed to build vlc."
-    exit 1
+    if ! which vlc ; then
+        echo "Failed to build vlc."
+        exit 1
+    fi
 fi

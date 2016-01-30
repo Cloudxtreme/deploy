@@ -12,15 +12,6 @@ psnap
 export BATCH=yes
 
 
-if [ "x" == "x${SQUIDPKG}" ]; then
-    echo "ERROR: SQUIDPKG not defined."
-    exit 1
-fi
-if [ -e ${SQUIDPKG} ]; then
-    rm ${SQUIDPKG}
-fi
-
-
 PORTNAME="multimedia/banshee"
 pkg install -y \
     textproc/p5-XML-Parser \
@@ -69,8 +60,6 @@ pkg install -y \
     x11-toolkits/pango \
     x11-toolkits/vte
 build_it_now ${PORTNAME}
-
-
 if ! which banshee ; then
     echo "Failed to build."
     exit 1

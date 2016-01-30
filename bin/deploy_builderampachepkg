@@ -12,15 +12,6 @@ psnap
 export BATCH=yes
 
 
-if [ "x" == "x${SQUIDPKG}" ]; then
-    echo "ERROR: SQUIDPKG not defined."
-    exit 1
-fi
-if [ -e ${SQUIDPKG} ]; then
-    rm ${SQUIDPKG}
-fi
-
-
 git clone --depth 1 https://github.com/johnko/freebsd-ports-ampache.git /root/ports
 rsync -virthP /root/ports/audio/ampache/ /usr/ports/audio/ampache/
 

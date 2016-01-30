@@ -2,6 +2,9 @@
 
 # READY
 
-deploy_buildersquidpkg
+deploy_builderampachepkg
+#deploy_builderbansheepkg
 deploy_builderffmpegpkg
-# deploy_buildergitlabpkg
+#deploy_buildergitlabpkg
+deploy_builderi2ppkg
+deploy_buildersquidpkg

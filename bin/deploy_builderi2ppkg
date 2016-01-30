@@ -12,22 +12,15 @@ psnap
 export BATCH=yes
 
 
-if [ "x" == "x${I2PPKG}" ]; then
-    echo "ERROR: I2PPKG not defined."
-    exit 1
-fi
-if [ -e ${I2PPKG} ]; then
-    rm ${I2PPKG}
-fi
-
-
-PORTNAME="security/i2p"
-pkg install -y \
-    math/gmp \
-    java/openjdk7 \
-    devel/apache-ant \
-    devel/gettext-tools \
-    archivers/unzip \
-    devel/gettext-runtime
+if [ ! -e ${I2PPKG} ]; then
+    PORTNAME="security/i2p"
+    pkg install -y \
+        math/gmp \
+        java/openjdk7 \
+        devel/apache-ant \
+        devel/gettext-tools \
+        archivers/unzip \
+        devel/gettext-runtime
     #converters/libiconv
-build_it_now ${PORTNAME}
+    build_it_now ${PORTNAME}
+fi
