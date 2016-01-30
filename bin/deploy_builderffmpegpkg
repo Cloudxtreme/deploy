@@ -77,8 +77,13 @@ multimedia/xvid \
 security/gnutls \
 converters/libiconv \
 multimedia/librtmp \
+audio/libcddb \
+textproc/libxml2 \
+multimedia/libbdplus \
+multimedia/libaacs \
+sysutils/libcdio \
+multimedia/libbluray \
 sysutils/libcdio-paranoia \
-multimedia/libbluray
 ## we want custom options
 if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
     cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
