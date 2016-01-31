@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Via https://grigio.org/meteorjs_freebsd_11_current/
+
+pkg install -y git node npm mongodb python gmake
+
+ln -sf /usr/bin/clang++ /usr/bin/g++
+
+sysrc mongod_enable=YES
+
+service mongod start
