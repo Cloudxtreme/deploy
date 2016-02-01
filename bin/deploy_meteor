@@ -1,11 +1,42 @@
 #!/bin/sh
 
+# NOT READY, WIP
+
 # Via https://grigio.org/meteorjs_freebsd_11_current/
 
-pkg install -y git node npm mongodb python gmake
+pkg install -y git node npm mongodb python gmake bash \
+git scons python gcc48 gmake npm bash
 
 ln -sf /usr/bin/clang++ /usr/bin/g++
+ln -sf /usr/local/bin/bash /bin/bash
 
 sysrc mongod_enable=YES
 
 service mongod start
+
+unset HTTP_PROXY
+
+mv /usr/bin/make /usr/bin/make-clang
+ln -sf /usr/local/bin/gmake /usr/bin/make
+
+# Custom meteor-freebsd fork?
+
+export CXX=clang++
+export CC=clang
+
+npm install pm2 -g
+pm2 startup freebsd
+
+git clone --depth 1 -b freebsd https://github.com/williambr/meteor
+cd meteor
+
+#./scripts/build-mongo-for-dev-bundle.sh
+#./scripts/build-node-for-dev-bundle.sh
+./scripts/generate-dev-bundle.sh
+
+
+#curl -LO https://github.com/meteor/meteor/archive/release/METEOR@1.2.2-faster-rebuilds.0.tar.gz
+#tar -xzf METEOR@1.2.2-faster-rebuilds.0.tar.gz
+#mv meteor-release-METEOR-1.2.2-faster-rebuilds.0  meteor
+#cd meteor
+#./scripts/generate-dev-bundle.sh

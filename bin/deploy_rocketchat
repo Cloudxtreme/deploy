@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# NOT READY, WIP
+
+deploy_meteor
+
+# Via https://github.com/RocketChat/Rocket.Chat/wiki/FreeBSD
+
+pkg install -y git scons python gcc48 gmake npm bash
+
+export PATH=$PATH:$HOME/meteor
+
+git clone --depth 1 https://github.com/RocketChat/Rocket.Chat.git
+cd Rocket.Chat
+
+npm install --clang=1 bcrypt
+
+meteor
+
+exit
+
+# Via https://github.com/RocketChat/Rocket.Chat/wiki/Deploy-Rocket.Chat-without-docker
+
+pkg install -y gcc48
+
+curl -L -o rocket.chat.tgz https://rocket.chat/releases/latest/download
+tar xzf rocket.chat.tgz
+mv bundle Rocket.Chat
+cd Rocket.Chat/programs/server
+unset HTTP_PROXY
+# replace fibers 1.0.5 to 1.0.8
+sed -i '' 's;1.0.5;1.0.8;' package.json
+sed -i '' 's;1.0.5;1.0.8;' npm-shrinkwrap.json
+npm install
+cd ../..
+
+pkg install -y linux_base-c6
+
+export ROOT_URL=http://your-public-domain-here:3000/
+export MONGO_URL=mongodb://localhost:27017/rocketchat
+export PORT=3000
+node main.js
