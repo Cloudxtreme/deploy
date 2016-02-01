@@ -61,7 +61,7 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo > /root/crontabbed/zsnapple_bootpool_hourly
     echo > /root/crontabbed/zsnapple_pool_hourly
 fi
-echo "6 0 * * 6 squid -k rotate" > /root/crontabbed/squid_rotate_log
+echo "6 0 * * * squid -k rotate" > /root/crontabbed/squid_rotate_log
 crontabbed
 
 
