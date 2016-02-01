@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ "x" = "x$1" ]; then
+    echo "Usage: ${0##*/} old_jail_tag"
+    exit 1
+fi
+
+#DRYRUN="-n"
+RSYNC="rsync $DRYRUN -vialP"
+
+OLDFOLDER=$( ioc-pathof $1 )
+
+NEWFOLDER=$( ioc-pathof $2 )
+
+$RSYNC  ${OLDFOLDER}/var/db/couchdb/          ${NEWFOLDER}/var/db/couchdb/
+$RSYNC  ${OLDFOLDER}/usr/local/etc/couchdb/   ${NEWFOLDER}/usr/local/etc/couchdb/
+
