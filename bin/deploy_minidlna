@@ -34,13 +34,18 @@ if [ ! -e /usr/local/etc/minidlna.conf.sample ]; then
     exit 1
 fi
 
-install -m 644 ~/git/deploy/usr/local/etc/minidlna.conf /usr/local/etc/minidlna.conf
+DLNACONFIG=/usr/local/etc/minidlna.conf
+
+cat ~/git/deploy${DLNACONFIG} \
+    | sed "s;/tank;${PERSONALMNT};"
+    >${DLNACONFIG}
+chmod 644 ${DLNACONFIG}
 
 deploy_dlna-permissions
 
-#sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
+sysrc -f /etc/rc.conf.d/minidlna minidlna_enable="YES"
 
-service minidlna onestart
+service minidlna start
 
 echo
 echo "Use a DLNA client to search for this machine"
