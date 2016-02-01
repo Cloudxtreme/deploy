@@ -106,6 +106,9 @@ case ${name} in
     squid|squidnew)
         fstab_readonly ${name} ${fstab}
     ;;
+    vnc)
+        fstab_readonly ${name} ${fstab}
+    ;;
     gitlab)
         iocage set allow_sysvipc=1 ${name}
         fstab_readonly ${name} ${fstab}
