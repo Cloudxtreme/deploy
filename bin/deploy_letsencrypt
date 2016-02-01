@@ -101,7 +101,5 @@ EOF
 fi
 
 
-if [ "x$DOIT" = "x1" ]; then
-    iocage exec nginx service nginx reload
-fi
+iocage exec nginx service nginx reload
 
