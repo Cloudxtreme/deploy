@@ -39,9 +39,7 @@ if [ ! -e ${FROXLORPKG} ]; then
         textproc/php56-xml \
         devel/php56-gettext \
         devel/php56-pcntl \
-        net/libnss-mysql \
-        sysutils/logrotate \
-        www/awstats
+        sysutils/logrotate
         ## remove it because we want custom options
     pkg remove -y \
         ${PORTNAME} \
@@ -52,6 +50,6 @@ if [ ! -e ${FROXLORPKG} ]; then
     if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
         cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
     fi
-    cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=.*;OPTIONS_DEFAULT=APACHE POSTFIX DOVECOT2 WEBALIZER AWSTATS LIBNSS LOGROTATE MYSQLS PCNTL ;' >/usr/ports/${PORTNAME}/Makefile
+    cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=.*;OPTIONS_DEFAULT=APACHE POSTFIX DOVECOT2 WEBALIZER LOGROTATE MYSQLS PCNTL ;' >/usr/ports/${PORTNAME}/Makefile
     build_it_now ${PORTNAME}
 fi
