@@ -106,6 +106,9 @@ case ${name} in
     squid|squidnew)
         fstab_readonly ${name} ${fstab}
     ;;
+    froxlor)
+        fstab_readonly ${name} ${fstab}
+    ;;
     vnc)
         fstab_readonly ${name} ${fstab}
     ;;
