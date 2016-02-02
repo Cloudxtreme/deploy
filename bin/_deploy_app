@@ -100,7 +100,7 @@ done
 
 # PRE START
 case ${name} in
-    builder|buildersquidpkg|builderffmpegpkg|buildergitlabpkg|builderbansheepkg|builderampachepkg|builderi2ppkg)
+    builder*)
         fstab_write ${name} ${fstab}
     ;;
     squid|squidnew)
