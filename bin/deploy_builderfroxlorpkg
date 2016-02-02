@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# READY
+
+. /usr/local/bin/loadmyvars.sh
+
+. /usr/local/bin/_deploy_include.sh
+
+psnap
+
+# unattended build
+export BATCH=yes
+
+
+if [ ! -e ${FROXLORPKG} ]; then
+    PORTNAME="sysutils/froxlor"
+    ## install dependencies
+    pkg install -y \
+        ${PORTNAME} \
+        mail/postfix \
+        mail/dovecot \
+        databases/proftpd-mod_sql_mysql \
+        www/webalizer \
+        lang/php56 \
+        www/apache24 \
+        www/mod_php56 \
+        devel/gettext-runtime \
+        databases/mysql56-server \
+        math/php56-bcmath \
+        ftp/php56-curl \
+        security/php56-filter \
+        ftp/php56-ftp \
+        devel/php56-json \
+        databases/php56-mysql \
+        databases/php56-mysqli \
+        databases/php56-pdo_mysql \
+        sysutils/php56-posix \
+        www/php56-session \
+        textproc/php56-xml \
+        devel/php56-gettext \
+        devel/php56-pcntl \
+        net/libnss-mysql \
+        sysutils/logrotate \
+        www/awstats
+        ## remove it because we want custom options
+    pkg remove -y \
+        ${PORTNAME} \
+        mail/dovecot
+    pkg install -y \
+        mail/dovecot2
+    ## we want DOVECOT2
+    if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
+        cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
+    fi
+    cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=APACHE POSTFIX DOVECOT2 WEBALIZER AWSTATS LIBNSS LOGROTATE MYSQLS PCNTL ;' >/usr/ports/${PORTNAME}/Makefile
+    build_it_now ${PORTNAME}
+fi
