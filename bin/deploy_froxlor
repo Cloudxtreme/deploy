@@ -23,3 +23,8 @@ cat ~/git/deploy/usr/local/etc/apache24/extra/froxlor.conf \
 >/usr/local/etc/apache24/Includes/froxlor.conf
 
 service apache24 restart
+
+cat <<EOF
+When setting up:
+    Set MySQL server to "localhost"
+EOF
