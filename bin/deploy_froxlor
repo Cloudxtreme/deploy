@@ -2,6 +2,9 @@
 
 . /usr/local/bin/loadmyvars.sh
 
+DB="froxlor"
+DBUSER="froxlor"
+DBPASS="password"
 
 deploy_postfix
 
@@ -9,7 +12,9 @@ deploy_php_apache24
 
 deploy_dovecot
 
-if [ ! -e ${FROXLORPKG} ]; then
+deploy_mysql_56 ${DB} ${DBUSER} ${DBPASS}
+
+if [ -e ${FROXLORPKG} ]; then
     pkg install -y ${FROXLORPKG}
 fi
 
