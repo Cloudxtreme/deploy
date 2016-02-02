@@ -1,0 +1,20 @@
+#!/bin/sh
+
+. /usr/local/bin/loadmyvars.sh
+
+
+deploy_postfix
+
+deploy_php_apache24
+
+deploy_dovecot
+
+if [ ! -e ${FROXLORPKG} ]; then
+    pkg install -y ${FROXLORPKG}
+fi
+
+cat ~/git/deploy/usr/local/etc/apache24/extra/froxlor.conf \
+| sed "s/localhost.my.domain/${FQDN}/" \
+>/usr/local/etc/apache24/Includes/froxlor.conf
+
+service apache24 restart
