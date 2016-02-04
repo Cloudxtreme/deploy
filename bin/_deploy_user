@@ -1,0 +1,7 @@
+#!/bin/sh
+
+NEWNAMES="$*"
+
+for i in $NEWNAMES ; do
+    echo "$i:::::::/usr/home/$i:/bin/csh:" | adduser -w no -f - 
+done
