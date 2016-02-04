@@ -1,0 +1,10 @@
+#!/bin/sh
+
+#DRYRUN="-n"
+RSYNC="rsync $DRYRUN -virchgopP --exclude .history"
+
+REMOTEFOLDER=$( ssh $1 ioc-pathof keypkg )
+
+LOCALFOLDER=$( ioc-pathof keypkg )
+
+$RSYNC  ${OLDFOLDER}/usr/home/                ${NEWFOLDER}/usr/home/
