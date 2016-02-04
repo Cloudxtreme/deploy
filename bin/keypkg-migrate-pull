@@ -7,4 +7,4 @@ REMOTEFOLDER=$( ssh $1 ioc-pathof keypkg )
 
 LOCALFOLDER=$( ioc-pathof keypkg )
 
-$RSYNC  ${OLDFOLDER}/usr/home/                ${NEWFOLDER}/usr/home/
+$RSYNC  ${REMOTEFOLDER}/usr/home/                ${LOCALFOLDER}/usr/home/
