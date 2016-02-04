@@ -1,11 +1,11 @@
-client_max_body_size 0;
+upstream ampachesources  { server 10.7.7.19:443; }
 upstream couchsources    { server 10.7.7.5:5984; }
 upstream dtfcsources     { server 10.7.7.6:8080; }
-upstream piwiksources    { server 10.7.7.7:443; }
-upstream owncloudsources { server 10.7.7.8:443; }
 upstream klaussources    { server 10.7.7.13:443; }
+upstream owncloudsources { server 10.7.7.8:443; }
+upstream piwiksources    { server 10.7.7.7:443; }
+upstream sogosources     { server 10.7.7.3:20000; }
 upstream zabbixsources   { server 10.7.7.16:443; }
-upstream ampachesources  { server 10.7.7.19:443; }
 map $uri $redirect_uri {
     ~^/$           /login/;
     ~^/ampache$    /ampache/;
@@ -19,6 +19,7 @@ map $uri $redirect_uri {
     ~^/owncloud$   /owncloud/;
     ~^/piwik$      /piwik/;
     ~^/public$     /public/;
+    ~^/sogo$       /sogo/;
     ~^/wiki$       /wiki/;
     ~^/zabbix$     /zabbix/;
 }
@@ -45,19 +46,32 @@ server {
 
     server_name localhost.localdomain;
 
-    ssl_certificate ssl/localhost.localdomain.crt;
-    ssl_certificate_key ssl/localhost.localdomain.key;
-    include /usr/local/etc/nginx/tls.conf;
     access_log  /var/log/nginx-localhost.localdomain-ssl-access.log realip;
     error_log   /var/log/nginx-localhost.localdomain-ssl-error.log;
 
+    # For TLS
+    ssl_certificate ssl/localhost.localdomain.crt;
+    ssl_certificate_key ssl/localhost.localdomain.key;
+    include /usr/local/etc/nginx/tls.conf;
+
+    ## For big uploads
+    client_max_body_size 0;
+
+    ## Ampache
+    location  ~^/ampache/ {
+        rewrite /ampache/(.*) /ampache/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass https://ampachesources;
+    }
+
+    ## CouchDB and apps
     location ~^/(_session|_replicate|_users) {
         rewrite  /(.*) /$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass http://couchsources;
     }
-    location ~^/couch/ {
-        rewrite  /couch/(.*) /$1 break;
+    location  ~^/couch/ {
+        rewrite /couch/(.*) /$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass http://couchsources;
     }
@@ -82,42 +96,60 @@ server {
         proxy_pass http://couchsources;
     }
 
+    ## Transfer.sh and forks
     location  ~^/dtfc/ {
         rewrite /dtfc/(.*) /$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass http://dtfcsources;
     }
 
+    ## Piwik
     location  ~^/piwik/ {
         rewrite /piwik/(.*) /piwik/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass https://piwiksources;
     }
 
+    ## Owncloud
     location  ~^/owncloud/ {
         rewrite /owncloud/(.*) /owncloud/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass https://owncloudsources;
     }
 
+    ## Klaus
     location  ~^/git/ {
         rewrite /git/(.*) /git/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass https://klaussources;
     }
 
+    ## Zabbix
     location  ~^/zabbix/ {
         rewrite /zabbix/(.*) /zabbix/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
         proxy_pass https://zabbixsources;
     }
 
-    location  ~^/ampache/ {
-        rewrite /ampache/(.*) /ampache/$1 break;
+    ## Sogo
+    location  ~^/sogo/ {
+        rewrite /sogo/(.*) /sogo/$1 break;
         include /usr/local/etc/nginx/proxypass.conf;
-        proxy_pass https://ampachesources;
+        proxy_pass http://sogosources;
+    }
+    location  ~^/sogo.woa/.*css.* {
+        rewrite /sogo.woa/(.*) /sogo.woa/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        add_header Content-Type text/css;
+        proxy_pass http://sogosources;
+    }
+    location  ~^/sogo.woa/ {
+        rewrite /sogo.woa/(.*) /sogo.woa/$1 break;
+        include /usr/local/etc/nginx/proxypass.conf;
+        proxy_pass http://sogosources;
     }
 
+    ## Default
     location / {
         try_files $uri $uri/ @redirect-map;
     }
