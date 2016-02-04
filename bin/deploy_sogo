@@ -1,0 +1,36 @@
+#!/bin/sh
+
+. /usr/local/bin/loadmyvars.sh
+
+pkg install -y \
+    sogo-activesync \
+    gnustep-make
+
+LOCALBASE=/usr/local
+
+# Main config
+cp -p ${LOCALBASE}/etc/sogo/sogo.conf.sample ${LOCALBASE}/etc/sogo/sogo.conf
+
+# Calendar invite notifications
+# replace the username:password with appropriate credentials for SMTP AUTH sending capabilities
+cp -p ${LOCALBASE}/etc/sogo/ealarms-notify.creds.sample \
+ ${LOCALBASE}/etc/sogo/ealarms-notify.creds
+
+# cron job for calendar invites
+cp -p ${LOCALBASE}/GNUstep/Local/Tools/Admin/cron-ealarms-notify.sample \
+                                             ${LOCALBASE}/GNUstep/Local/Tools/Admin/cron-ealarms-notify
+sed -i '' 's;Europe/London;America/Toronto;' ${LOCALBASE}/GNUstep/Local/Tools/Admin/cron-ealarms-notify
+
+crontabbed
+cat >/root/crontabbed/sogo-ealarms <<EOF
+* * * * * ${LOCALBASE}/GNUstep/Local/Tools/Admin/cron-ealarms-notify
+EOF
+
+sysrc sogod_enable=YES
+
+service sogod start
+
+cat <<EOF
+You may want to add the proper credentials to:
+    ${LOCALBASE}/etc/sogo/ealarms-notify.creds
+EOF
