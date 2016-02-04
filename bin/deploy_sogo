@@ -2,6 +2,12 @@
 
 . /usr/local/bin/loadmyvars.sh
 
+DB="sogo"
+DBUSER="sogo"
+DBPASS="sogo"
+
+deploy_postgresql93 1060 ${DB} ${DBUSER} ${DBPASS}
+
 pkg install -y \
     sogo-activesync \
     gnustep-make
@@ -9,7 +15,9 @@ pkg install -y \
 LOCALBASE=/usr/local
 
 # Main config
-cp -p ${LOCALBASE}/etc/sogo/sogo.conf.sample ${LOCALBASE}/etc/sogo/sogo.conf
+cat ~/git/deploy/usr/local/etc/sogo/sogo.conf \
+         >${LOCALBASE}/etc/sogo/sogo.conf
+chmod 644 ${LOCALBASE}/etc/sogo/sogo.conf
 
 # Calendar invite notifications
 # replace the username:password with appropriate credentials for SMTP AUTH sending capabilities
