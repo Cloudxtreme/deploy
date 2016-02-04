@@ -6,7 +6,7 @@ DB="sogo"
 DBUSER="sogo"
 DBPASS="sogo"
 
-deploy_postgresql93 1060 ${DB} ${DBUSER} ${DBPASS}
+deploy_postgresql93 1846 ${DB} ${DBUSER} ${DBPASS}
 
 pkg install -y \
     sogo-activesync \
