@@ -1,0 +1,28 @@
+##!/bin/sh
+
+# READY
+
+. /usr/local/bin/loadmyvars.sh
+
+. /usr/local/bin/_deploy_include.sh
+
+psnap
+
+# unattended build
+export BATCH=yes
+
+
+if [ ! -e ${KEEPASSX2PKG} ]; then
+    PORTNAME="security/keepassx2"
+    ## install dependencies
+    pkg install -y \
+        ${PORTNAME}
+    ## remove
+    pkg remove -y \
+        ${PORTNAME}
+    build_it_now ${PORTNAME}
+    if ! which keepassx ; then
+        echo "Failed to build."
+        exit 1
+    fi
+fi

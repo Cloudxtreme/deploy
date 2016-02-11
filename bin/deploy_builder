@@ -7,4 +7,5 @@ deploy_builderampachepkg
 deploy_builderffmpegpkg
 #deploy_buildergitlabpkg
 deploy_builderi2ppkg
+deploy_builderkeepassx2pkg
 deploy_buildersquidpkg
