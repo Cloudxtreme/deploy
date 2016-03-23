@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# TODO
+# READY
 
 . /usr/local/bin/loadmyvars.sh
 
