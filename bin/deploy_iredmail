@@ -1,0 +1,11 @@
+#!/bin/sh
+
+. /usr/local/bin/loadmyvars.sh
+
+sysrc hostname="$FQDN"
+
+hostname "$FQDN"
+
+pkg install -y bash-static
+
+curl -o iRedMail-0.9.4.tar.bz2 https://bitbucket.org/zhb/iredmail/downloads/iRedMail-0.9.4.tar.bz2

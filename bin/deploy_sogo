@@ -8,6 +8,8 @@ DBPASS="sogo"
 
 deploy_postgresql93 1846 ${DB} ${DBUSER} ${DBPASS}
 
+deploy_iredmail
+
 pkg install -y \
     sogo-activesync \
     gnustep-make
