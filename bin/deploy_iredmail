@@ -9,3 +9,5 @@ hostname "$FQDN"
 pkg install -y bash-static
 
 curl -o iRedMail-0.9.4.tar.bz2 https://bitbucket.org/zhb/iredmail/downloads/iRedMail-0.9.4.tar.bz2
+
+# TODO perform extract and install
