@@ -125,7 +125,7 @@ case ${name} in
     owncloud)
         iocage set allow_sysvipc=1 ${name}
         #if [         -d /root/local/owncloud ]; then
-        #    mkdir -p                          $( ioc-pathof ${name} )/root/local/owncloud
+        #    mkdir -p                           $( ioc-pathof ${name} )/root/local/owncloud
         #    rsync -qalmP /root/local/owncloud/ $( ioc-pathof ${name} )/root/local/owncloud/
         #fi
     ;;
