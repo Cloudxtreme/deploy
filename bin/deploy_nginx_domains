@@ -8,38 +8,100 @@ if [ "x" = "x$name" ]; then
   name=nginx
 fi
 
-for i in \
-    ${FQDNAMPACHE} \
-    ${FQDNCOUCHDB} \
-    ${FQDNECHOPLEXUS} \
-    ${FQDNEJABBERD} \
-    ${FQDNETHERPAD} \
-    ${FQDNFIREFLY} \
-    ${FQDNFROXLOR} \
-    ${FQDNGITLAB} \
-    ${FQDNGOGS} \
-    ${FQDNH5AI} \
-    ${FQDNHORDE} \
-    ${FQDNIREDMAIL} \
-    ${FQDNKLAUS} \
-    ${FQDNMATTERMOST} \
-    ${FQDNMDWIKI} \
-    ${FQDNMONIT} \
-    ${FQDNOWNCLOUD} \
-    ${FQDNPHABRICATOR} \
-    ${FQDNPIWIK} \
-    ${FQDNPYDIO} \
-    ${FQDNRIAK} \
-    ${FQDNROCKETCHAT} \
-    ${FQDNSKYLABLE} \
-    ${FQDNSOGO} \
-    ${FQDNTRANSFER} \
-    ${FQDNUPLOAD} \
-    ${FQDNZABBIX} \
-    ${FQDNZIMBRA} \
-; do
-    deploy_nginx_config ${name} ${i}  localhost.localdomain ${i}
-    iocage exec ${name} nginx-openssl-generate ${i}
-done
+deploy_and_generate()
+{
+    local oldcfg=$1
+    local fqdn=$2
+    deploy_nginx_config ${name} ${fqdn} ${oldcfg} ${fqdn}
+    iocage exec ${name} nginx-openssl-generate ${fqdn}
+}
+
+if [ "x" != "x${FQDN}" ]; then
+    deploy_and_generate localhost.localdomain ${FQDN}
+fi
+if [ "x" != "x${FQDNAMPACHE}" ]; then
+    deploy_and_generate ampache ${FQDNAMPACHE}
+fi
+if [ "x" != "x${FQDNCOUCHDB}" ]; then
+    deploy_and_generate couchdb ${FQDNCOUCHDB}
+fi
+if [ "x" != "x${FQDNECHOPLEXUS}" ]; then
+    deploy_and_generate echoplexus ${FQDNECHOPLEXUS}
+fi
+if [ "x" != "x${FQDNEJABBERD}" ]; then
+    deploy_and_generate ejabberd ${FQDNEJABBERD}
+fi
+if [ "x" != "x${FQDNETHERPAD}" ]; then
+    deploy_and_generate etherpad ${FQDNETHERPAD}
+fi
+if [ "x" != "x${FQDNFIREFLY}" ]; then
+    deploy_and_generate firefly ${FQDNFIREFLY}
+fi
+if [ "x" != "x${FQDNFROXLOR}" ]; then
+    deploy_and_generate froxlor ${FQDNFROXLOR}
+fi
+if [ "x" != "x${FQDNGITLAB}" ]; then
+    deploy_and_generate gitlab ${FQDNGITLAB}
+fi
+if [ "x" != "x${FQDNGOGS}" ]; then
+    deploy_and_generate gogs ${FQDNGOGS}
+fi
+if [ "x" != "x${FQDNH5AI}" ]; then
+    deploy_and_generate h5ai ${FQDNH5AI}
+fi
+if [ "x" != "x${FQDNHORDE}" ]; then
+    deploy_and_generate horde ${FQDNHORDE}
+fi
+if [ "x" != "x${FQDNIREDMAIL}" ]; then
+    deploy_and_generate iredmail ${FQDNIREDMAIL}
+fi
+if [ "x" != "x${FQDNKLAUS}" ]; then
+    deploy_and_generate klaus ${FQDNKLAUS}
+fi
+if [ "x" != "x${FQDNMATTERMOST}" ]; then
+    deploy_and_generate mattermost ${FQDNMATTERMOST}
+fi
+if [ "x" != "x${FQDNMDWIKI}" ]; then
+    deploy_and_generate mdwiki ${FQDNMDWIKI}
+fi
+if [ "x" != "x${FQDNMONIT}" ]; then
+    deploy_and_generate monit ${FQDNMONIT}
+fi
+if [ "x" != "x${FQDNOWNCLOUD}" ]; then
+    deploy_and_generate owncloud ${FQDNOWNCLOUD}
+fi
+if [ "x" != "x${FQDNPHABRICATOR}" ]; then
+    deploy_and_generate phabricator ${FQDNPHABRICATOR}
+fi
+if [ "x" != "x${FQDNPIWIK}" ]; then
+    deploy_and_generate piwik ${FQDNPIWIK}
+fi
+if [ "x" != "x${FQDNPYDIO}" ]; then
+    deploy_and_generate pydio ${FQDNPYDIO}
+fi
+if [ "x" != "x${FQDNRIAK}" ]; then
+    deploy_and_generate riak ${FQDNRIAK}
+fi
+if [ "x" != "x${FQDNROCKETCHAT}" ]; then
+    deploy_and_generate rocketchat ${FQDNROCKETCHAT}
+fi
+if [ "x" != "x${FQDNSKYLABLE}" ]; then
+    deploy_and_generate skylable ${FQDNSKYLABLE}
+fi
+if [ "x" != "x${FQDNSOGO}" ]; then
+    deploy_and_generate sogo ${FQDNSOGO}
+fi
+if [ "x" != "x${FQDNTRANSFER}" ]; then
+    deploy_and_generate transfer ${FQDNTRANSFER}
+fi
+if [ "x" != "x${FQDNUPLOAD}" ]; then
+    deploy_and_generate upload ${FQDNUPLOAD}
+fi
+if [ "x" != "x${FQDNZABBIX}" ]; then
+    deploy_and_generate zabbix ${FQDNZABBIX}
+fi
+if [ "x" != "x${FQDNZIMBRA}" ]; then
+    deploy_and_generate zimbra ${FQDNZIMBRA}
+fi
 
 iocage exec ${name} service nginx reload

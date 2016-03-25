@@ -154,9 +154,7 @@ iocage set boot=${boot} ${name}
 # AFTER START
 case ${name} in
     nginx|nginxnew)
-        deploy_nginx_config ${name} ${FQDN}  localhost.localdomain ${FQDN}
         deploy_nginx_config ${name} nodomain nodomain              ${FQDN}
-        iocage exec ${name} nginx-openssl-generate ${FQDN}
         deploy_nginx_domains ${name}
         # deploy_nginx_domains does a nginx reload
     ;;
