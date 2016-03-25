@@ -41,3 +41,5 @@ for i in \
     deploy_nginx_config ${name} ${i}  localhost.localdomain ${i}
     iocage exec ${name} nginx-openssl-generate ${i}
 done
+
+iocage exec ${name} service nginx reload
