@@ -1,0 +1,43 @@
+#!/bin/sh
+
+. /usr/local/bin/loadmyvars.sh
+
+name=$1
+
+if [ "x" = "x$name" ]; then
+  name=nginx
+fi
+
+for i in \
+    ${FQDNAMPACHE} \
+    ${FQDNCOUCHDB} \
+    ${FQDNECHOPLEXUS} \
+    ${FQDNEJABBERD} \
+    ${FQDNETHERPAD} \
+    ${FQDNFIREFLY} \
+    ${FQDNFROXLOR} \
+    ${FQDNGITLAB} \
+    ${FQDNGOGS} \
+    ${FQDNH5AI} \
+    ${FQDNHORDE} \
+    ${FQDNIREDMAIL} \
+    ${FQDNKLAUS} \
+    ${FQDNMATTERMOST} \
+    ${FQDNMDWIKI} \
+    ${FQDNMONIT} \
+    ${FQDNOWNCLOUD} \
+    ${FQDNPHABRICATOR} \
+    ${FQDNPIWIK} \
+    ${FQDNPYDIO} \
+    ${FQDNRIAK} \
+    ${FQDNROCKETCHAT} \
+    ${FQDNSKYLABLE} \
+    ${FQDNSOGO} \
+    ${FQDNTRANSFER} \
+    ${FQDNUPLOAD} \
+    ${FQDNZABBIX} \
+    ${FQDNZIMBRA} \
+; do
+    deploy_nginx_config ${name} ${i}  localhost.localdomain ${i}
+    iocage exec ${name} nginx-openssl-generate ${i}
+done
