@@ -3,8 +3,8 @@
 #DRYRUN="-n"
 RSYNC="rsync $DRYRUN -virchgopP --exclude .history"
 
-REMOTEFOLDER=$( ssh $1 ioc-pathof keypkg )
+REMOTEFOLDER=$( ssh $1 ioc-pathof keygeli )
 
-LOCALFOLDER=$( ioc-pathof keypkg )
+LOCALFOLDER=$( ioc-pathof keygeli )
 
 $RSYNC  ${1}:${REMOTEFOLDER}/usr/home/                ${LOCALFOLDER}/usr/home/
