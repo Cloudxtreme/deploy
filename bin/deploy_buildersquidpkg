@@ -25,7 +25,7 @@ if [ ! -e ${SQUIDPKG} ]; then
     ## openssl from ports conflicts https://lists.freebsd.org/pipermail/freebsd-questions/2015-June/266245.html
     pkg remove -y \
         ${PORTNAME} \
-        openssl
+        openssl libressl
     ## we want LAX_HTTP=on
     if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
         cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
