@@ -101,5 +101,5 @@ EOF
 fi
 
 
-iocage exec nginx service nginx reload
+iocage exec nginx service nginx reload >>/var/log/letsencrypt-cronjob.log
 
