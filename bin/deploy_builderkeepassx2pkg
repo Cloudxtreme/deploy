@@ -1,10 +1,13 @@
-##!/bin/sh
+#!/bin/sh
 
 # READY
 
 . /usr/local/bin/loadmyvars.sh
 
 . /usr/local/bin/_deploy_include.sh
+
+pkg remove -a -y
+fres
 
 psnap
 
