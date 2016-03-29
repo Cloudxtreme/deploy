@@ -1,0 +1,65 @@
+#!/bin/sh
+
+. /usr/local/bin/loadmyvars.sh
+
+certcheckinstall()
+{
+    NEWCRT=/etc/ssl/letsencrypt/config/live/${1}/fullchain.pem
+    NEWKEY=/etc/ssl/letsencrypt/config/live/${1}/privkey.pem
+    CRTPATH=/iocage/tags/nginx/root/usr/local/etc/nginx/ssl/${1}.crt
+    KEYPATH=/iocage/tags/nginx/root/usr/local/etc/nginx/ssl/${1}.key
+    if [ -e ${NEWCRT} ]; then
+        install -C -m 644 ${NEWCRT}  ${CRTPATH}
+    fi
+    if [ -e ${NEWKEY} ]; then
+        install -C -m 600 ${NEWKEY}  ${KEYPATH}
+    fi
+}
+
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo "ERROR: Don't run this from a jail."
+    exit 1
+fi
+
+if [ "x" != "x$1" ]; then
+    FQDN=$1
+    certcheckinstall $1
+else
+    for i in \
+        ${FQDN} \
+        ${FQDNAMPACHE} \
+        ${FQDNCOUCHDB} \
+        ${FQDNECHOPLEXUS} \
+        ${FQDNEJABBERD} \
+        ${FQDNETHERPAD} \
+        ${FQDNFIREFLY} \
+        ${FQDNFROXLOR} \
+        ${FQDNGITLAB} \
+        ${FQDNGOGS} \
+        ${FQDNH5AI} \
+        ${FQDNHORDE} \
+        ${FQDNIREDMAIL} \
+        ${FQDNKLAUS} \
+        ${FQDNMATTERMOST} \
+        ${FQDNMDWIKI} \
+        ${FQDNMONIT} \
+        ${FQDNOWNCLOUD} \
+        ${FQDNPHABRICATOR} \
+        ${FQDNPIWIK} \
+        ${FQDNPYDIO} \
+        ${FQDNRIAK} \
+        ${FQDNROCKETCHAT} \
+        ${FQDNSKYLABLE} \
+        ${FQDNSOGO} \
+        ${FQDNTRANSFER} \
+        ${FQDNUPLOAD} \
+        ${FQDNZABBIX} \
+        ${FQDNZIMBRA} \
+    ; do
+        if [ "x" != "x$i" ]; then
+            certcheckinstall $i
+        fi
+    done
+fi
+
+iocage exec nginx service nginx reload >>/var/log/nginx-letsencrypt-cronjob.log

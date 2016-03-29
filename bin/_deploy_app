@@ -8,11 +8,11 @@ boot=$3
 deployapp=$4
 fstab=/iocage/tags/${name}/fstab
 
-fstab_readonly() {
+fstab_ports_readonly() {
     local name=$1
     local fstab=$2
-        install -d /var/ports
-        install -d /iocage/tags/${name}/root/var/ports
+    install -d /var/ports
+    install -d /iocage/tags/${name}/root/var/ports
     if [ -e ${fstab} ]; then
         cat >${fstab} <<EOF
 /var/ports                      /iocage/tags/${name}/root/var/ports             nullfs    ro    0    0
@@ -21,15 +21,15 @@ EOF
 
 }
 
-fstab_write() {
+fstab_ports_write() {
     local name=$1
     local fstab=$2
-        install -d /usr/ports
-        install -d /var/ports
-        install -d /var/db/portsnap
-        install -d /iocage/tags/${name}/root/usr/ports
-        install -d /iocage/tags/${name}/root/var/db/portsnap
-        install -d /iocage/tags/${name}/root/var/ports
+    install -d /usr/ports
+    install -d /var/ports
+    install -d /var/db/portsnap
+    install -d /iocage/tags/${name}/root/usr/ports
+    install -d /iocage/tags/${name}/root/var/db/portsnap
+    install -d /iocage/tags/${name}/root/var/ports
     if [ -e ${fstab} ]; then
         cat >${fstab} <<EOF
 /usr/ports                      /iocage/tags/${name}/root/usr/ports             nullfs    rw    0    0
@@ -87,20 +87,20 @@ done
 # PRE START
 case ${name} in
     builder*)
-        fstab_write ${name} ${fstab}
+        fstab_ports_write ${name} ${fstab}
     ;;
     squid|squidnew)
-        fstab_readonly ${name} ${fstab}
+        fstab_ports_readonly ${name} ${fstab}
     ;;
     froxlor)
-        fstab_readonly ${name} ${fstab}
+        fstab_ports_readonly ${name} ${fstab}
     ;;
     vnc)
-        fstab_readonly ${name} ${fstab}
+        fstab_ports_readonly ${name} ${fstab}
     ;;
     gitlab)
         iocage set allow_sysvipc=1 ${name}
-        fstab_readonly ${name} ${fstab}
+        fstab_ports_readonly ${name} ${fstab}
         ## only if we are installing via src to cache rubygems
         deploy_squid_sslcert_fetch ${name}
         # Set jail ip as FQDN so git-shell works
@@ -119,9 +119,9 @@ case ${name} in
         iocage set allow_sysvipc=1 ${name}
     ;;
     zfssyncstatus)
-            install -d /usr/local/www/data
-            install -d /iocage/tags/${name}/root/usr/local/www/data
-            install -d /iocage/tags/${name}/root/var/hostlog
+        install -d /usr/local/www/data
+        install -d /iocage/tags/${name}/root/usr/local/www/data
+        install -d /iocage/tags/${name}/root/var/hostlog
         if [ -e ${fstab} ]; then
             cat >${fstab} <<EOF
 /usr/local/www/data    /iocage/tags/${name}/root/usr/local/www/data    nullfs    ro    0    0
@@ -130,15 +130,25 @@ EOF
         fi
     ;;
     ampache)
-            install -d ${PERSONALMNT}/audio
-            install -d ${PERSONALMNT}/video
-            install -d /iocage/tags/${name}/root/data/audio
-            install -d /iocage/tags/${name}/root/data/video
-        fstab_readonly ${name} ${fstab}
+        install -d ${PERSONALMNT}/audio
+        install -d ${PERSONALMNT}/video
+        install -d /iocage/tags/${name}/root/data/audio
+        install -d /iocage/tags/${name}/root/data/video
+        fstab_ports_readonly ${name} ${fstab}
         if [ -e ${fstab} ]; then
             cat >>${fstab} <<EOF
 ${PERSONALMNT}/audio            /iocage/tags/${name}/root/data/audio            nullfs    ro    0    0
 ${PERSONALMNT}/video            /iocage/tags/${name}/root/data/video            nullfs    ro    0    0
+EOF
+        fi
+    ;;
+    letsencrypt)
+        SSLPATH=/etc/ssl/letsencrypt
+        install -d /iocage/tags/${name}/root${SSLPATH}
+        zfs list tank/ssl/letsencrypt >/dev/null 2>&1 || zfs create -p -o mountpoint=${SSLPATH} tank/ssl/letsencrypt
+        if [ -e ${fstab} ]; then
+            cat >${fstab} <<EOF
+${SSLPATH}   /iocage/tags/${name}/root${SSLPATH}   nullfs    rw    0    0
 EOF
         fi
     ;;

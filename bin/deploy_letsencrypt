@@ -6,8 +6,8 @@ if [ "x" != "x$1" ]; then
     FQDN=$1
 fi
 
-if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
-    echo "ERROR: Don't run this from a jail."
+if sysctl security.jail.jailed | grep 0 >/dev/null 2>&1; then
+    echo "ERROR: Only run this from a jail."
     exit 1
 fi
 
@@ -19,10 +19,8 @@ WEBROOT=/iocage/tags/nginx/root/usr/local/www/
 
 CHALLENGE=/iocage/tags/nginx/root/usr/local/www/.well-known/acme-challenge
 
-NEWCRT=/etc/ssl/letsencrypt/config/live/${FQDN}/fullchain.pem
-NEWKEY=/etc/ssl/letsencrypt/config/live/${FQDN}/privkey.pem
-CRTPATH=/iocage/tags/nginx/root/usr/local/etc/nginx/ssl/${FQDN}.crt
-KEYPATH=/iocage/tags/nginx/root/usr/local/etc/nginx/ssl/${FQDN}.key
+NEWCRT=${SSLPATH}/config/live/${FQDN}/fullchain.pem
+NEWKEY=${SSLPATH}/config/live/${FQDN}/privkey.pem
 
 pkg info py27-letsencrypt >/dev/null 2>&1 || pkg install -y security/py-letsencrypt
 
@@ -31,7 +29,6 @@ if ! id ${LEUSER} >/dev/null 2>&1 ; then
     pw useradd  -n ${LEUSER} -u 443 -g 443 -d ${SSLPATH} -w no -s /nonexistent
 fi
 
-zfs list tank/ssl/letsencrypt >/dev/null 2>&1 || zfs create -p -o mountpoint=${SSLPATH} tank/ssl/letsencrypt
 chown root:${LEGROUP}  ${SSLPATH}
 chmod 770              ${SSLPATH}
 
@@ -49,9 +46,9 @@ if [ "x$REAL" != "x1" ]; then
     SERVER="--server https://acme-staging.api.letsencrypt.org/directory"
 fi
 
-if [ -e ${CRTPATH} ]; then
+if [ -e ${NEWCRT} ]; then
     # Modified from http://stackoverflow.com/questions/21297853/how-to-determine-ssl-cert-expiration-date-from-a-pem-encoded-certificate/31718838#31718838
-    exp_date=$(openssl x509 -text -noout -in ${CRTPATH} | grep 'Not After' | sed 's;.*Not After : ;;')
+    exp_date=$(openssl x509 -text -noout -in ${NEWCRT} | grep 'Not After' | sed 's;.*Not After : ;;')
     exp_sec=$(date -j -f "%b %d %T %Y %Z" "$exp_date" +%s)
     now_sec=$(date -j +%s)
     now_date=$(date +"%b %d %T")
@@ -81,15 +78,6 @@ if [ "x$DOIT" = "x1" ]; then
         -w ${WEBROOT} -d ${FQDN}"
 fi
 
-
-if [ -e ${NEWCRT} ]; then
-    install -C -m 644 ${NEWCRT}  ${CRTPATH}
-fi
-if [ -e ${NEWKEY} ]; then
-    install -C -m 600 ${NEWKEY}  ${KEYPATH}
-fi
-
-
 if [ "x$REAL" != "x1" ]; then
     ## test message
     cat <<EOF
@@ -99,7 +87,3 @@ If everything looks right, you can run:
     env REAL=1 ${0##*/} ${FQDN}
 EOF
 fi
-
-
-iocage exec nginx service nginx reload >>/var/log/letsencrypt-cronjob.log
-
