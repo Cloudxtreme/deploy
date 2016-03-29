@@ -14,7 +14,21 @@ deploy_php_apache24
 deploy_mysql_percona55 ${DB} ${DBUSER} ${DBPASS}
 
 pkg install -y \
-    sxweb
+    sx \
+    sxweb \
+    php56-openssl
+
+for i in \
+    sxinit \
+    sxcp \
+    sxrm \
+    sxmv \
+    sxls \
+    sxacl \
+    sxrev \
+; do
+    ln -sf /usr/local/bin/$i /bin/$i
+done
 
 cat ~/git/deploy/usr/local/etc/apache24/extra/sxweb.conf \
 | sed "s/localhost.my.domain/${FQDN}/" \
