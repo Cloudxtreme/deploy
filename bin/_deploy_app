@@ -97,6 +97,12 @@ case ${name} in
     ;;
     vnc)
         fstab_ports_readonly ${name} ${fstab}
+        install -d /iocage/tags/${name}/root/usr/home
+        if [ -e ${fstab} -a -e ${PERSONALMNT}/vnc/usr/home ]; then
+            cat >>${fstab} <<EOF
+${PERSONALMNT}/vnc/usr/home          /iocage/tags/${name}/root/usr/home             nullfs    ro    0    0
+EOF
+        fi
     ;;
     gitlab)
         iocage set allow_sysvipc=1 ${name}
