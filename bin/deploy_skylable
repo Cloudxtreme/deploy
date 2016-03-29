@@ -2,6 +2,35 @@
 
 . /usr/local/bin/loadmyvars.sh
 
+sxwebpath="/usr/local/www/sxweb"
+WEBSERVER_USER="www"
+
+DB="sxweb"
+DBUSER="sxweb"
+DBPASS="password"
+
+deploy_php_apache24
+
+deploy_mysql_percona55 ${DB} ${DBUSER} ${DBPASS}
+
 pkg install -y \
     sx \
     sxweb
+
+cat ~/git/deploy/usr/local/etc/apache24/extra/sxweb.conf \
+| sed "s/localhost.my.domain/${FQDN}/" \
+>/usr/local/etc/apache24/Includes/sxweb.conf
+
+find ${sxwebpath} -type d -exec chmod 755 {} \;
+find ${sxwebpath} -type f -exec chmod 644 {} \;
+chown -R root:root ${sxwebpath}
+mkdir -p ${sxwebpath}/data
+find ${sxwebpath}/data -type d -exec chmod 700 {} \;
+chown -R $WEBSERVER_USER ${sxwebpath}/data
+chmod 750 ${sxwebpath}/application/configs/
+chown $WEBSERVER_USER ${sxwebpath}/application/configs/
+chown $WEBSERVER_USER ${sxwebpath}/public/install.php
+
+service apache24 restart
+
+echo "Please run: sxsetup"
