@@ -63,6 +63,11 @@ ioc-retag ${JAILNAME} ${OLDJAIL} "${NIC}|${NIP}"
 ### Move new to jailname
 ioc-retag ${NEWJAIL} ${JAILNAME} "${NIC}|${IP}"
 iocage start ${JAILNAME}
+case $JAILNAME in
+    nginx)
+        iocage exec nginx crontabbed
+    ;;
+esac
 
 ######################################################
 
