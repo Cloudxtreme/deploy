@@ -100,7 +100,7 @@ case ${name} in
         install -d /iocage/tags/${name}/root/usr/home
         if [ -e ${fstab} -a -e ${PERSONALMNT}/vnc/usr/home ]; then
             cat >>${fstab} <<EOF
-${PERSONALMNT}/vnc/usr/home          /iocage/tags/${name}/root/usr/home             nullfs    ro    0    0
+${PERSONALMNT}/vnc/usr/home          /iocage/tags/${name}/root/usr/home       nullfs    rw    0    0
 EOF
         fi
     ;;
