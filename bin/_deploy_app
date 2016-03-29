@@ -142,7 +142,7 @@ ${PERSONALMNT}/video            /iocage/tags/${name}/root/data/video            
 EOF
         fi
     ;;
-    letsencrypt)
+    nginx|nginxnew)
         SSLPATH=/etc/ssl/letsencrypt
         install -d /iocage/tags/${name}/root${SSLPATH}
         zfs list tank/ssl/letsencrypt >/dev/null 2>&1 || zfs create -p -o mountpoint=${SSLPATH} tank/ssl/letsencrypt

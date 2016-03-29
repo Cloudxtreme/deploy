@@ -2,25 +2,27 @@
 
 . /usr/local/bin/loadmyvars.sh
 
-if [ "x" != "x$1" ]; then
-    FQDN=$1
-fi
-
 if sysctl security.jail.jailed | grep 0 >/dev/null 2>&1; then
     echo "ERROR: Only run this from a jail."
     exit 1
+fi
+
+if [ "x" != "x$1" ]; then
+    FQDN=$1
 fi
 
 threshold_days=29
 LEUSER=_letsencrypt
 LEGROUP=_letsencrypt
 SSLPATH=/etc/ssl/letsencrypt
-WEBROOT=/iocage/tags/nginx/root/usr/local/www/
+WEBROOT=/usr/local/www/
 
 CHALLENGE=/iocage/tags/nginx/root/usr/local/www/.well-known/acme-challenge
 
 NEWCRT=${SSLPATH}/config/live/${FQDN}/fullchain.pem
 NEWKEY=${SSLPATH}/config/live/${FQDN}/privkey.pem
+CRTPATH=/usr/local/etc/nginx/ssl/${FQDN}.crt
+KEYPATH=/usr/local/etc/nginx/ssl/${FQDN}.key
 
 pkg info py27-letsencrypt >/dev/null 2>&1 || pkg install -y security/py-letsencrypt
 
@@ -46,9 +48,9 @@ if [ "x$REAL" != "x1" ]; then
     SERVER="--server https://acme-staging.api.letsencrypt.org/directory"
 fi
 
-if [ -e ${NEWCRT} ]; then
+if [ -e ${CRTPATH} ]; then
     # Modified from http://stackoverflow.com/questions/21297853/how-to-determine-ssl-cert-expiration-date-from-a-pem-encoded-certificate/31718838#31718838
-    exp_date=$(openssl x509 -text -noout -in ${NEWCRT} | grep 'Not After' | sed 's;.*Not After : ;;')
+    exp_date=$(openssl x509 -text -noout -in ${CRTPATH} | grep 'Not After' | sed 's;.*Not After : ;;')
     exp_sec=$(date -j -f "%b %d %T %Y %Z" "$exp_date" +%s)
     now_sec=$(date -j +%s)
     now_date=$(date +"%b %d %T")
@@ -76,6 +78,13 @@ if [ "x$DOIT" = "x1" ]; then
         ${SERVER} \
         --webroot \
         -w ${WEBROOT} -d ${FQDN}"
+    if [ -e ${NEWCRT} ]; then
+        install -C -m 644 ${NEWCRT}  ${CRTPATH}
+    fi
+    if [ -e ${NEWKEY} ]; then
+        install -C -m 600 ${NEWKEY}  ${KEYPATH}
+    fi
+    service nginx reload >>/var/log/letsencrypt-cronjob.log
 fi
 
 if [ "x$REAL" != "x1" ]; then
@@ -86,4 +95,12 @@ You can setup crontab:
 If everything looks right, you can run:
     env REAL=1 ${0##*/} ${FQDN}
 EOF
+else
+    crontabbedfile=/root/crontabbed/letsencrypt_${FQDN}_weekly
+    if [ ! -e ${crontabbedfile} ]; then
+        cat >${crontabbedfile} <<EOF
+1 0 * * 1 env REAL=1 ${0##*/} ${FQDN} >>/var/log/letsencrypt-cronjob.log
+EOF
+    fi
+    crontabbed
 fi
