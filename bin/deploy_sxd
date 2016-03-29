@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. /usr/local/bin/loadmyvars.sh
+
+pkg install -y \
+    sx
+
+echo "Please run: sxsetup"

@@ -14,7 +14,6 @@ deploy_php_apache24
 deploy_mysql_percona55 ${DB} ${DBUSER} ${DBPASS}
 
 pkg install -y \
-    sx \
     sxweb
 
 cat ~/git/deploy/usr/local/etc/apache24/extra/sxweb.conf \
@@ -32,5 +31,3 @@ chown $WEBSERVER_USER ${sxwebpath}/application/configs/
 chown $WEBSERVER_USER ${sxwebpath}/public/install.php
 
 service apache24 restart
-
-echo "Please run: sxsetup"
