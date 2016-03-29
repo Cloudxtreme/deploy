@@ -104,6 +104,14 @@ ${PERSONALMNT}/vnc/usr/home          /iocage/tags/${name}/root/usr/home       nu
 EOF
         fi
     ;;
+    easydnsclient)
+        install -d /iocage/tags/${name}/root/root/crontabbed
+        if [ -e ${fstab} -a -e ${PERSONALMNT}/easydnsclient/root/crontabbed ]; then
+            cat >>${fstab} <<EOF
+${PERSONALMNT}/easydnsclient/root/crontabbed     /iocage/tags/${name}/root/root/crontabbed       nullfs    rw    0    0
+EOF
+        fi
+    ;;
     gitlab)
         iocage set allow_sysvipc=1 ${name}
         fstab_ports_readonly ${name} ${fstab}
