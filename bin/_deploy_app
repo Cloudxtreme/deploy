@@ -159,11 +159,13 @@ EOF
     nginx|nginxnew)
         SSLPATH=/etc/ssl/letsencrypt
         install -d /iocage/tags/${name}/root${SSLPATH}
+        install -d /iocage/tags/${name}/root/root/crontabbed
+        install -d /iocage/tags/${name}/root/usr/local/etc/nginx/sites-enabled
+        install -d /iocage/tags/${name}/root/usr/local/www
         zfs list tank/ssl/letsencrypt >/dev/null 2>&1 || zfs create -p -o mountpoint=${SSLPATH} tank/ssl/letsencrypt
         zfs list tank/ssl/crontabbed >/dev/null 2>&1 || zfs create -p tank/ssl/crontabbed
         zfs list tank/ssl/sites-enabled >/dev/null 2>&1 || zfs create -p tank/ssl/sites-enabled
         zfs list tank/ssl/www >/dev/null 2>&1 || zfs create -p tank/ssl/www
-        install -d /iocage/tags/${name}/root/root/crontabbed
         if [ -e ${fstab} ]; then
             cat >${fstab} <<EOF
 ${SSLPATH}               /iocage/tags/${name}/root${SSLPATH}                           nullfs    rw    0    0
