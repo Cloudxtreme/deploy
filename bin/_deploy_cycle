@@ -8,22 +8,20 @@ fi
 
 ######################################################
 
-case $JAILNAME in
-    squid)
-        BUILDJAIL=buildersquidpkg
-        NNUM=100
-        IP=10.7.7.1
-    ;;
-    nginx)
-        NNUM=101
-        IP=10.7.7.2
-    ;;
-esac
-
 NEWJAIL=${JAILNAME}new
 OLDJAIL=${JAILNAME}old
 NIC=lo1
-NIP=10.7.7.${NNUM}
+
+case $JAILNAME in
+    squid)
+        IP=10.7.7.1
+        NIP=10.7.7.100
+    ;;
+    nginx)
+        IP=10.7.7.2
+        NIP=10.7.7.101
+    ;;
+esac
 
 ######################################################
 #fres
@@ -33,9 +31,6 @@ NIP=10.7.7.${NNUM}
 
 case $JAILNAME in
     squid)
-        iocage stop ${BUILDJAIL}
-        iocage destroy -f ${BUILDJAIL}
-
         _deploy_app ${NIP} ${NEWJAIL} on $JAILNAME
     ;;
     nginx)
