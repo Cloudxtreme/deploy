@@ -13,12 +13,10 @@ case $JAILNAME in
         BUILDJAIL=buildersquidpkg
         NNUM=100
         IP=10.7.7.1
-        newjailcfg=/usr/local/etc/deployjails.conf.d/010_squid.new
     ;;
     nginx)
         NNUM=101
         IP=10.7.7.2
-        newjailcfg=/usr/local/etc/deployjails.conf.d/015_nginx.new
     ;;
 esac
 
@@ -37,16 +35,13 @@ case $JAILNAME in
     squid)
         iocage stop ${BUILDJAIL}
         iocage destroy -f ${BUILDJAIL}
+
+        _deploy_app ${NIP} ${NEWJAIL} on $JAILNAME
+    ;;
+    nginx)
+        _deploy_app ${NIP} ${NEWJAIL} on $JAILNAME
     ;;
 esac
-
-######################################################
-
-cat >${newjailcfg} <<EOF
-${NNUM}   ${NEWJAIL}               on
-EOF
-
-_deploy_jails
 
 ######################################################
 
@@ -65,14 +60,9 @@ ioc-retag ${NEWJAIL} ${JAILNAME} "${NIC}|${IP}"
 iocage start ${JAILNAME}
 case $JAILNAME in
     nginx)
-        iocage exec nginx crontabbed
+        iocage exec $JAILNAME crontabbed
     ;;
 esac
-
-######################################################
-
-### remove new config so _deploy_jails doesn't keep making new
-rm ${newjailcfg}
 
 ######################################################
 
