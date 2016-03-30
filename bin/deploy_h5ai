@@ -31,7 +31,7 @@ sh scripts/install.sh
 
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/uploadsh \
 | sed "s/localhost.my.domain/${FQDN}/" \
->/usr/local/etc/nginx/sites-enabled/uploadsh
+>/usr/local/etc/nginx/enabled/uploadsh
 
 service nginx restart
 

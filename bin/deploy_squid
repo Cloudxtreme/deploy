@@ -74,7 +74,7 @@ deploy_nginx
 
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/squid \
     | sed "s/0.0.0.0/${JAILIP}/" \
-    >/usr/local/etc/nginx/sites-enabled/squid
-chmod 644 /usr/local/etc/nginx/sites-enabled/squid
+    >/usr/local/etc/nginx/enabled/squid
+chmod 644 /usr/local/etc/nginx/enabled/squid
 
 service nginx restart

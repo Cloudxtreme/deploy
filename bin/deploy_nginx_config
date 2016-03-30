@@ -4,7 +4,7 @@ name=${1}
 newcfg=${2}
 oldcfg=${3}
 FQDN=${4}
-path=$( ioc-pathof ${name} )/usr/local/etc/nginx/sites-enabled/${newcfg}
+path=$( ioc-pathof ${name} )/usr/local/etc/nginx/enabled/${newcfg}
 
 if [ ! -e ${path} ]; then
     cat ~/git/deploy/usr/local/etc/nginx/sites-available/${oldcfg} \

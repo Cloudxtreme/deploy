@@ -39,8 +39,8 @@ done
 
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/klaus \
 | sed "s/localhost.localdomain/${FQDN}/" \
->/usr/local/etc/nginx/sites-enabled/klaus
-chmod 644 /usr/local/etc/nginx/sites-enabled/klaus
+>/usr/local/etc/nginx/enabled/klaus
+chmod 644 /usr/local/etc/nginx/enabled/klaus
 sysrc nginx_enable="YES"
 service nginx start
 

@@ -26,7 +26,7 @@ fi
 
 cat /root/zfssyncstatus/nginx/sites-available/zfssyncstatus \
 | sed "s/localhost.my.domain/${FQDN}/" \
->/usr/local/etc/nginx/sites-enabled/zfssyncstatus
+>/usr/local/etc/nginx/enabled/zfssyncstatus
 
 rsync -virtP /root/zfssyncstatus/www/zfssyncstatus/  /usr/local/www/zfssyncstatus/
 

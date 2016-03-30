@@ -21,7 +21,7 @@ fi
 
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/baikal \
 | sed "s/localhost.my.domain/${FQDN}/" \
->/usr/local/etc/nginx/sites-enabled/baikal
+>/usr/local/etc/nginx/enabled/baikal
 
 touch /usr/local/www/baikal/Specific/ENABLE_INSTALL
 chown -R www /usr/local/www/baikal/Specific

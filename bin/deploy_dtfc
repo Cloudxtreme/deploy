@@ -31,7 +31,7 @@ sh scripts/install.sh
 
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/couchdb \
 | sed "s/localhost.my.domain/${FQDN}/" \
->/usr/local/etc/nginx/sites-enabled/dtfc
+>/usr/local/etc/nginx/enabled/dtfc
 
 if [ ! -d /usr/home/${MYUSER}/config ]; then
     install -d -o ${MYUSER} /usr/home/${MYUSER}/config

@@ -206,14 +206,14 @@ service gitlab start
 echo "13 nginx"
 deploy_nginx
 mkdir -p /var/log/nginx
-#wget -O /usr/local/etc/nginx/sites-enabled/gitlab.conf https://gitlab.com/gitlab-org/gitlab-ce/raw/master/lib/support/nginx/gitlab-ssl
-#cp /usr/local/www/gitlab/lib/support/nginx/gitlab /usr/local/etc/nginx/sites-enabled/gitlab.conf
+#wget -O /usr/local/etc/nginx/enabled/gitlab.conf https://gitlab.com/gitlab-org/gitlab-ce/raw/master/lib/support/nginx/gitlab-ssl
+#cp /usr/local/www/gitlab/lib/support/nginx/gitlab /usr/local/etc/nginx/enabled/gitlab.conf
 #cat /usr/local/www/gitlab/lib/support/nginx/gitlab \
 #| sed 's/gzip_static on;/#gzip_static on;/' \
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/gitlab \
 | sed "s/localhost.localdomain/${FQDN}/" \
->/usr/local/etc/nginx/sites-enabled/gitlab
-chmod 644 /usr/local/etc/nginx/sites-enabled/gitlab
+>/usr/local/etc/nginx/enabled/gitlab
+chmod 644 /usr/local/etc/nginx/enabled/gitlab
 #pw user mod www -G git
 service nginx restart
 

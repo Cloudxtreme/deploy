@@ -31,7 +31,7 @@ sh extras/install.sh
 
 cat ~/git/deploy/usr/local/etc/nginx/sites-available/transfersh \
 | sed "s/localhost.my.domain/${FQDN}/" \
->/usr/local/etc/nginx/sites-enabled/transfersh
+>/usr/local/etc/nginx/enabled/transfersh
 
 service transfersh start
 service nginx restart
