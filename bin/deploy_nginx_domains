@@ -105,3 +105,4 @@ if [ "x" != "x${FQDNZIMBRA}" ]; then
 fi
 
 iocage exec ${name} service nginx reload
+iocage exec ${name} crontabbed

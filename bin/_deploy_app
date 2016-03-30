@@ -160,9 +160,12 @@ EOF
         SSLPATH=/etc/ssl/letsencrypt
         install -d /iocage/tags/${name}/root${SSLPATH}
         zfs list tank/ssl/letsencrypt >/dev/null 2>&1 || zfs create -p -o mountpoint=${SSLPATH} tank/ssl/letsencrypt
+        zfs list tank/ssl/crontabbed >/dev/null 2>&1 || zfs create -p tank/ssl/crontabbed
+        install -d /iocage/tags/${name}/root/root/crontabbed
         if [ -e ${fstab} ]; then
             cat >${fstab} <<EOF
 ${SSLPATH}   /iocage/tags/${name}/root${SSLPATH}   nullfs    rw    0    0
+/tank/ssl/crontabbed   /iocage/tags/${name}/root/root/crontabbed   nullfs    rw    0    0
 EOF
         fi
     ;;
