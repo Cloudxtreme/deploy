@@ -50,12 +50,57 @@ if [ "x" = "x${count}" ]; then
     count=0
 fi
 
+GITCLUSTERPATH="$1"
+
+if [ "x" = "x$GITCLUSTERPATH" ]; then
+    GITCLUSTERPATH=${HOME}/gitcluster/working
+fi
+
+MYHOST=$( hostname -s )
+MYDOMAIN=$( hostname -f | sed "s;^$MYHOST\.;;" )
+
+ROLESDIR=$GITCLUSTERPATH/roles/$MYHOST
+TMPNEWDIR=/tmp/`whoami`/.newj
+
+if [ -d $ROLESDIR ]; then
+    MYROLES=$( ls $ROLESDIR )
+fi
+
+apply_myconfig(){
+    local i=$1
+    local MYINSTALLPREFIX=$2
+    if [ -d $GITCLUSTERPATH/$i ]; then
+        find $GITCLUSTERPATH/$i -mindepth 1 \
+        | sort \
+        | while read configpath; do
+            INSTALLPATH=$( echo $configpath | sed "s;^$GITCLUSTERPATH/$i;$MYINSTALLPREFIX;" )
+            if [ -d $configpath ] && [ ! -e $INSTALLPATH ]; then
+                #echo mkdir -p $INSTALLPATH
+                     mkdir -p $INSTALLPATH
+            elif [ -f $configpath ]; then
+                if [ ! -e $INSTALLPATH ] || ! diff $configpath $INSTALLPATH >/dev/null 2>&1 ; then
+                    #echo install -C $configpath $INSTALLPATH
+                         install -C $configpath $INSTALLPATH
+                fi
+            fi
+        done
+    fi
+}
+
+apply_config_loop(){
+    local DESTDIR=$1
+    for template in _base-all $MYROLES $MYDOMAIN $MYHOST ; do
+        apply_myconfig $template $DESTDIR
+    done
+}
 
 env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" _deploy_pf_ucarp
 
+[ -e $TMPNEWDIR ] && rm -r $TMPNEWDIR
+apply_config_loop $TMPNEWDIR
 
-if ls /usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
-    cat /usr/local/etc/deployjails.conf.d/* \
+if ls ${TMPNEWDIR}/usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
+    cat ${TMPNEWDIR}/usr/local/etc/deployjails.conf.d/* \
     | while read num name boot ; do
         case "$num" in "#"*|"") continue; esac
         if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then
