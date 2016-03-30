@@ -26,15 +26,6 @@ if [ "x" = "x${HOSTIP}" ]; then
     HOSTIP="$( net-ip $HOSTNIC )"
 fi
 
-if [ "x" != "x${STARTCOUNT}" ]; then
-    # remove anything that's not a digit
-    count=`echo ${STARTCOUNT} | sed 's/[^[:digit:]]//g'`
-fi
-
-if [ "x" = "x${count}" ]; then
-    count=0
-fi
-
 GITCLUSTERPATH="$1"
 
 if [ "x" = "x$GITCLUSTERPATH" ]; then

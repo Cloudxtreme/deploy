@@ -1,7 +1,9 @@
 #!/bin/sh
 
-if ls /usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
-    cat /usr/local/etc/deployjails.conf.d/* \
+TMPNEWDIR=/tmp/`whoami`/.newpf
+
+if ls ${TMPNEWDIR}/usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
+    cat ${TMPNEWDIR}/usr/local/etc/deployjails.conf.d/* \
     | while read num name boot ; do
         case "$num" in "#"*|"") continue; esac
         if [ "x" != "x${num}" ] && [ "x" != "x${name}" ]; then

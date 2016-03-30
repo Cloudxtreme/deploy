@@ -41,15 +41,6 @@ if ! iocage list -r | grep 'RELEASE' >/dev/null 2>/dev/null ; then
     fi
 fi
 
-if [ "x" != "x${STARTCOUNT}" ]; then
-    # remove anything that's not a digit
-    count=`echo ${STARTCOUNT} | sed 's/[^[:digit:]]//g'`
-fi
-
-if [ "x" = "x${count}" ]; then
-    count=0
-fi
-
 GITCLUSTERPATH="$1"
 
 if [ "x" = "x$GITCLUSTERPATH" ]; then
