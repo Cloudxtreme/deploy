@@ -19,7 +19,7 @@ git clone --depth 1 https://github.com/johnko/freebsd-ports-ampache.git /root/po
 rsync -virthP /root/ports/audio/ampache/ /usr/ports/audio/ampache/
 
 PORTNAME="audio/ampache"
-pkg install -y \
+for i in \
     dialog4ports \
     gettext-tools \
     php56 \
@@ -34,5 +34,8 @@ pkg install -y \
     php56-pdo \
     php56-pdo_mysql \
     php-composer \
-    git
+    git \
+; do
+    pkg install -y $i
+done
 build_it_now ${PORTNAME}

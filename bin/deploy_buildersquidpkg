@@ -18,9 +18,12 @@ export BATCH=yes
 if [ ! -e ${SQUIDPKG} ]; then
     PORTNAME="www/squid"
     ## install squid and dependencies
-    pkg install -y \
+    for i in \
         ${PORTNAME} \
-        lang/perl5.20
+        lang/perl5.20 \
+    ; do
+        pkg install -y $i
+    done
     ## remove squid because we want custom options
     ## openssl from ports conflicts https://lists.freebsd.org/pipermail/freebsd-questions/2015-June/266245.html
     pkg remove -y \
