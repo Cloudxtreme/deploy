@@ -35,7 +35,7 @@ if [ ! -e ${SQUIDPKG} ]; then
     fi
     cat /usr/ports/${PORTNAME}/Makefile.orig | sed 's;OPTIONS_DEFAULT=;OPTIONS_DEFAULT=LAX_HTTP SSL SSL_CRTD TP_PF LARGEFILE ;' >/usr/ports/${PORTNAME}/Makefile
     build_it_now ${PORTNAME}
-    if ! which squid ; then
+    if [ ! -e /usr/local/sbin/squid ]; then
         echo "Failed to build."
         exit 1
     fi
