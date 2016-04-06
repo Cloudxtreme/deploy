@@ -141,6 +141,8 @@ if [ ! -e ${KEEPASSX2PKG} ]; then
         trousers-tddl \
         libidn \
         libpaper \
+        devel/scons \
+        devel/jsoncpp \
     ; do
         pkg install -y $i
     done
