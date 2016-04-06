@@ -17,13 +17,16 @@ export BATCH=yes
 
 if [ ! -e ${I2PPKG} ]; then
     PORTNAME="security/i2p"
-    pkg install -y \
+    for i in \
         math/gmp \
         java/openjdk7 \
         devel/apache-ant \
         devel/gettext-tools \
         archivers/unzip \
-        devel/gettext-runtime
+        devel/gettext-runtime \
+    ; do
+        pkg install -y $i
+    done
     #converters/libiconv
     build_it_now ${PORTNAME}
 fi
