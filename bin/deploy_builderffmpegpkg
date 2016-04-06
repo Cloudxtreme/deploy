@@ -150,6 +150,7 @@ if [ ! -e ${VLCPKG} ]; then
         multimedia/libtheora \
         audio/twolame \
         multimedia/libv4l \
+        multimedia/v4l_compat \
         audio/libcddb \
         audio/libvorbis \
         x11/xcb-util-keysyms \
