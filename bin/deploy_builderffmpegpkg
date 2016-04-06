@@ -18,9 +18,12 @@ export BATCH=yes
 if [ ! -e ${LAMEPKG} ]; then
     PORTNAME="audio/lame"
     ## install dependencies
-    pkg install -y \
+    for i in \
         devel/gmake \
-        converters/libiconv
+        converters/libiconv \
+    ; do
+        pkg install -y $i
+    done
     build_it_now ${PORTNAME}
     if ! which lame ; then
         ## remove libiconv because it could be an older version that breaks the build process
@@ -51,7 +54,7 @@ fi
 if [ ! -e ${FFMPEGPKG} ]; then
     PORTNAME="multimedia/ffmpeg"
     ## install dependencies
-    pkg install -y \
+    for i in \
         devel/yasm \
         devel/binutils \
         textproc/texi2html \
@@ -78,6 +81,9 @@ if [ ! -e ${FFMPEGPKG} ]; then
         sysutils/libcdio \
         multimedia/libbluray \
         sysutils/libcdio-paranoia \
+    ; do
+        pkg install -y $i
+    done
     ## we want custom options
     if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
         cp /usr/ports/${PORTNAME}/Makefile /usr/ports/${PORTNAME}/Makefile.orig
@@ -98,7 +104,7 @@ fi
 
 if [ ! -e ${VLCPKG} ]; then
     PORTNAME="multimedia/vlc"
-    pkg install -y \
+    for i in \
         devel/yasm \
         devel/desktop-file-utils \
         devel/gmake \
@@ -154,7 +160,10 @@ if [ ! -e ${VLCPKG} ]; then
         textproc/libxml2 \
         x11-toolkits/pango \
         devel/upnp \
-        multimedia/libx264
+        multimedia/libx264 \
+    ; do
+        pkg install -y $i
+    done
     #multimedia/ffmpeg \
     ## we want custom options
     if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
