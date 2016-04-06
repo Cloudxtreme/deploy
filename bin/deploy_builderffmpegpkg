@@ -106,6 +106,7 @@ fi
 if [ ! -e ${VLCPKG} ]; then
     PORTNAME="multimedia/vlc"
     for i in \
+        ${FFMPEGPKG} \
         devel/yasm \
         devel/desktop-file-utils \
         devel/gmake \
