@@ -82,6 +82,7 @@ if [ ! -e ${FFMPEGPKG} ]; then
         sysutils/libcdio \
         multimedia/libbluray \
         sysutils/libcdio-paranoia \
+        multimedia/v4l_compat \
     ; do
         pkg install -y $i
     done
