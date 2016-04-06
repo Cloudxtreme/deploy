@@ -55,6 +55,7 @@ if [ ! -e ${FFMPEGPKG} ]; then
     PORTNAME="multimedia/ffmpeg"
     ## install dependencies
     for i in \
+        ${LAMEPKG} \
         devel/yasm \
         devel/binutils \
         textproc/texi2html \
