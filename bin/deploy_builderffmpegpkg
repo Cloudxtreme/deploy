@@ -166,7 +166,6 @@ if [ ! -e ${VLCPKG} ]; then
         x11-toolkits/pango \
         devel/upnp \
         multimedia/libx264 \
-        graphics/jpeg \
     ; do
         pkg install -y $i
     done
