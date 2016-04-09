@@ -6,16 +6,11 @@ if pgrep -lf ${THISSCRIPT} > /dev/null 2> /dev/null ; then
     exit 1
 fi
 
-
 . /usr/local/bin/loadmyvars.sh
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     echo "ERROR: Cannot run in a jail"
     exit 1
-fi
-
-if [ "x" = "x${IPNET}" ]; then
-    IPNET="10.7.7."
 fi
 
 if [ "x" = "x${HOSTNIC}" ]; then
@@ -73,7 +68,7 @@ apply_config_loop(){
 setuppf() {
     local name
     cat >/etc/pf/jails.anchor <<EOF
-    nat pass on ${HOSTNIC} inet from ${IPNET}0/24 to any -> ($HOSTNIC)
+    nat pass on ${HOSTNIC} inet from ${IOCNET}0/24 to any -> ($HOSTNIC)
 EOF
 
     if ls ${TMPNEWDIR}/usr/local/etc/deploypfucarp.conf.d/* >/dev/null 2>&1 ; then
@@ -91,7 +86,7 @@ EOF
                 # primary ip allow service
                 if  ! pf-anchor show jails | grep "rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to (${HOSTNIC}) port = ${pubport} " >/dev/null ; then
                     cat >>/etc/pf/jails.anchor <<EOF
-rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to (${HOSTNIC}) port = ${pubport} -> ${IPNET}`jailip ${name}` port ${realport}
+rdr pass on ${HOSTNIC} inet proto { tcp, udp } from any to (${HOSTNIC}) port = ${pubport} -> ${IOCNET}`jailip ${name}` port ${realport}
 EOF
                 fi
                 if [ "$HOSTIP" != "$ipalias" ] && [ "($HOSTNIC)" != "$ipalias" ] && [ "xu" == "x${doucarp}" ]; then

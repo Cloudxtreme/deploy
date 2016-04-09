@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. /usr/local/bin/loadmyvars.sh
+
 JAILNAME=$1
 if [ "x" = "x$JAILNAME" ]; then
     echo "Usage: ${0##*/} jail_name"
@@ -10,7 +12,6 @@ fi
 
 NEWJAIL=${JAILNAME}new
 OLDJAIL=${JAILNAME}old
-NIC=lo1
 
 case $JAILNAME in
     squid)
@@ -49,9 +50,9 @@ ${JAILNAME}-migrate-local ${JAILNAME} $NEWJAIL
 ######################################################
 
 ### Move existing to old
-ioc-retag ${JAILNAME} ${OLDJAIL} "${NIC}|${NIP}"
+ioc-retag ${JAILNAME} ${OLDJAIL} "${IOCNIC}|${NIP}"
 ### Move new to jailname
-ioc-retag ${NEWJAIL} ${JAILNAME} "${NIC}|${IP}"
+ioc-retag ${NEWJAIL} ${JAILNAME} "${IOCNIC}|${IP}"
 iocage start ${JAILNAME}
 case $JAILNAME in
     nginx)
@@ -66,8 +67,8 @@ Check that the jail is working.
 To undo:
     iocage stop ${JAILNAME}
     iocage stop ${OLDJAIL}
-    ioc-retag ${JAILNAME} ${JAILNAME}undo "${NIC}|${NIP}"
-    ioc-retag ${OLDJAIL} ${JAILNAME} "${NIC}|${IP}"
+    ioc-retag ${JAILNAME} ${JAILNAME}undo "${IOCNIC}|${NIP}"
+    ioc-retag ${OLDJAIL} ${JAILNAME} "${IOCNIC}|${IP}"
     iocage start ${JAILNAME}
     iocage destroy -f ${JAILNAME}undo
 Or if all is good, then you can delete the old jail:

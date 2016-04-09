@@ -6,7 +6,6 @@ if pgrep -lf ${THISSCRIPT} > /dev/null 2> /dev/null ; then
     exit 1
 fi
 
-
 . /usr/local/bin/loadmyvars.sh
 
 if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
@@ -14,15 +13,8 @@ if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ "x" = "x${NIC}" ]; then
-    NIC="lo1"
-    if ! ifconfig ${NIC} >/dev/null ; then
-        ifconfig ${NIC} create
-    fi
-fi
-
-if [ "x" = "x${IPNET}" ]; then
-    IPNET="10.7.7."
+if ! ifconfig ${IOCNIC} >/dev/null ; then
+    ifconfig ${IOCNIC} create
 fi
 
 if [ "x" = "x${HOSTNIC}" ]; then
@@ -85,7 +77,7 @@ apply_config_loop(){
     done
 }
 
-env IPNET="${IPNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" _deploy_pf_ucarp
+env IOCNET="${IOCNET}" HOSTIP="${HOSTIP}" HOSTNIC="${HOSTNIC}" _deploy_pf_ucarp
 
 [ -e $TMPNEWDIR ] && rm -r $TMPNEWDIR
 apply_config_loop $TMPNEWDIR
@@ -98,13 +90,13 @@ if ls ${TMPNEWDIR}/usr/local/etc/deployjails.conf.d/* >/dev/null 2>&1 ; then
             if ! iocage get tag ${name} >/dev/null 2>/dev/null; then
                 # The following case can be in any order
                 case ${name} in
-                    smtp)                       _deploy_app ${IPNET}${num} ${name} ${boot} postfix ;;
-                    gitlab)                     _deploy_app ${IPNET}${num} ${name} ${boot} ${name}_config ;;
-                    gogs)                       _deploy_app ${IPNET}${num} ${name} ${boot} ${name}_src ;;
-                    horde)                      _deploy_app ${IPNET}${num} ${name} ${boot} ${name}webmail ;;
-                    nginxnew)                   _deploy_app ${IPNET}${num} ${name} ${boot} nginx ;;
-                    squidnew)                   _deploy_app ${IPNET}${num} ${name} ${boot} squid ;;
-                    *)                          _deploy_app ${IPNET}${num} ${name} ${boot} ;;
+                    smtp)                       _deploy_app ${IOCNET}${num} ${name} ${boot} postfix ;;
+                    gitlab)                     _deploy_app ${IOCNET}${num} ${name} ${boot} ${name}_config ;;
+                    gogs)                       _deploy_app ${IOCNET}${num} ${name} ${boot} ${name}_src ;;
+                    horde)                      _deploy_app ${IOCNET}${num} ${name} ${boot} ${name}webmail ;;
+                    nginxnew)                   _deploy_app ${IOCNET}${num} ${name} ${boot} nginx ;;
+                    squidnew)                   _deploy_app ${IOCNET}${num} ${name} ${boot} squid ;;
+                    *)                          _deploy_app ${IOCNET}${num} ${name} ${boot} ;;
                 esac
                 #if [ "xsquid" != "x${name}" ]; then
                 #    iocage stop ${name}

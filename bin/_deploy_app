@@ -40,11 +40,8 @@ EOF
 
 }
 
-if [ "x" = "x${NIC}" ]; then
-    NIC="lo1"
-    if ! ifconfig ${NIC} >/dev/null ; then
-        ifconfig ${NIC} create
-    fi
+if ! ifconfig ${IOCNIC} >/dev/null ; then
+    ifconfig ${IOCNIC} create
 fi
 
 if ! iocage list -r | grep 'RELEASE' >/dev/null 2>/dev/null ; then
@@ -57,13 +54,13 @@ fi
 
 if ! iocage get tag ${name} >/dev/null 2>/dev/null; then
     # typically only in here if deploying a single app not with _deploy_jails, eg.
-    # env NIC=lo1 IP=10.7.7.7
+    # env IOCNIC=lo2 IP=10.7.7.7
     if [ "x" = "x$IP" ]; then
         echo "Usage: ${0##*/} name 10.7.7.253 boot_on/off app_name"
         exit 1
     fi
-    echo "Creating: ${name} on ${NIC} w/ IP $IP"
-    ioc-newjail ${name} "${NIC}|${IP}"
+    echo "Creating: ${name} on ${IOCNIC} w/ IP $IP"
+    ioc-newjail ${name} "${IOCNIC}|${IP}"
 fi
 if [ "x" = "x${boot}" ]; then
     boot=off
@@ -120,7 +117,7 @@ EOF
         # Set jail ip as FQDN so git-shell works
         grep -v " ${FQDN}" $( ioc-pathof ${name} )/etc/hosts >$( ioc-pathof ${name} )/etc/hosts.tmp
         cat $( ioc-pathof ${name} )/etc/hosts.tmp >$( ioc-pathof ${name} )/etc/hosts
-        echo "${IPNET}`jailip gitlab` ${FQDN}" >>$( ioc-pathof ${name} )/etc/hosts
+        echo "${IOCNET}`jailip gitlab` ${FQDN}" >>$( ioc-pathof ${name} )/etc/hosts
     ;;
     owncloud)
         iocage set allow_sysvipc=1 ${name}
