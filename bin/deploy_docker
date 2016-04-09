@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# READY
+
+. /usr/local/bin/loadmyvars.sh
+
+if sysctl security.jail.jailed | grep 1 >/dev/null 2>&1; then
+    echo "ERROR: Cannot run in a jail"
+    exit 1
+fi
+
+zfs create -o mountpoint=/usr/docker ${IOCPOOLNAME}/docker
+
+if [ "x" = "x${HOSTNIC}" ]; then
+    HOSTNIC="$( net-nic )"
+fi
+
+cat >/etc/pf/docker.anchor <<EOF
+nat pass on ${HOSTNIC} from 172.17.0.0/16 to any -> ($HOSTNIC)
+EOF
+
+pf-anchor clear docker
+pf-anchor load docker
+
+pkg install -y docker-freebsd
+
+sysrc -f /etc/rc.conf.d/docker docker_enable=YES
+sysrc -f /etc/rc.conf.d/docker docker_nat_pf=NO
+
+service docker start
