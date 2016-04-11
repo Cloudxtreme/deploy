@@ -111,9 +111,10 @@ EOF
     ;;
     syncthing)
         install -d /iocage/tags/${name}/root/syncthing
+        zfs list tank/syncthing >/dev/null 2>&1 || zfs create -p tank/syncthing
         if [ -e ${fstab} ]; then
             cat >>${fstab} <<EOF
-${PERSONALMNT}/syncthing     /iocage/tags/${name}/root/syncthing       nullfs    rw    0    0
+/tank/syncthing     /iocage/tags/${name}/root/syncthing       nullfs    rw    0    0
 EOF
         fi
     ;;
