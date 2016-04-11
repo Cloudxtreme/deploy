@@ -8,4 +8,6 @@ pkg install -y \
 sysrc syncthing_enable=YES
 sysrc syncthing_dir=/syncthing/var/db/syncthing
 
+chown syncthing:syncthing /syncthing
+
 service syncthing start
