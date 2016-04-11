@@ -36,6 +36,6 @@ for i in \
     php-composer \
     git \
 ; do
-    pkg install -y $i
+    pkg install -y $i || exit 1
 done
 build_it_now ${PORTNAME}

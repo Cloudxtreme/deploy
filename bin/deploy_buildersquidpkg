@@ -22,7 +22,7 @@ if [ ! -e ${SQUIDPKG} ]; then
         ${PORTNAME} \
         lang/perl5.20 \
     ; do
-        pkg install -y $i
+        pkg install -y $i || exit 1
     done
     ## remove squid because we want custom options
     ## openssl from ports conflicts https://lists.freebsd.org/pipermail/freebsd-questions/2015-June/266245.html

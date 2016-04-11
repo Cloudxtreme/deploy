@@ -85,7 +85,7 @@ if [ ! -e ${FFMPEGPKG} ]; then
         multimedia/v4l_compat \
         graphics/jpeg \
     ; do
-        pkg install -y $i
+        pkg install -y $i || exit 1
     done
     ## we want custom options
     if [ ! -e /usr/ports/${PORTNAME}/Makefile.orig ]; then
@@ -167,7 +167,7 @@ if [ ! -e ${VLCPKG} ]; then
         devel/upnp \
         multimedia/libx264 \
     ; do
-        pkg install -y $i
+        pkg install -y $i || exit 1
     done
     #multimedia/ffmpeg \
     ## we want custom options

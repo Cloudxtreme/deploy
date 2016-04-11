@@ -18,7 +18,7 @@ export BATCH=yes
 if [ ! -e ${FROXLORPKG} ]; then
     PORTNAME="sysutils/froxlor"
     ## install dependencies
-    pkg install -y \
+    for i in \
         ${PORTNAME} \
         mail/postfix \
         mail/dovecot \
@@ -42,8 +42,11 @@ if [ ! -e ${FROXLORPKG} ]; then
         textproc/php56-xml \
         devel/php56-gettext \
         devel/php56-pcntl \
-        sysutils/logrotate
-        ## remove it because we want custom options
+        sysutils/logrotate \
+    ; do
+        pkg install -y $i || exit 1
+    done
+    ## remove it because we want custom options
     pkg remove -y \
         ${PORTNAME} \
         mail/dovecot

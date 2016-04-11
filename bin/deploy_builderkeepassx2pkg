@@ -145,7 +145,7 @@ if [ ! -e ${KEEPASSX2PKG} ]; then
         devel/jsoncpp \
         cmake \
     ; do
-        pkg install -y $i
+        pkg install -y $i || exit 1
     done
     ## remove
     pkg remove -y \
