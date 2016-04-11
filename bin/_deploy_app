@@ -109,6 +109,14 @@ ${PERSONALMNT}/easydnsclient/root/crontabbed     /iocage/tags/${name}/root/root/
 EOF
         fi
     ;;
+    syncthing)
+        install -d /iocage/tags/${name}/root/syncthing
+        if [ -e ${fstab} ]; then
+            cat >>${fstab} <<EOF
+${PERSONALMNT}/syncthing     /iocage/tags/${name}/root/syncthing       nullfs    rw    0    0
+EOF
+        fi
+    ;;
     gitlab)
         iocage set allow_sysvipc=1 ${name}
         fstab_ports_readonly ${name} ${fstab}

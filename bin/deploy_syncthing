@@ -5,4 +5,7 @@
 pkg install -y \
     syncthing
 
-echo "Please run: syncthing"
+sysrc syncthing_enable=YES
+sysrc syncthing_dir=/syncthing/data
+
+service syncthing start
