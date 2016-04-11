@@ -143,6 +143,7 @@ if [ ! -e ${KEEPASSX2PKG} ]; then
         libpaper \
         devel/scons \
         devel/jsoncpp \
+        cmake \
     ; do
         pkg install -y $i
     done
