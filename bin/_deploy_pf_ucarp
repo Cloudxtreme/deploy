@@ -68,7 +68,7 @@ apply_config_loop(){
 setuppf() {
     local name
     cat >/etc/pf/jails.anchor <<EOF
-    nat pass on ${HOSTNIC} inet from ${IOCNET}0/24 to any -> ($HOSTNIC)
+nat pass on ${HOSTNIC} inet from ${IOCNET}0/24 to any -> ($HOSTNIC)
 EOF
 
     if ls ${TMPNEWDIR}/usr/local/etc/deploypfucarp.conf.d/* >/dev/null 2>&1 ; then
