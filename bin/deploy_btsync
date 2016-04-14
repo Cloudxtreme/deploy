@@ -1,0 +1,6 @@
+#!/bin/sh
+
+. /usr/local/bin/loadmyvars.sh
+
+pkg install -y \
+    btsync

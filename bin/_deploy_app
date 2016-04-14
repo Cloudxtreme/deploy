@@ -109,6 +109,15 @@ ${PERSONALMNT}/easydnsclient/root/crontabbed     /iocage/tags/${name}/root/root/
 EOF
         fi
     ;;
+    btsync)
+        install -d /iocage/tags/${name}/root/sync
+        zfs list tank/sync >/dev/null 2>&1 || zfs create -p tank/sync
+        if [ -e ${fstab} ]; then
+            cat >>${fstab} <<EOF
+/tank/sync     /iocage/tags/${name}/root/sync       nullfs    rw    0    0
+EOF
+        fi
+    ;;
     syncthing)
         install -d /iocage/tags/${name}/root/syncthing
         zfs list tank/syncthing >/dev/null 2>&1 || zfs create -p tank/syncthing
