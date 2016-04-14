@@ -69,7 +69,6 @@ setuppf() {
     local name
     cat >/etc/pf/jails.anchor <<EOF
     nat pass on ${HOSTNIC} inet from ${IOCNET}0/24 to any -> ($HOSTNIC)
-    rdr pass on ${HOSTNIC} inet proto udp from any to any port = 21027 -> ${IOCNET}`jailip syncthing` port 21027
 EOF
 
     if ls ${TMPNEWDIR}/usr/local/etc/deploypfucarp.conf.d/* >/dev/null 2>&1 ; then
