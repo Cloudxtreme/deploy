@@ -4,4 +4,13 @@
 
 if [ -e ${BTSYNCPKG} ]; then
 	pkg install -y ${BTSYNCPKG}
+
+	sysrc btsync_enable=YES
+
+	chown btsync:btsync /sync
+
+	service btsync start
+else
+	echo "ERROR: can't find file ${BTSYNCPKG} to install"
+	exit 1
 fi

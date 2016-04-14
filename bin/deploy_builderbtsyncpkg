@@ -14,5 +14,7 @@ psnap
 # unattended build
 export BATCH=yes
 
-PORTNAME="net-p2p/btsync"
-build_it_now ${PORTNAME}
+if [ ! -e ${BTSYNCPKG} ]; then
+	PORTNAME="net-p2p/btsync"
+	build_it_now ${PORTNAME}
+fi

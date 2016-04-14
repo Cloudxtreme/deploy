@@ -18,24 +18,26 @@ export BATCH=yes
 git clone --depth 1 https://github.com/johnko/freebsd-ports-ampache.git /root/ports
 rsync -virthP /root/ports/audio/ampache/ /usr/ports/audio/ampache/
 
-PORTNAME="audio/ampache"
-for i in \
-    dialog4ports \
-    gettext-tools \
-    php56 \
-    php56-mysql \
-    php56-session \
-    php56-iconv \
-    php56-hash \
-    php56-gettext \
-    php56-mbstring \
-    php56-filter \
-    php56-xml \
-    php56-pdo \
-    php56-pdo_mysql \
-    php-composer \
-    git \
-; do
-    pkg install -y $i || exit 1
-done
-build_it_now ${PORTNAME}
+if [ ! -e ${AMPACHEPKG} ]; then
+	PORTNAME="audio/ampache"
+	for i in \
+	    dialog4ports \
+	    gettext-tools \
+	    php56 \
+	    php56-mysql \
+	    php56-session \
+	    php56-iconv \
+	    php56-hash \
+	    php56-gettext \
+	    php56-mbstring \
+	    php56-filter \
+	    php56-xml \
+	    php56-pdo \
+	    php56-pdo_mysql \
+	    php-composer \
+	    git \
+	; do
+	    pkg install -y $i || exit 1
+	done
+	build_it_now ${PORTNAME}
+fi
