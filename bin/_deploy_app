@@ -110,6 +110,7 @@ EOF
         fi
     ;;
     btsync)
+		fstab_ports_readonly ${name} ${fstab}
         install -d /iocage/tags/${name}/root/sync
         zfs list tank/sync >/dev/null 2>&1 || zfs create -p tank/sync
         if [ -e ${fstab} ]; then
