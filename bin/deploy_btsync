@@ -2,5 +2,6 @@
 
 . /usr/local/bin/loadmyvars.sh
 
-pkg install -y \
-    btsync
+if [ -e ${BTSYNCPKG} ]; then
+	pkg install -y ${BTSYNCPKG}
+fi
